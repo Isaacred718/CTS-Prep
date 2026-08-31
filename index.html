@@ -1,552 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#121826">
-    <title>CTS & ST 2110 Practice Master</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-blue: #38bdf8;
-            --accent-green: #22c55e;
-            --accent-red: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f172a">
+<title>CTS &amp; ST 2110 Prep</title>
+<style>
+:root{
+  --bg:#0f172a; --card:#1e293b; --sunk:rgba(15,23,42,.6);
+  --blue:#38bdf8; --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
+  --text:#f8fafc; --muted:#94a3b8; --line:#334155;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom));
+  line-height:1.5;
+}
+header{
+  background:var(--card);border-bottom:1px solid var(--line);
+  padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
+  position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;
+}
+header h1{margin:0;font-size:1rem;font-weight:600;letter-spacing:.02em;color:var(--blue);flex:1}
+.container{max-width:640px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+h2{font-size:1.05rem;margin:0 0 14px}
+h3{font-size:.95rem;margin:0 0 10px}
+p{margin:0 0 12px}
+.muted{color:var(--muted);font-size:.85rem}
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+.btn{
+  display:block;width:100%;padding:15px;margin-top:10px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;
+  font:inherit;font-weight:600;font-size:1rem;cursor:pointer;transition:opacity .15s;
+}
+.btn:active{opacity:.75}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn.sec{background:#334155}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:.85rem;padding:10px;font-weight:500}
+.btn.sm{width:auto;display:inline-block;padding:8px 14px;font-size:.8rem;margin-right:8px}
+.btn[disabled]{opacity:.4;cursor:default}
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.stat-box{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:12px 6px}
+.stat-val{font-size:1.35rem;font-weight:700;color:var(--blue)}
+.stat-lbl{font-size:.7rem;color:var(--muted);margin-top:4px}
+.pass{color:var(--green)} .fail{color:var(--red)} .warn{color:var(--amber)}
 
-        header {
-            background-color: var(--card-bg);
-            padding: 20px 16px 12px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+.tag{
+  display:inline-block;font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:6px;
+  background:rgba(56,189,248,.15);color:var(--blue);margin-bottom:12px;
+}
+.q-text{font-size:1.05rem;font-weight:600;margin-bottom:16px}
+.option{
+  display:block;width:100%;text-align:left;padding:14px;margin-bottom:10px;
+  background:var(--sunk);border:1px solid var(--line);border-radius:12px;
+  color:var(--text);font:inherit;font-size:.95rem;cursor:pointer;transition:border-color .15s;
+}
+.option:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.option.correct{background:rgba(34,197,94,.18);border-color:var(--green);color:var(--green)}
+.option.incorrect{background:rgba(239,68,68,.18);border-color:var(--red);color:var(--red)}
+.explanation{
+  background:var(--sunk);border-left:3px solid var(--blue);border-radius:8px;
+  padding:12px;margin-top:14px;font-size:.88rem;color:var(--muted);
+}
+.progress{background:var(--line);height:5px;border-radius:3px;overflow:hidden;margin-bottom:14px}
+.progress > div{background:var(--blue);height:100%;width:0;transition:width .3s}
 
-        header h1 {
-            margin: 0;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: var(--accent-blue);
-        }
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.82rem}
+.bar-row .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{width:78px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:none}
+.bar-fill{height:100%;border-radius:3px}
+.bar-row .pct{width:52px;text-align:right;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
 
-        .container {
-            flex: 1;
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-        }
+.flash{
+  min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;padding:26px 20px;
+}
+.flash .front{font-size:1.2rem;font-weight:600}
+.flash .back{font-size:.98rem;color:var(--muted);margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+.hint{font-size:.72rem;color:var(--muted);margin-top:18px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2 .btn{margin-top:0}
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-        }
+.list-item{
+  display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:15px;margin-bottom:10px;color:var(--text);font:inherit;cursor:pointer;
+}
+.list-item .sub{font-size:.78rem;color:var(--muted);margin-top:4px}
+.guide h2{margin-top:22px;font-size:1rem;color:var(--blue)}
+.guide ul{padding-left:20px;margin:0 0 12px}
+.guide li{margin-bottom:6px}
+.guide p, .guide li{font-size:.93rem}
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
-        .stat-box {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-val {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--accent-blue);
-        }
-
-        .stat-lbl {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .badge-pass { color: var(--accent-green); }
-        .badge-fail { color: var(--accent-red); }
-
-        .btn {
-            background: linear-gradient(135deg, #0284c7, #2563eb);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-
-        .btn:active {
-            opacity: 0.8;
-        }
-
-        .btn-secondary {
-            background: #334155;
-            color: var(--text-main);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            padding: 8px;
-        }
-
-        .question-title {
-            font-size: 1.05rem;
-            line-height: 1.5;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .domain-tag {
-            display: inline-block;
-            font-size: 0.7rem;
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .option-btn {
-            background-color: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            color: var(--text-main);
-            width: 100%;
-            text-align: left;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .option-btn.correct {
-            background-color: rgba(34, 197, 94, 0.2) !important;
-            border-color: var(--accent-green) !important;
-            color: var(--accent-green);
-        }
-
-        .option-btn.incorrect {
-            background-color: rgba(239, 68, 68, 0.2) !important;
-            border-color: var(--accent-red) !important;
-            color: var(--accent-red);
-        }
-
-        .explanation {
-            background: rgba(15, 23, 42, 0.8);
-            border-left: 4px solid var(--accent-blue);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-top: 14px;
-            line-height: 1.4;
-        }
-
-        .progress-bar-bg {
-            background: var(--border-color);
-            height: 6px;
-            border-radius: 3px;
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            background: var(--accent-blue);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .hidden { display: none !important; }
-    </style>
+nav{
+  position:fixed;bottom:0;left:0;right:0;background:var(--card);
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:env(safe-area-inset-bottom);z-index:20;
+}
+nav button{
+  flex:1;background:none;border:none;color:var(--muted);font:inherit;font-size:.68rem;
+  padding:10px 4px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+nav button .ico{font-size:1.15rem;line-height:1}
+nav button.active{color:var(--blue)}
+.hidden{display:none !important}
+select{
+  width:100%;padding:12px;border-radius:10px;background:var(--sunk);color:var(--text);
+  border:1px solid var(--line);font:inherit;font-size:.9rem;margin-top:6px;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>CTS & Broadcast Prep</h1>
-    </header>
+<header>
+  <button id="back-btn" class="btn ghost hidden" style="width:auto;padding:6px 12px;margin:0" onclick="goBack()">Back</button>
+  <h1 id="page-title">CTS &amp; Broadcast Prep</h1>
+</header>
 
-    <div class="container">
-        <div id="welcome-screen">
-            <div class="card">
-                <h2 style="margin-top:0; font-size: 1.2rem;">All-Time Performance</h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-val" id="stat-accuracy">0%</div>
-                        <div class="stat-lbl">Accuracy</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-val" id="stat-attempts">0</div>
-                        <div class="stat-lbl">Questions</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-val" id="stat-status">N/A</div>
-                        <div class="stat-lbl">Status</div>
-                    </div>
-                </div>
-            </div>
+<div class="container">
 
-            <div class="card">
-                <h3 style="margin-top:0; font-size:1.05rem;">Select Quiz Mode</h3>
-                <button class="btn" onclick="startQuiz('exam')">Full Exam Mode (10 Qs)</button>
-                <button class="btn btn-secondary" onclick="startQuiz('practice')">Endless Practice Mode</button>
-            </div>
-
-            <button class="btn btn-outline" onclick="resetStats()">Reset All-Time Stats</button>
-        </div>
-
-        <div id="quiz-screen" class="hidden">
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progress-fill"></div>
-            </div>
-
-            <div class="card">
-                <span class="domain-tag" id="q-domain">Domain</span>
-                <div class="question-title" id="q-text">Question text goes here...</div>
-                <div id="options-container"></div>
-                <div id="explanation-box" class="explanation hidden"></div>
-            </div>
-
-            <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next Question</button>
-        </div>
-
-        <div id="results-screen" class="hidden">
-            <div class="card" style="text-align: center;">
-                <h2 id="result-title">Quiz Complete</h2>
-                <div style="font-size: 3rem; font-weight: bold; margin: 10px 0;" id="result-score">0%</div>
-                <p id="result-status-text" style="color: var(--text-muted);"></p>
-                
-                <button class="btn" onclick="showWelcome()">Back to Dashboard</button>
-            </div>
-        </div>
+  <!-- ============ STUDY TAB ============ -->
+  <section id="view-study">
+    <div class="card">
+      <h2>All-time record</h2>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val" id="s-acc">0%</div><div class="stat-lbl">Accuracy</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-att">0</div><div class="stat-lbl">Answered</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-status">No data</div><div class="stat-lbl">Readiness</div></div>
+      </div>
     </div>
 
-    <script>
-        // Question Database covering CTS AVIXA Standards, Project Management & ST 2110
-        const questionBank = [
-            // CTS - Project Management & AVIXA Standards
-            {
-                domain: "CTS: Project Management",
-                q: "According to AVIXA CTS best practices, when addressing project scope creep during installation, what is the primary formal document that must be submitted to and approved by the client?",
-                options: [
-                    "Field Report",
-                    "Change Order",
-                    "Certificate of Substantial Completion",
-                    "Punch List"
-                ],
-                correct: 1,
-                explanation: "AVIXA emphasizes that any addition or modification to the agreed-upon project scope must be formally documented and priced via a Change Order before work proceeds."
-            },
-            {
-                domain: "CTS: Sound & Physics",
-                q: "If a speaker produces 80 dB SPL at a distance of 2 meters from a listener, what will the SPL be at 4 meters in a free-field environment?",
-                options: [
-                    "77 dB SPL",
-                    "74 dB SPL",
-                    "70 dB SPL",
-                    "68 dB SPL"
-                ],
-                correct: 1,
-                explanation: "According to the Inverse Square Law, doubling the distance from a point source in a free field results in a 6 dB drop in sound pressure level (80 dB - 6 dB = 74 dB)."
-            },
-            {
-                domain: "CTS: AVIXA Standards",
-                q: "Under AVIXA V201.01 (Image System Contrast Ratio), what is the minimum contrast ratio recommended for basic decision-making visual display content?",
-                options: [
-                    "7:1",
-                    "15:1",
-                    "50:1",
-                    "80:1"
-                ],
-                correct: 1,
-                explanation: "AVIXA V201.01 standards specify 15:1 for Basic Decision Making (such as general presentations or documents)."
-            },
-            {
-                domain: "CTS: Site Survey & Electrical",
-                q: "What is the total current draw of three 120V AV equipment racks if each rack draws 480 Watts?",
-                options: [
-                    "4 Amps",
-                    "12 Amps",
-                    "16 Amps",
-                    "20 Amps"
-                ],
-                correct: 1,
-                explanation: "Power (Watts) = Volts × Amps. Total Power = 3 × 480W = 1440W. Amps = 1440W / 120V = 12 Amps."
-            },
+    <div class="card">
+      <h3>Start a session</h3>
+      <button class="btn" onclick="startQuiz('exam')">Exam · 10 questions</button>
+      <button class="btn sec" onclick="startQuiz('practice')">Practice · full bank</button>
+      <button class="btn sec" id="weak-btn" onclick="startQuiz('weak')">Weak spots · 10 questions</button>
+      <label class="muted" for="domain-pick" style="display:block;margin-top:16px">Or drill one domain</label>
+      <select id="domain-pick"></select>
+      <button class="btn sec" onclick="startQuiz('domain')">Start domain drill</button>
+    </div>
+  </section>
 
-            // SMPTE ST 2110 & Broadcasting Standards
-            {
-                domain: "Broadcasting: SMPTE ST 2110-10",
-                q: "Which protocol does SMPTE ST 2110-10 leverage for absolute microsecond-level synchronization across IP media networks?",
-                options: [
-                    "NTP (Network Time Protocol)",
-                    "PTP / IEEE 1588 (ST 2059-2)",
-                    "PTP v1 / IEEE 1394",
-                    "RTCP Sender Reports"
-                ],
-                correct: 1,
-                explanation: "ST 2110-10 relies on Precision Time Protocol (PTP) v2 according to SMPTE ST 2059-2 profile for frame-accurate synchronization over IP."
-            },
-            {
-                domain: "Broadcasting: SMPTE ST 2110 Suite",
-                q: "Which sub-standard within the SMPTE ST 2110 suite specifically governs the transport of PCM digital audio streams?",
-                options: [
-                    "ST 2110-10",
-                    "ST 2110-20",
-                    "ST 2110-30",
-                    "ST 2110-40"
-                ],
-                correct: 2,
-                explanation: "ST 2110-30 defines the transport of uncompressed PCM audio based on AES67 standards (ST 2110-20 is for video, ST 2110-40 is for ANC data)."
-            },
-            {
-                domain: "Broadcasting: Network Redundancy",
-                q: "SMPTE ST 2022-07 provides hitless redundancy for IP media streams. How does the receiver handle duplicate streams from Primary and Secondary networks?",
-                options: [
-                    "It averages both streams to clean up jitter.",
-                    "It uses packet-by-packet seamless hitless merge/switching based on RTP sequence numbers.",
-                    "It actively drops the secondary network unless link failure occurs.",
-                    "It converts both streams into SDI before combining."
-                ],
-                correct: 1,
-                explanation: "ST 2022-07 enables hitless failover by allowing receivers to reconstruct an uninterrupted stream using identical RTP sequence numbers across dual network fabrics."
-            },
-            {
-                domain: "Broadcasting: NMOS (AMWA)",
-                q: "In an ST 2110 broadcast environment, which AMWA NMOS specification handles automated discovery and registration of media nodes?",
-                options: [
-                    "NMOS IS-04",
-                    "NMOS IS-05",
-                    "NMOS IS-08",
-                    "NMOS IS-09"
-                ],
-                correct: 0,
-                explanation: "NMOS IS-04 specifies Discovery and Registration, allowing endpoints to register with a Registry. IS-05 handles Connection Management."
-            },
-            {
-                domain: "Broadcasting: IP Multicast",
-                q: "What network protocol do ST 2110 receiver endpoints use to request joining an active IP multicast stream from a network switch?",
-                options: [
-                    "PIM-SM",
-                    "IGMP (Internet Group Management Protocol)",
-                    "OSPF",
-                    "LLDP"
-                ],
-                correct: 1,
-                explanation: "Endpoints issue IGMP Join/Leave messages to the local switch to subscribe to specific multicast group addresses."
-            }
-        ];
+  <!-- ============ QUIZ ============ -->
+  <section id="view-quiz" class="hidden">
+    <div class="progress"><div id="prog-fill"></div></div>
+    <div class="card">
+      <span class="tag" id="q-domain"></span>
+      <div class="q-text" id="q-text"></div>
+      <div id="q-options"></div>
+      <div class="explanation hidden" id="q-exp"></div>
+    </div>
+    <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next question</button>
+    <button class="btn ghost" onclick="endSession()">End session</button>
+  </section>
 
-        // State variables
-        let quizMode = 'practice'; // 'exam' or 'practice'
-        let currentQuestions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let answerSubmitted = false;
+  <!-- ============ RESULTS ============ -->
+  <section id="view-results" class="hidden">
+    <div class="card" style="text-align:center">
+      <h2 id="r-title" style="margin-bottom:4px"></h2>
+      <div style="font-size:3rem;font-weight:700;margin:6px 0" id="r-score">0%</div>
+      <p class="muted" id="r-note"></p>
+    </div>
+    <div class="card">
+      <h3>This session by domain</h3>
+      <div id="r-breakdown"></div>
+    </div>
+    <button class="btn" onclick="showTab('study')">Back to dashboard</button>
+  </section>
 
-        // Local Storage Handler
-        function getStoredStats() {
-            const defaultStats = { totalAttempted: 0, totalCorrect: 0, history: [] };
-            return JSON.parse(localStorage.getItem('cts_quiz_stats')) || defaultStats;
-        }
+  <!-- ============ FLASHCARDS ============ -->
+  <section id="view-cards" class="hidden">
+    <div id="cards-empty" class="card hidden">
+      <p>All caught up. Every card is in a high box right now.</p>
+      <button class="btn sec" onclick="resetCardBoxes()">Reshuffle all cards</button>
+    </div>
+    <div id="cards-live">
+      <p class="muted" id="card-counter" style="text-align:center;font-size:.78rem"></p>
+      <div class="card flash" id="flash-card" onclick="flipCard()">
+        <span class="tag" id="card-domain"></span>
+        <div class="front" id="card-front"></div>
+        <div class="back hidden" id="card-back"></div>
+        <div class="hint" id="card-hint">Tap to reveal</div>
+      </div>
+      <div class="row2 hidden" id="card-rate">
+        <button class="btn sec" onclick="rateCard(false)">Missed it</button>
+        <button class="btn" onclick="rateCard(true)">Got it</button>
+      </div>
+    </div>
+  </section>
 
-        function saveStats(correctCount, totalCount) {
-            let stats = getStoredStats();
-            stats.totalAttempted += totalCount;
-            stats.totalCorrect += correctCount;
-            stats.history.push({
-                date: new Date().toLocaleDateString(),
-                score: Math.round((correctCount / totalCount) * 100)
-            });
-            localStorage.setItem('cts_quiz_stats', JSON.stringify(stats));
-            updateDashboard();
-        }
+  <!-- ============ GUIDES ============ -->
+  <section id="view-guides" class="hidden">
+    <div id="guide-list"></div>
+  </section>
+  <section id="view-guide" class="hidden">
+    <div class="card guide" id="guide-body"></div>
+  </section>
 
-        function resetStats() {
-            if (confirm("Reset all historical progress and ratings?")) {
-                localStorage.removeItem('cts_quiz_stats');
-                updateDashboard();
-            }
-        }
+  <!-- ============ STATS ============ -->
+  <section id="view-stats" class="hidden">
+    <div class="card">
+      <h2>Accuracy by domain</h2>
+      <div id="domain-bars"><p class="muted">Answer some questions and your weak areas will show up here.</p></div>
+    </div>
+    <div class="card">
+      <h3>Recent sessions</h3>
+      <div id="history-list"><p class="muted">No sessions recorded yet.</p></div>
+    </div>
+    <div class="card">
+      <h3>Back up your record</h3>
+      <p class="muted">Progress lives in this browser only. It survives restarts, but not clearing site data, and it doesn't sync to your other devices. Export a file to move or keep it.</p>
+      <button class="btn sm sec" onclick="exportProgress()">Export progress</button>
+      <button class="btn sm sec" onclick="document.getElementById('import-file').click()">Import progress</button>
+      <input type="file" id="import-file" accept="application/json" class="hidden" onchange="importProgress(event)">
+      <button class="btn ghost" style="margin-top:16px" onclick="resetProgress()">Erase all progress</button>
+    </div>
+  </section>
 
-        function updateDashboard() {
-            const stats = getStoredStats();
-            const accuracy = stats.totalAttempted > 0 
-                ? Math.round((stats.totalCorrect / stats.totalAttempted) * 100) 
-                : 0;
+</div>
 
-            document.getElementById('stat-accuracy').innerText = accuracy + '%';
-            document.getElementById('stat-attempts').innerText = stats.totalAttempted;
+<nav>
+  <button id="tab-study"  class="active" onclick="showTab('study')"><span class="ico">◎</span>Study</button>
+  <button id="tab-cards"  onclick="showTab('cards')"><span class="ico">▤</span>Cards</button>
+  <button id="tab-guides" onclick="showTab('guides')"><span class="ico">❐</span>Guides</button>
+  <button id="tab-stats"  onclick="showTab('stats')"><span class="ico">▲</span>Stats</button>
+</nav>
 
-            const statusEl = document.getElementById('stat-status');
-            if (stats.totalAttempted < 10) {
-                statusEl.innerText = "Building Data";
-                statusEl.className = "stat-val";
-            } else if (accuracy >= 75) {
-                statusEl.innerText = "PASS";
-                statusEl.className = "stat-val badge-pass";
-            } else {
-                statusEl.innerText = "NEEDS REV";
-                statusEl.className = "stat-val badge-fail";
-            }
-        }
+<script src="content.js"></script>
+<script>
+/* ---------- storage ---------- */
+const KEY = 'cts_progress_v2';
+const blank = () => ({ attempted:0, correct:0, domains:{}, history:[], boxes:{} });
 
-        // Quiz Engine
-        function startQuiz(mode) {
-            quizMode = mode;
-            currentIndex = 0;
-            score = 0;
-            
-            // Shuffle questions
-            currentQuestions = [...questionBank].sort(() => 0.5 - Math.random());
-            if (mode === 'exam') {
-                currentQuestions = currentQuestions.slice(0, 10);
-            }
+function load(){
+  let d;
+  try { d = JSON.parse(localStorage.getItem(KEY)); } catch(e){ d = null; }
+  if(!d){
+    d = blank();
+    // carry over the original version's record if it's there
+    try{
+      const old = JSON.parse(localStorage.getItem('cts_quiz_stats'));
+      if(old && old.totalAttempted){
+        d.attempted = old.totalAttempted;
+        d.correct = old.totalCorrect || 0;
+        d.history = (old.history||[]).map(h => ({date:h.date, pct:h.score, mode:'legacy'}));
+      }
+    }catch(e){}
+  }
+  d.domains = d.domains || {}; d.history = d.history || []; d.boxes = d.boxes || {};
+  return d;
+}
+function save(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){ alert('Could not save progress. Private browsing blocks storage.'); } }
+let data = load();
 
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('results-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
+/* ---------- navigation ---------- */
+const views = ['study','quiz','results','cards','guides','guide','stats'];
+let currentTab = 'study';
+function show(v){ views.forEach(x => document.getElementById('view-'+x).classList.toggle('hidden', x!==v)); window.scrollTo(0,0); }
+function setTitle(t, back){
+  document.getElementById('page-title').textContent = t;
+  document.getElementById('back-btn').classList.toggle('hidden', !back);
+}
+function showTab(t){
+  currentTab = t;
+  ['study','cards','guides','stats'].forEach(x =>
+    document.getElementById('tab-'+x).classList.toggle('active', x===t));
+  if(t==='study'){ show('study'); setTitle('CTS & Broadcast Prep', false); renderDashboard(); }
+  if(t==='cards'){ show('cards'); setTitle('Flashcards', false); startCards(); }
+  if(t==='guides'){ show('guides'); setTitle('Study guides', false); renderGuideList(); }
+  if(t==='stats'){ show('stats'); setTitle('Your record', false); renderStats(); }
+}
+function goBack(){ showTab(currentTab); }
 
-            showQuestion();
-        }
+/* ---------- dashboard ---------- */
+function accuracy(){ return data.attempted ? Math.round(data.correct/data.attempted*100) : 0; }
 
-        function showQuestion() {
-            answerSubmitted = false;
-            const q = currentQuestions[currentIndex];
+function renderDashboard(){
+  const acc = accuracy();
+  document.getElementById('s-acc').textContent = acc + '%';
+  document.getElementById('s-att').textContent = data.attempted;
+  const el = document.getElementById('s-status');
+  if(data.attempted < 20){ el.textContent = 'Building'; el.className = 'stat-val'; }
+  else if(acc >= 80){ el.textContent = 'Ready'; el.className = 'stat-val pass'; }
+  else if(acc >= 70){ el.textContent = 'Close'; el.className = 'stat-val warn'; }
+  else { el.textContent = 'Review'; el.className = 'stat-val fail'; }
 
-            // Progress bar
-            const progress = ((currentIndex) / currentQuestions.length) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
+  const sel = document.getElementById('domain-pick');
+  if(!sel.options.length){
+    [...new Set(QUESTIONS.map(q => q.domain))].sort().forEach(d => {
+      const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o);
+    });
+  }
+  document.getElementById('weak-btn').disabled = data.attempted < 20;
+}
 
-            document.getElementById('q-domain').innerText = q.domain;
-            document.getElementById('q-text').innerText = q.q;
-            
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+/* ---------- quiz ---------- */
+let queue = [], idx = 0, hits = 0, answered = false, mode = 'practice', sessionDomains = {};
+const shuffle = a => a.slice().sort(() => Math.random() - .5);
 
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => selectOption(idx);
-                optionsContainer.appendChild(btn);
-            });
+function weakDomains(){
+  return Object.keys(data.domains)
+    .filter(d => data.domains[d].n >= 3)
+    .sort((a,b) => (data.domains[a].c/data.domains[a].n) - (data.domains[b].c/data.domains[b].n))
+    .slice(0,3);
+}
 
-            document.getElementById('explanation-box').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-        }
+function startQuiz(m){
+  mode = m; idx = 0; hits = 0; sessionDomains = {};
+  let pool = QUESTIONS;
+  if(m === 'domain') pool = QUESTIONS.filter(q => q.domain === document.getElementById('domain-pick').value);
+  if(m === 'weak'){
+    const w = weakDomains();
+    if(w.length) pool = QUESTIONS.filter(q => w.includes(q.domain));
+  }
+  queue = shuffle(pool);
+  if(m === 'exam' || m === 'weak') queue = queue.slice(0,10);
+  if(!queue.length){ alert('No questions in that domain yet.'); return; }
+  show('quiz'); setTitle('Question 1', false); renderQuestion();
+}
 
-        function selectOption(selectedIndex) {
-            if (answerSubmitted) return;
-            answerSubmitted = true;
+function renderQuestion(){
+  answered = false;
+  const q = queue[idx];
+  setTitle('Question ' + (idx+1) + ' of ' + queue.length, false);
+  document.getElementById('prog-fill').style.width = (idx/queue.length*100) + '%';
+  document.getElementById('q-domain').textContent = q.domain;
+  document.getElementById('q-text').textContent = q.q;
+  const box = document.getElementById('q-options');
+  box.innerHTML = '';
+  q.options.forEach((opt,i) => {
+    const b = document.createElement('button');
+    b.className = 'option'; b.textContent = opt;
+    b.onclick = () => answer(i);
+    box.appendChild(b);
+  });
+  document.getElementById('q-exp').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
 
-            const q = currentQuestions[currentIndex];
-            const buttons = document.querySelectorAll('.option-btn');
+function answer(pick){
+  if(answered) return;
+  answered = true;
+  const q = queue[idx], btns = document.querySelectorAll('#q-options .option');
+  const right = pick === q.correct;
+  btns[pick].classList.add(right ? 'correct' : 'incorrect');
+  if(!right) btns[q.correct].classList.add('correct');
+  if(right) hits++;
 
-            if (selectedIndex === q.correct) {
-                buttons[selectedIndex].classList.add('correct');
-                score++;
-            } else {
-                buttons[selectedIndex].classList.add('incorrect');
-                buttons[q.correct].classList.add('correct');
-            }
+  const d = sessionDomains[q.domain] || (sessionDomains[q.domain] = {n:0,c:0});
+  d.n++; if(right) d.c++;
 
-            const expBox = document.getElementById('explanation-box');
-            expBox.innerText = q.explanation;
-            expBox.classList.remove('hidden');
+  data.attempted++; if(right) data.correct++;
+  const g = data.domains[q.domain] || (data.domains[q.domain] = {n:0,c:0});
+  g.n++; if(right) g.c++;
+  save(data);
 
-            const nextBtn = document.getElementById('next-btn');
-            if (currentIndex === currentQuestions.length - 1 && quizMode === 'exam') {
-                nextBtn.innerText = "Finish Exam";
-            } else {
-                nextBtn.innerText = "Next Question";
-            }
-            nextBtn.classList.remove('hidden');
-        }
+  const exp = document.getElementById('q-exp');
+  exp.textContent = q.explanation;
+  exp.classList.remove('hidden');
+  const nb = document.getElementById('next-btn');
+  nb.textContent = idx === queue.length-1 ? 'See results' : 'Next question';
+  nb.classList.remove('hidden');
+}
 
-        function nextQuestion() {
-            currentIndex++;
-            if (currentIndex < currentQuestions.length) {
-                showQuestion();
-            } else {
-                finishQuiz();
-            }
-        }
+function nextQuestion(){ idx++; idx < queue.length ? renderQuestion() : finish(); }
+function endSession(){ if(idx > 0 || answered) finish(); else showTab('study'); }
 
-        function finishQuiz() {
-            saveStats(score, currentQuestions.length);
+function finish(){
+  const total = answered ? idx+1 : idx;
+  if(total > 0){
+    data.history.unshift({
+      date: new Date().toLocaleDateString(),
+      pct: Math.round(hits/total*100),
+      n: total, mode: mode
+    });
+    data.history = data.history.slice(0,25);
+    save(data);
+  }
+  const pct = total ? Math.round(hits/total*100) : 0;
+  document.getElementById('r-score').textContent = pct + '%';
+  document.getElementById('r-title').textContent = pct >= 75 ? 'Above the line' : 'Worth another pass';
+  document.getElementById('r-note').textContent =
+    pct >= 75 ? hits + ' of ' + total + ' correct. That clears the usual 70–75% threshold.'
+              : hits + ' of ' + total + ' correct. Read the explanations for the ones you missed, then run Weak spots.';
+  document.getElementById('r-breakdown').innerHTML =
+    Object.keys(sessionDomains).map(d => bar(d, sessionDomains[d].c, sessionDomains[d].n)).join('') ||
+    '<p class="muted">Nothing answered.</p>';
+  show('results'); setTitle('Session complete', false);
+}
 
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('results-screen').classList.remove('hidden');
+function bar(name, c, n){
+  const p = Math.round(c/n*100);
+  const col = p >= 80 ? 'var(--green)' : p >= 60 ? 'var(--amber)' : 'var(--red)';
+  return '<div class="bar-row"><span class="name">' + esc(name) + '</span>' +
+    '<span class="bar-track"><span class="bar-fill" style="width:' + p + '%;background:' + col + '"></span></span>' +
+    '<span class="pct">' + p + '% · ' + n + '</span></div>';
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-            const finalPct = Math.round((score / currentQuestions.length) * 100);
-            document.getElementById('result-score').innerText = finalPct + '%';
+/* ---------- flashcards (Leitner) ---------- */
+let deck = [], cardIdx = 0, flipped = false;
+const cardKey = c => c.front;
 
-            const statusText = document.getElementById('result-status-text');
-            if (finalPct >= 70) {
-                document.getElementById('result-title').innerText = "Passing Score Earned!";
-                statusText.innerText = "Great work! You scored above the standard AVIXA / SMPTE passing threshold.";
-            } else {
-                document.getElementById('result-title').innerText = "Review Needed";
-                statusText.innerText = "Passing threshold is 70-75%. Review the explanations and attempt again.";
-            }
-        }
+function startCards(){
+  const weighted = CARDS.map((c,i) => ({c:c, box: data.boxes[cardKey(c)] || 1, i:i}));
+  // lower boxes come up more often: box 1 always, box 2 half the time, box 3+ rarely
+  deck = shuffle(weighted.filter(w =>
+    w.box <= 1 || Math.random() < 1/Math.pow(2, w.box-1)
+  )).map(w => w.c);
+  if(!deck.length) deck = shuffle(CARDS).slice(0,10);
+  cardIdx = 0;
+  document.getElementById('cards-empty').classList.add('hidden');
+  document.getElementById('cards-live').classList.remove('hidden');
+  renderCard();
+}
+function renderCard(){
+  if(cardIdx >= deck.length){
+    document.getElementById('cards-live').classList.add('hidden');
+    document.getElementById('cards-empty').classList.remove('hidden');
+    document.getElementById('cards-empty').querySelector('p').textContent =
+      'Deck finished — ' + deck.length + ' cards reviewed.';
+    return;
+  }
+  flipped = false;
+  const c = deck[cardIdx];
+  document.getElementById('card-counter').textContent = (cardIdx+1) + ' of ' + deck.length +
+    ' · box ' + (data.boxes[cardKey(c)] || 1);
+  document.getElementById('card-domain').textContent = c.domain;
+  document.getElementById('card-front').textContent = c.front;
+  document.getElementById('card-back').textContent = c.back;
+  document.getElementById('card-back').classList.add('hidden');
+  document.getElementById('card-hint').classList.remove('hidden');
+  document.getElementById('card-rate').classList.add('hidden');
+}
+function flipCard(){
+  if(flipped) return;
+  flipped = true;
+  document.getElementById('card-back').classList.remove('hidden');
+  document.getElementById('card-hint').classList.add('hidden');
+  document.getElementById('card-rate').classList.remove('hidden');
+}
+function rateCard(got){
+  const k = cardKey(deck[cardIdx]);
+  const box = data.boxes[k] || 1;
+  data.boxes[k] = got ? Math.min(box+1, 5) : 1;
+  save(data);
+  cardIdx++; renderCard();
+}
+function resetCardBoxes(){
+  data.boxes = {}; save(data); startCards();
+}
 
-        function showWelcome() {
-            document.getElementById('results-screen').classList.add('hidden');
-            document.getElementById('welcome-screen').classList.remove('hidden');
-            updateDashboard();
-        }
+/* ---------- guides ---------- */
+function renderGuideList(){
+  document.getElementById('guide-list').innerHTML = GUIDES.map((g,i) =>
+    '<button class="list-item" onclick="openGuide(' + i + ')"><div>' + esc(g.title) +
+    '</div><div class="sub">' + esc(g.domain) + '</div></button>').join('');
+}
+function openGuide(i){
+  const g = GUIDES[i];
+  document.getElementById('guide-body').innerHTML = '<h2 style="margin-top:0">' + esc(g.title) + '</h2>' + md(g.body);
+  show('guide'); setTitle(g.title, true);
+}
+function md(src){
+  const out = [];
+  let list = null;
+  src.split('\n').forEach(raw => {
+    const line = raw.trim();
+    if(line.startsWith('## ')){
+      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
+      out.push('<h2>' + inline(line.slice(3)) + '</h2>');
+    } else if(line.startsWith('- ')){
+      (list = list || []).push('<li>' + inline(line.slice(2)) + '</li>');
+    } else if(line === ''){
+      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
+    } else {
+      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
+      out.push('<p>' + inline(line) + '</p>');
+    }
+  });
+  if(list) out.push('<ul>' + list.join('') + '</ul>');
+  return out.join('');
+}
+function inline(t){ return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
 
-        // Initialize App
-        updateDashboard();
-    </script>
+/* ---------- stats ---------- */
+function renderStats(){
+  const names = Object.keys(data.domains).sort((a,b) =>
+    (data.domains[a].c/data.domains[a].n) - (data.domains[b].c/data.domains[b].n));
+  document.getElementById('domain-bars').innerHTML = names.length
+    ? names.map(d => bar(d, data.domains[d].c, data.domains[d].n)).join('')
+    : '<p class="muted">Answer some questions and your weak areas will show up here.</p>';
+
+  document.getElementById('history-list').innerHTML = data.history.length
+    ? data.history.slice(0,12).map(h =>
+        '<div class="bar-row"><span class="name">' + esc(h.date) + ' · ' + esc(h.mode || '') +
+        '</span><span class="pct" style="width:auto;color:' +
+        (h.pct >= 75 ? 'var(--green)' : 'var(--muted)') + '">' + h.pct + '%' +
+        (h.n ? ' of ' + h.n : '') + '</span></div>').join('')
+    : '<p class="muted">No sessions recorded yet.</p>';
+}
+
+function exportProgress(){
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cts-progress-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importProgress(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(typeof d.attempted !== 'number') throw 0;
+      data = Object.assign(blank(), d);
+      data.domains = data.domains||{}; data.history = data.history||[]; data.boxes = data.boxes||{};
+      save(data); renderStats(); renderDashboard();
+      alert('Progress restored: ' + data.attempted + ' questions on record.');
+    }catch(err){ alert("That file isn't a progress export from this app."); }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+}
+function resetProgress(){
+  if(!confirm('Erase your all-time record and flashcard progress? Export first if you want a copy.')) return;
+  localStorage.removeItem(KEY);
+  localStorage.removeItem('cts_quiz_stats');
+  data = load(); renderStats(); renderDashboard();
+}
+
+/* ---------- boot ---------- */
+showTab('study');
+</script>
 </body>
 </html>
