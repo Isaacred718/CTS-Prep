@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#121826">
+    <title>CTS & ST 2110 Practice Master</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 20px 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+        }
+
+        .container {
+            flex: 1;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-val {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-pass { color: var(--accent-green); }
+        .badge-fail { color: var(--accent-red); }
+
+        .btn {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active {
+            opacity: 0.8;
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: var(--text-main);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 8px;
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .domain-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .option-btn {
+            background-color: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            color: var(--text-main);
+            width: 100%;
+            text-align: left;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green);
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red);
+        }
+
+        .explanation {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid var(--accent-blue);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 14px;
+            line-height: 1.4;
+        }
+
+        .progress-bar-bg {
+            background: var(--border-color);
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent-blue);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CTS & Broadcast Prep</h1>
+    </header>
+
+    <div class="container">
+        <div id="welcome-screen">
+            <div class="card">
+                <h2 style="margin-top:0; font-size: 1.2rem;">All-Time Performance</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-accuracy">0%</div>
+                        <div class="stat-lbl">Accuracy</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-attempts">0</div>
+                        <div class="stat-lbl">Questions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="stat-status">N/A</div>
+                        <div class="stat-lbl">Status</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0; font-size:1.05rem;">Select Quiz Mode</h3>
+                <button class="btn" onclick="startQuiz('exam')">Full Exam Mode (10 Qs)</button>
+                <button class="btn btn-secondary" onclick="startQuiz('practice')">Endless Practice Mode</button>
+            </div>
+
+            <button class="btn btn-outline" onclick="resetStats()">Reset All-Time Stats</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="card">
+                <span class="domain-tag" id="q-domain">Domain</span>
+                <div class="question-title" id="q-text">Question text goes here...</div>
+                <div id="options-container"></div>
+                <div id="explanation-box" class="explanation hidden"></div>
+            </div>
+
+            <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <div id="results-screen" class="hidden">
+            <div class="card" style="text-align: center;">
+                <h2 id="result-title">Quiz Complete</h2>
+                <div style="font-size: 3rem; font-weight: bold; margin: 10px 0;" id="result-score">0%</div>
+                <p id="result-status-text" style="color: var(--text-muted);"></p>
+                
+                <button class="btn" onclick="showWelcome()">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question Database covering CTS AVIXA Standards, Project Management & ST 2110
+        const questionBank = [
+            // CTS - Project Management & AVIXA Standards
+            {
+                domain: "CTS: Project Management",
+                q: "According to AVIXA CTS best practices, when addressing project scope creep during installation, what is the primary formal document that must be submitted to and approved by the client?",
+                options: [
+                    "Field Report",
+                    "Change Order",
+                    "Certificate of Substantial Completion",
+                    "Punch List"
+                ],
+                correct: 1,
+                explanation: "AVIXA emphasizes that any addition or modification to the agreed-upon project scope must be formally documented and priced via a Change Order before work proceeds."
+            },
+            {
+                domain: "CTS: Sound & Physics",
+                q: "If a speaker produces 80 dB SPL at a distance of 2 meters from a listener, what will the SPL be at 4 meters in a free-field environment?",
+                options: [
+                    "77 dB SPL",
+                    "74 dB SPL",
+                    "70 dB SPL",
+                    "68 dB SPL"
+                ],
+                correct: 1,
+                explanation: "According to the Inverse Square Law, doubling the distance from a point source in a free field results in a 6 dB drop in sound pressure level (80 dB - 6 dB = 74 dB)."
+            },
+            {
+                domain: "CTS: AVIXA Standards",
+                q: "Under AVIXA V201.01 (Image System Contrast Ratio), what is the minimum contrast ratio recommended for basic decision-making visual display content?",
+                options: [
+                    "7:1",
+                    "15:1",
+                    "50:1",
+                    "80:1"
+                ],
+                correct: 1,
+                explanation: "AVIXA V201.01 standards specify 15:1 for Basic Decision Making (such as general presentations or documents)."
+            },
+            {
+                domain: "CTS: Site Survey & Electrical",
+                q: "What is the total current draw of three 120V AV equipment racks if each rack draws 480 Watts?",
+                options: [
+                    "4 Amps",
+                    "12 Amps",
+                    "16 Amps",
+                    "20 Amps"
+                ],
+                correct: 1,
+                explanation: "Power (Watts) = Volts × Amps. Total Power = 3 × 480W = 1440W. Amps = 1440W / 120V = 12 Amps."
+            },
+
+            // SMPTE ST 2110 & Broadcasting Standards
+            {
+                domain: "Broadcasting: SMPTE ST 2110-10",
+                q: "Which protocol does SMPTE ST 2110-10 leverage for absolute microsecond-level synchronization across IP media networks?",
+                options: [
+                    "NTP (Network Time Protocol)",
+                    "PTP / IEEE 1588 (ST 2059-2)",
+                    "PTP v1 / IEEE 1394",
+                    "RTCP Sender Reports"
+                ],
+                correct: 1,
+                explanation: "ST 2110-10 relies on Precision Time Protocol (PTP) v2 according to SMPTE ST 2059-2 profile for frame-accurate synchronization over IP."
+            },
+            {
+                domain: "Broadcasting: SMPTE ST 2110 Suite",
+                q: "Which sub-standard within the SMPTE ST 2110 suite specifically governs the transport of PCM digital audio streams?",
+                options: [
+                    "ST 2110-10",
+                    "ST 2110-20",
+                    "ST 2110-30",
+                    "ST 2110-40"
+                ],
+                correct: 2,
+                explanation: "ST 2110-30 defines the transport of uncompressed PCM audio based on AES67 standards (ST 2110-20 is for video, ST 2110-40 is for ANC data)."
+            },
+            {
+                domain: "Broadcasting: Network Redundancy",
+                q: "SMPTE ST 2022-07 provides hitless redundancy for IP media streams. How does the receiver handle duplicate streams from Primary and Secondary networks?",
+                options: [
+                    "It averages both streams to clean up jitter.",
+                    "It uses packet-by-packet seamless hitless merge/switching based on RTP sequence numbers.",
+                    "It actively drops the secondary network unless link failure occurs.",
+                    "It converts both streams into SDI before combining."
+                ],
+                correct: 1,
+                explanation: "ST 2022-07 enables hitless failover by allowing receivers to reconstruct an uninterrupted stream using identical RTP sequence numbers across dual network fabrics."
+            },
+            {
+                domain: "Broadcasting: NMOS (AMWA)",
+                q: "In an ST 2110 broadcast environment, which AMWA NMOS specification handles automated discovery and registration of media nodes?",
+                options: [
+                    "NMOS IS-04",
+                    "NMOS IS-05",
+                    "NMOS IS-08",
+                    "NMOS IS-09"
+                ],
+                correct: 0,
+                explanation: "NMOS IS-04 specifies Discovery and Registration, allowing endpoints to register with a Registry. IS-05 handles Connection Management."
+            },
+            {
+                domain: "Broadcasting: IP Multicast",
+                q: "What network protocol do ST 2110 receiver endpoints use to request joining an active IP multicast stream from a network switch?",
+                options: [
+                    "PIM-SM",
+                    "IGMP (Internet Group Management Protocol)",
+                    "OSPF",
+                    "LLDP"
+                ],
+                correct: 1,
+                explanation: "Endpoints issue IGMP Join/Leave messages to the local switch to subscribe to specific multicast group addresses."
+            }
+        ];
+
+        // State variables
+        let quizMode = 'practice'; // 'exam' or 'practice'
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let answerSubmitted = false;
+
+        // Local Storage Handler
+        function getStoredStats() {
+            const defaultStats = { totalAttempted: 0, totalCorrect: 0, history: [] };
+            return JSON.parse(localStorage.getItem('cts_quiz_stats')) || defaultStats;
+        }
+
+        function saveStats(correctCount, totalCount) {
+            let stats = getStoredStats();
+            stats.totalAttempted += totalCount;
+            stats.totalCorrect += correctCount;
+            stats.history.push({
+                date: new Date().toLocaleDateString(),
+                score: Math.round((correctCount / totalCount) * 100)
+            });
+            localStorage.setItem('cts_quiz_stats', JSON.stringify(stats));
+            updateDashboard();
+        }
+
+        function resetStats() {
+            if (confirm("Reset all historical progress and ratings?")) {
+                localStorage.removeItem('cts_quiz_stats');
+                updateDashboard();
+            }
+        }
+
+        function updateDashboard() {
+            const stats = getStoredStats();
+            const accuracy = stats.totalAttempted > 0 
+                ? Math.round((stats.totalCorrect / stats.totalAttempted) * 100) 
+                : 0;
+
+            document.getElementById('stat-accuracy').innerText = accuracy + '%';
+            document.getElementById('stat-attempts').innerText = stats.totalAttempted;
+
+            const statusEl = document.getElementById('stat-status');
+            if (stats.totalAttempted < 10) {
+                statusEl.innerText = "Building Data";
+                statusEl.className = "stat-val";
+            } else if (accuracy >= 75) {
+                statusEl.innerText = "PASS";
+                statusEl.className = "stat-val badge-pass";
+            } else {
+                statusEl.innerText = "NEEDS REV";
+                statusEl.className = "stat-val badge-fail";
+            }
+        }
+
+        // Quiz Engine
+        function startQuiz(mode) {
+            quizMode = mode;
+            currentIndex = 0;
+            score = 0;
+            
+            // Shuffle questions
+            currentQuestions = [...questionBank].sort(() => 0.5 - Math.random());
+            if (mode === 'exam') {
+                currentQuestions = currentQuestions.slice(0, 10);
+            }
+
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+            answerSubmitted = false;
+            const q = currentQuestions[currentIndex];
+
+            // Progress bar
+            const progress = ((currentIndex) / currentQuestions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            document.getElementById('q-domain').innerText = q.domain;
+            document.getElementById('q-text').innerText = q.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function selectOption(selectedIndex) {
+            if (answerSubmitted) return;
+            answerSubmitted = true;
+
+            const q = currentQuestions[currentIndex];
+            const buttons = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === q.correct) {
+                buttons[selectedIndex].classList.add('correct');
+                score++;
+            } else {
+                buttons[selectedIndex].classList.add('incorrect');
+                buttons[q.correct].classList.add('correct');
+            }
+
+            const expBox = document.getElementById('explanation-box');
+            expBox.innerText = q.explanation;
+            expBox.classList.remove('hidden');
+
+            const nextBtn = document.getElementById('next-btn');
+            if (currentIndex === currentQuestions.length - 1 && quizMode === 'exam') {
+                nextBtn.innerText = "Finish Exam";
+            } else {
+                nextBtn.innerText = "Next Question";
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            saveStats(score, currentQuestions.length);
+
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            const finalPct = Math.round((score / currentQuestions.length) * 100);
+            document.getElementById('result-score').innerText = finalPct + '%';
+
+            const statusText = document.getElementById('result-status-text');
+            if (finalPct >= 70) {
+                document.getElementById('result-title').innerText = "Passing Score Earned!";
+                statusText.innerText = "Great work! You scored above the standard AVIXA / SMPTE passing threshold.";
+            } else {
+                document.getElementById('result-title').innerText = "Review Needed";
+                statusText.innerText = "Passing threshold is 70-75%. Review the explanations and attempt again.";
+            }
+        }
+
+        function showWelcome() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            updateDashboard();
+        }
+
+        // Initialize App
+        updateDashboard();
+    </script>
+</body>
+</html>
