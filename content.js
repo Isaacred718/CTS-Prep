@@ -14,7 +14,71 @@
 
 
 /* ---------- QUESTIONS ----------------------------------------
-   Copy this block, paste it above the closing ]; and edit.
+   Copy this block, paste it above the closing ,
+  {
+    domain: "CTS: Video & Signal",
+    q: "When calculating the distance for a projector, what does 'Throw Ratio' represent?",
+    options: ["The ratio of image width to screen height", "The ratio of the distance from the lens to the screen versus the image width", "The ratio of lumens to square footage", "The ratio of contrast to brightness"],
+    correct: 1,
+    explanation: "Throw Ratio = Distance / Width. A 1.5:1 throw means the projector must be 1.5 times the image width away from the screen."
+  },
+  {
+    domain: "CTS: Video & Signal",
+    q: "Which color space is the industry standard for HD video transmission and represents the primary colors of Red, Green, and Blue?",
+    options: ["YPbPr", "RGB", "YCbCr", "CMYK"],
+    correct: 1,
+    explanation: "RGB is the primary color model used for displays and cameras. YCbCr (or YPbPr) is used for transmission to save bandwidth by separating luminance from chrominance."
+  },
+  {
+    domain: "CTS: Video & Signal",
+    q: "In a projection system, what is the primary cause of 'Keystone' distortion?",
+    options: ["Incorrect resolution settings", "The projector being tilted relative to the screen plane", "Using a lens with too short a throw", "Insufficient lumens for the ambient light"],
+    correct: 1,
+    explanation: "Keystoning occurs when the projector is not perpendicular to the screen, causing the image to appear as a trapezoid."
+  },
+  {
+    domain: "CTS: Sound & Physics",
+    q: "What is the primary purpose of a 'Bass Trap' in a room's acoustic treatment?",
+    options: ["To increase the volume of low frequencies", "To absorb low-frequency standing waves typically found in corners", "To reflect high frequencies back into the room", "To prevent sound from leaking into adjacent rooms"],
+    correct: 1,
+    explanation: "Low frequencies have long wavelengths and accumulate in corners. Bass traps are designed to absorb these specific frequencies to reduce 'boominess'."
+  },
+  {
+    domain: "CTS: Sound & Physics",
+    q: "A microphone with a 'Cardioid' polar pattern is most sensitive to sound arriving from which direction?",
+    options: ["The rear", "The sides", "The front (0 degrees)", "All directions equally"],
+    correct: 2,
+    explanation: "Cardioid (heart-shaped) mics are most sensitive to the front and reject sound from the rear, making them ideal for reducing feedback from monitors."
+  },
+  {
+    domain: "CTS: Sound & Physics",
+    q: "What does RT60 refer to in room acoustics?",
+    options: ["The time it takes for sound to travel 60 meters", "The time it takes for a sound to decay by 60 decibels", "The time it takes for sound to decay by 60% of its original level", "The frequency response of a room at 60Hz"],
+    correct: 1,
+    explanation: "RT60 (Reverberation Time) is the time required for the sound pressure level to drop 60 dB after the source has stopped."
+  },
+  {
+    domain: "CTS: AVIXA Standards",
+    q: "According to the DISCAS standard, the 'Minimum Content Element' is determined by what?",
+    options: ["The brightness of the projector", "The distance to the farthest viewer", "The aspect ratio of the screen", "The contrast ratio of the image"],
+    correct: 1,
+    explanation: "DISCAS uses the farthest viewer distance to calculate how large the smallest critical piece of information (the content element) must be to be legible."
+  },
+  {
+    domain: "CTS: Project Management",
+    q: "What is the primary goal of 'Commissioning' in an AV installation?",
+    options: ["To finish the punch list", "To verify that the system performs according to the design intent and specifications", "To train the end user on how to use the system", "To collect the final payment from the client"],
+    correct: 1,
+    explanation: "Commissioning is the formal process of testing and documenting that every system function works as specified in the original design."
+  },
+  {
+    domain: "CTS: Electrical & Site Survey",
+    q: "When performing a site survey, why is it critical to identify the 'HVAC noise floor'?",
+    options: ["To determine if the AC is powerful enough to cool the racks", "To ensure the audio system's signal-to-noise ratio is sufficient for speech intelligibility", "To calculate the electrical load of the room", "To check for potential water leaks from the ceiling"],
+    correct: 1,
+    explanation: "If the background noise (HVAC) is too high, the audio system must be louder to be heard, which can increase the risk of feedback and reduce clarity."
+  }
+]; and edit.
 
      {
        domain: "CTS: Sound & Physics",
@@ -306,6 +370,14 @@ const QUESTIONS = [
     correct: 1,
     explanation: "Dante elects a Leader clock by PTP. All devices word-clock to it, which is what allows sample-accurate playout across the network."
   }
+,
+  { domain: "CTS: Video & Signal", front: "Throw Ratio", back: "Distance / Width. Used to determine projector placement." },
+  { domain: "CTS: Video & Signal", front: "RGB vs YCbCr", back: "RGB is for displays/cameras; YCbCr is for transmission (separates brightness from color)." },
+  { domain: "CTS: Sound & Physics", front: "RT60", back: "The time for sound to decay by 60 dB. A measure of reverberation." },
+  { domain: "CTS: Sound & Physics", front: "Cardioid Pattern", back: "Heart-shaped; sensitive to front, rejects rear." },
+  { domain: "CTS: AVIXA Standards", front: "DISCAS Primary Variable", back: "Farthest Viewer Distance determines the minimum image size." },
+  { domain: "CTS: Project Management", front: "Commissioning", back: "Verifying the system performs per design intent and specifications." },
+  { domain: "CTS: Electrical & Site Survey", front: "Noise Floor", back: "The ambient sound level of a room; affects audio system gain and intelligibility." }
 ];
 
 
@@ -353,6 +425,26 @@ const CARDS = [
 
   { domain: "Dante & AES67", front: "Dante Leader clock", back: "PTP-elected reference every Dante device syncs its sample clock to." },
   { domain: "Dante & AES67", front: "Dante AES67 mode", back: "Exposes standards-based multicast streams for interop, with sample-rate and packet-time constraints. Not identical to native Dante." }
+,
+  {
+    title: "Visual Systems & Projection",
+    domain: "CTS: Video & Signal",
+    body: `## Projection Math
+
+- **Throw Ratio:** The most critical number for placement. 
+  - *Formula:* Distance = Throw Ratio × Image Width.
+  - If a lens is 1.5:1 and you want a 10ft wide image, you must be 15ft away.
+
+## Image Quality & Optics
+
+- **Keystoning:** Caused by non-perpendicular placement. Corrected via digital keystone (which reduces resolution) or motorized lens shift (which preserves resolution).
+- **Lumens & Contrast:** Lumens describe total light output. Contrast describes the difference between the brightest white and darkest black. High ambient light requires higher lumens.
+
+## Color & Signal
+
+- **RGB:** The base of all digital video. Red, Green, Blue.
+- **Chroma Subsampling (4:2:2, 4:4:4):** A way to compress color data without affecting brightness (Luma), taking advantage of the human eye's lower sensitivity to color detail.`
+  }
 ];
 
 
@@ -479,4 +571,4 @@ Everything is stored in your browser, on this device, under this site's address.
 
 So back it up. The dashboard has Export progress, which downloads a small JSON file, and Import progress, which restores one. Export before you clear anything, and use export/import to move your history between devices.`
   }
-];
+
