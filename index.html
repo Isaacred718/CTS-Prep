@@ -6,541 +6,186 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f172a">
-<title>CTS &amp; ST 2110 Prep</title>
-<style>
-:root{
-  --bg:#0f172a; --card:#1e293b; --sunk:rgba(15,23,42,.6);
-  --blue:#38bdf8; --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
-  --text:#f8fafc; --muted:#94a3b8; --line:#334155;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom));
-  line-height:1.5;
-}
-header{
-  background:var(--card);border-bottom:1px solid var(--line);
-  padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
-  position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;
-}
-header h1{margin:0;font-size:1rem;font-weight:600;letter-spacing:.02em;color:var(--blue);flex:1}
-.container{max-width:640px;margin:0 auto;padding:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
-h2{font-size:1.05rem;margin:0 0 14px}
-h3{font-size:.95rem;margin:0 0 10px}
-p{margin:0 0 12px}
-.muted{color:var(--muted);font-size:.85rem}
-
-.btn{
-  display:block;width:100%;padding:15px;margin-top:10px;border:none;border-radius:12px;
-  background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;
-  font:inherit;font-weight:600;font-size:1rem;cursor:pointer;transition:opacity .15s;
-}
-.btn:active{opacity:.75}
-.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.btn.sec{background:#334155}
-.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:.85rem;padding:10px;font-weight:500}
-.btn.sm{width:auto;display:inline-block;padding:8px 14px;font-size:.8rem;margin-right:8px}
-.btn[disabled]{opacity:.4;cursor:default}
-
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
-.stat-box{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:12px 6px}
-.stat-val{font-size:1.35rem;font-weight:700;color:var(--blue)}
-.stat-lbl{font-size:.7rem;color:var(--muted);margin-top:4px}
-.pass{color:var(--green)} .fail{color:var(--red)} .warn{color:var(--amber)}
-
-.tag{
-  display:inline-block;font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:6px;
-  background:rgba(56,189,248,.15);color:var(--blue);margin-bottom:12px;
-}
-.q-text{font-size:1.05rem;font-weight:600;margin-bottom:16px}
-.option{
-  display:block;width:100%;text-align:left;padding:14px;margin-bottom:10px;
-  background:var(--sunk);border:1px solid var(--line);border-radius:12px;
-  color:var(--text);font:inherit;font-size:.95rem;cursor:pointer;transition:border-color .15s;
-}
-.option:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.option.correct{background:rgba(34,197,94,.18);border-color:var(--green);color:var(--green)}
-.option.incorrect{background:rgba(239,68,68,.18);border-color:var(--red);color:var(--red)}
-.explanation{
-  background:var(--sunk);border-left:3px solid var(--blue);border-radius:8px;
-  padding:12px;margin-top:14px;font-size:.88rem;color:var(--muted);
-}
-.progress{background:var(--line);height:5px;border-radius:3px;overflow:hidden;margin-bottom:14px}
-.progress > div{background:var(--blue);height:100%;width:0;transition:width .3s}
-
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.82rem}
-.bar-row .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bar-track{width:78px;height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:none}
-.bar-fill{height:100%;border-radius:3px}
-.bar-row .pct{width:52px;text-align:right;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
-
-.flash{
-  min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;cursor:pointer;padding:26px 20px;
-}
-.flash .front{font-size:1.2rem;font-weight:600}
-.flash .back{font-size:.98rem;color:var(--muted);margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
-.hint{font-size:.72rem;color:var(--muted);margin-top:18px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.row2 .btn{margin-top:0}
-
-.list-item{
-  display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);
-  border-radius:12px;padding:15px;margin-bottom:10px;color:var(--text);font:inherit;cursor:pointer;
-}
-.list-item .sub{font-size:.78rem;color:var(--muted);margin-top:4px}
-.guide h2{margin-top:22px;font-size:1rem;color:var(--blue)}
-.guide ul{padding-left:20px;margin:0 0 12px}
-.guide li{margin-bottom:6px}
-.guide p, .guide li{font-size:.93rem}
-
-nav{
-  position:fixed;bottom:0;left:0;right:0;background:var(--card);
-  border-top:1px solid var(--line);display:flex;
-  padding-bottom:env(safe-area-inset-bottom);z-index:20;
-}
-nav button{
-  flex:1;background:none;border:none;color:var(--muted);font:inherit;font-size:.68rem;
-  padding:10px 4px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
-}
-nav button .ico{font-size:1.15rem;line-height:1}
-nav button.active{color:var(--blue)}
-.hidden{display:none !important}
-select{
-  width:100%;padding:12px;border-radius:10px;background:var(--sunk);color:var(--text);
-  border:1px solid var(--line);font:inherit;font-size:.9rem;margin-top:6px;
-}
-@media (prefers-reduced-motion:reduce){*{transition:none !important}}
-</style>
+<title>CTS Prep — Merged Study App</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
 <header>
-  <button id="back-btn" class="btn ghost hidden" style="width:auto;padding:6px 12px;margin:0" onclick="goBack()">Back</button>
-  <h1 id="page-title">CTS &amp; Broadcast Prep</h1>
+  <h1>CTS Prep</h1>
+  <span class="sub" id="hdr-stats"></span>
 </header>
 
 <div class="container">
-
-  <!-- ============ STUDY TAB ============ -->
-  <section id="view-study">
+  <!-- OVERVIEW -->
+  <section class="tabpane active" id="pane-overview">
     <div class="card">
-      <h2>All-time record</h2>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val" id="s-acc">0%</div><div class="stat-lbl">Accuracy</div></div>
-        <div class="stat-box"><div class="stat-val" id="s-att">0</div><div class="stat-lbl">Answered</div></div>
-        <div class="stat-box"><div class="stat-val" id="s-status">No data</div><div class="stat-lbl">Readiness</div></div>
+      <h2>Study Dashboard</h2>
+      <div class="stats-grid" id="ov-stats"></div>
+      <p class="muted" style="margin-top:12px" id="ov-blurb"></p>
+    </div>
+    <div class="card">
+      <h2>Domain coverage</h2>
+      <div id="ov-domains"></div>
+    </div>
+    <div class="card">
+      <h2>Recent practice tests</h2>
+      <div id="ov-history"><p class="muted">No practice tests yet — generate one in the Practice Test tab.</p></div>
+    </div>
+    <div class="card">
+      <h2>Suggested study loop</h2>
+      <p class="small">1. Read a <b>Study Guide</b> for your weakest domain.<br>
+      2. Drill its <b>Flashcards</b> until most reach Box 4+.<br>
+      3. Take a <b>Quiz</b> filtered to that domain.<br>
+      4. When every domain feels solid, run <b>Full exam sims</b> until you consistently beat 80%.</p>
+    </div>
+  </section>
+
+  <!-- GUIDES -->
+  <section class="tabpane" id="pane-guides">
+    <div class="card">
+      <h2>Study Guides</h2>
+      <div class="glist" id="guide-list"></div>
+    </div>
+    <div class="card guide" id="guide-view" style="display:none">
+      <button class="btn ghost sm" id="guide-back">← All guides</button>
+      <div id="guide-body" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section class="tabpane" id="pane-cards">
+    <div class="card">
+      <h2>Flashcards <span class="muted small" id="fc-count"></span></h2>
+      <label class="f-label">Category</label>
+      <select id="fc-filter"><option value="__all">All categories</option></select>
+      <div class="leitner" id="fc-boxes"></div>
+      <div class="fcard-wrap">
+        <div class="fcard" id="fc-card">
+          <div class="fface"><div class="front-t" id="fc-front"></div><div class="hint">tap to flip</div></div>
+          <div class="fface back"><div class="back-t" id="fc-back"></div><div class="hint">tap to flip back</div></div>
+        </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h3>Start a session</h3>
-      <button class="btn" onclick="startQuiz('exam')">Exam · 10 questions</button>
-      <button class="btn sec" onclick="startQuiz('practice')">Practice · full bank</button>
-      <button class="btn sec" id="weak-btn" onclick="startQuiz('weak')">Weak spots · 10 questions</button>
-      <label class="muted" for="domain-pick" style="display:block;margin-top:16px">Or drill one domain</label>
-      <select id="domain-pick"></select>
-      <button class="btn sec" onclick="startQuiz('domain')">Start domain drill</button>
-    </div>
-  </section>
-
-  <!-- ============ QUIZ ============ -->
-  <section id="view-quiz" class="hidden">
-    <div class="progress"><div id="prog-fill"></div></div>
-    <div class="card">
-      <span class="tag" id="q-domain"></span>
-      <div class="q-text" id="q-text"></div>
-      <div id="q-options"></div>
-      <div class="explanation hidden" id="q-exp"></div>
-    </div>
-    <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Next question</button>
-    <button class="btn ghost" onclick="endSession()">End session</button>
-  </section>
-
-  <!-- ============ RESULTS ============ -->
-  <section id="view-results" class="hidden">
-    <div class="card" style="text-align:center">
-      <h2 id="r-title" style="margin-bottom:4px"></h2>
-      <div style="font-size:3rem;font-weight:700;margin:6px 0" id="r-score">0%</div>
-      <p class="muted" id="r-note"></p>
-    </div>
-    <div class="card">
-      <h3>This session by domain</h3>
-      <div id="r-breakdown"></div>
-    </div>
-    <button class="btn" onclick="showTab('study')">Back to dashboard</button>
-  </section>
-
-  <!-- ============ FLASHCARDS ============ -->
-  <section id="view-cards" class="hidden">
-    <div id="cards-empty" class="card hidden">
-      <p>All caught up. Every card is in a high box right now.</p>
-      <button class="btn sec" onclick="resetCardBoxes()">Reshuffle all cards</button>
-    </div>
-    <div id="cards-live">
-      <p class="muted" id="card-counter" style="text-align:center;font-size:.78rem"></p>
-      <div class="card flash" id="flash-card" onclick="flipCard()">
-        <span class="tag" id="card-domain"></span>
-        <div class="front" id="card-front"></div>
-        <div class="back hidden" id="card-back"></div>
-        <div class="hint" id="card-hint">Tap to reveal</div>
+      <div class="btnrow">
+        <button class="btn warnb" id="fc-miss">✗ Missed</button>
+        <button class="btn ok" id="fc-got">✓ Got it</button>
       </div>
-      <div class="row2 hidden" id="card-rate">
-        <button class="btn sec" onclick="rateCard(false)">Missed it</button>
-        <button class="btn" onclick="rateCard(true)">Got it</button>
+      <div class="btnrow">
+        <button class="btn sec sm" id="fc-shuffle">Shuffle deck</button>
+        <button class="btn sec sm" id="fc-reset">Reset progress</button>
       </div>
+      <p class="kbd-hint" id="fc-progress"></p>
     </div>
   </section>
 
-  <!-- ============ GUIDES ============ -->
-  <section id="view-guides" class="hidden">
-    <div id="guide-list"></div>
-  </section>
-  <section id="view-guide" class="hidden">
-    <div class="card guide" id="guide-body"></div>
+  <!-- QUIZ -->
+  <section class="tabpane" id="pane-quiz">
+    <div class="card" id="quiz-setup">
+      <h2>Quiz</h2>
+      <label class="f-label">Domain</label>
+      <select id="q-domain"><option value="__all">All domains</option></select>
+      <label class="f-label">Questions</label>
+      <div class="seg" id="q-count-seg">
+        <button data-n="10">10</button><button data-n="25" class="on">25</button><button data-n="50">50</button><button data-n="0">All</button>
+      </div>
+      <label class="f-label">Timer (minutes, 0 = off)</label>
+      <input type="number" id="q-timer" value="0" min="0" max="180">
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;margin:8px 0">
+        <input type="checkbox" id="q-shuffle" checked style="width:16px;height:16px;accent-color:#38bdf8"> Shuffle questions
+      </label>
+      <button class="btn" id="q-start">Start quiz</button>
+    </div>
+    <div class="card" id="quiz-run" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="small muted" id="quiz-pos"></span>
+        <span class="timer" id="quiz-timer" style="display:none"></span>
+      </div>
+      <div class="progressbar"><div id="quiz-bar"></div></div>
+      <div style="margin-top:14px"><span class="tag" id="quiz-tag"></span></div>
+      <div class="q-text" id="quiz-q"></div>
+      <div id="quiz-opts"></div>
+      <div id="quiz-explain" style="display:none"></div>
+      <button class="btn" id="quiz-next" style="display:none">Next →</button>
+      <button class="btn sec" id="quiz-quit">End quiz</button>
+    </div>
+    <div class="card" id="quiz-results" style="display:none">
+      <h2>Quiz results</h2>
+      <div class="big-score" id="qr-score"></div>
+      <div class="verdict" id="qr-verdict"></div>
+      <div id="qr-domains"></div>
+      <div class="btnrow">
+        <button class="btn" id="qr-retry">Retake</button>
+        <button class="btn sec" id="qr-review">Review answers</button>
+      </div>
+      <div id="qr-review-list" style="display:none;margin-top:14px"></div>
+    </div>
   </section>
 
-  <!-- ============ STATS ============ -->
-  <section id="view-stats" class="hidden">
-    <div class="card">
-      <h2>Accuracy by domain</h2>
-      <div id="domain-bars"><p class="muted">Answer some questions and your weak areas will show up here.</p></div>
+  <!-- PRACTICE TEST -->
+  <section class="tabpane" id="pane-test">
+    <div class="card" id="test-setup">
+      <h2>Practice Test Generator</h2>
+      <p class="muted small">Every test is a fresh random draw — no repeated questions within a test.</p>
+      <label class="f-label">Test length</label>
+      <div class="seg" id="t-len-seg">
+        <button data-n="25">Quick · 25</button>
+        <button data-n="50" class="on">Standard · 50</button>
+        <button data-n="110">Full exam sim · 110</button>
+      </div>
+      <label class="f-label">Domain mix</label>
+      <div class="seg" id="t-mix-seg">
+        <button data-m="balanced" class="on">Balanced</button>
+        <button data-m="custom">Pick domains</button>
+      </div>
+      <div id="t-domains" style="display:none">
+        <div class="checkgrid" id="t-domain-grid"></div>
+      </div>
+      <label class="f-label">Timer (minutes)</label>
+      <input type="number" id="t-timer" value="68" min="0" max="240">
+      <p class="muted small" id="t-timer-hint">Scaled default: 150 min for the full 110-question sim.</p>
+      <button class="btn" id="t-start">Generate new test</button>
     </div>
-    <div class="card">
-      <h3>Recent sessions</h3>
-      <div id="history-list"><p class="muted">No sessions recorded yet.</p></div>
+    <div class="card" id="test-run" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="small muted" id="test-pos"></span>
+        <span class="timer" id="test-timer"></span>
+      </div>
+      <div class="progressbar"><div id="test-bar"></div></div>
+      <div style="margin-top:14px"><span class="tag" id="test-tag"></span></div>
+      <div class="q-text" id="test-q"></div>
+      <div id="test-opts"></div>
+      <div class="btnrow">
+        <button class="btn sec" id="test-prev">← Prev</button>
+        <button class="btn" id="test-next">Next →</button>
+      </div>
+      <button class="btn warnb" id="test-finish" style="display:none">Finish &amp; grade test</button>
+      <button class="btn ghost" id="test-quit">Abandon test</button>
     </div>
-    <div class="card">
-      <h3>Back up your record</h3>
-      <p class="muted">Progress lives in this browser only. It survives restarts, but not clearing site data, and it doesn't sync to your other devices. Export a file to move or keep it.</p>
-      <button class="btn sm sec" onclick="exportProgress()">Export progress</button>
-      <button class="btn sm sec" onclick="document.getElementById('import-file').click()">Import progress</button>
-      <input type="file" id="import-file" accept="application/json" class="hidden" onchange="importProgress(event)">
-      <button class="btn ghost" style="margin-top:16px" onclick="resetProgress()">Erase all progress</button>
+    <div class="card" id="test-results" style="display:none">
+      <h2>Practice test results</h2>
+      <div class="big-score" id="tr-score"></div>
+      <div class="verdict" id="tr-verdict"></div>
+      <p class="muted small" id="tr-note" style="text-align:center"></p>
+      <div id="tr-domains"></div>
+      <div class="btnrow">
+        <button class="btn" id="tr-new">Generate new test</button>
+        <button class="btn sec" id="tr-review">Review all questions</button>
+      </div>
+      <div id="tr-review-list" style="display:none;margin-top:14px"></div>
     </div>
   </section>
-
 </div>
 
-<nav>
-  <button id="tab-study"  class="active" onclick="showTab('study')"><span class="ico">◎</span>Study</button>
-  <button id="tab-cards"  onclick="showTab('cards')"><span class="ico">▤</span>Cards</button>
-  <button id="tab-guides" onclick="showTab('guides')"><span class="ico">❐</span>Guides</button>
-  <button id="tab-stats"  onclick="showTab('stats')"><span class="ico">▲</span>Stats</button>
+<nav class="tabs">
+  <button data-tab="overview" class="active"><span class="ico">🏠</span>Overview</button>
+  <button data-tab="guides"><span class="ico">📖</span>Guides</button>
+  <button data-tab="cards"><span class="ico">🃏</span>Cards</button>
+  <button data-tab="quiz"><span class="ico">✏️</span>Quiz</button>
+  <button data-tab="test"><span class="ico">🎯</span>Practice</button>
 </nav>
 
-<script src="content.js"></script>
-<script>
-/* ---------- storage ---------- */
-const KEY = 'cts_progress_v2';
-const blank = () => ({ attempted:0, correct:0, domains:{}, history:[], boxes:{} });
-
-function load(){
-  let d;
-  try { d = JSON.parse(localStorage.getItem(KEY)); } catch(e){ d = null; }
-  if(!d){
-    d = blank();
-    // carry over the original version's record if it's there
-    try{
-      const old = JSON.parse(localStorage.getItem('cts_quiz_stats'));
-      if(old && old.totalAttempted){
-        d.attempted = old.totalAttempted;
-        d.correct = old.totalCorrect || 0;
-        d.history = (old.history||[]).map(h => ({date:h.date, pct:h.score, mode:'legacy'}));
-      }
-    }catch(e){}
-  }
-  d.domains = d.domains || {}; d.history = d.history || []; d.boxes = d.boxes || {};
-  return d;
-}
-function save(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){ alert('Could not save progress. Private browsing blocks storage.'); } }
-let data = load();
-
-/* ---------- navigation ---------- */
-const views = ['study','quiz','results','cards','guides','guide','stats'];
-let currentTab = 'study';
-function show(v){ views.forEach(x => document.getElementById('view-'+x).classList.toggle('hidden', x!==v)); window.scrollTo(0,0); }
-function setTitle(t, back){
-  document.getElementById('page-title').textContent = t;
-  document.getElementById('back-btn').classList.toggle('hidden', !back);
-}
-function showTab(t){
-  currentTab = t;
-  ['study','cards','guides','stats'].forEach(x =>
-    document.getElementById('tab-'+x).classList.toggle('active', x===t));
-  if(t==='study'){ show('study'); setTitle('CTS & Broadcast Prep', false); renderDashboard(); }
-  if(t==='cards'){ show('cards'); setTitle('Flashcards', false); startCards(); }
-  if(t==='guides'){ show('guides'); setTitle('Study guides', false); renderGuideList(); }
-  if(t==='stats'){ show('stats'); setTitle('Your record', false); renderStats(); }
-}
-function goBack(){ showTab(currentTab); }
-
-/* ---------- dashboard ---------- */
-function accuracy(){ return data.attempted ? Math.round(data.correct/data.attempted*100) : 0; }
-
-function renderDashboard(){
-  const acc = accuracy();
-  document.getElementById('s-acc').textContent = acc + '%';
-  document.getElementById('s-att').textContent = data.attempted;
-  const el = document.getElementById('s-status');
-  if(data.attempted < 20){ el.textContent = 'Building'; el.className = 'stat-val'; }
-  else if(acc >= 80){ el.textContent = 'Ready'; el.className = 'stat-val pass'; }
-  else if(acc >= 70){ el.textContent = 'Close'; el.className = 'stat-val warn'; }
-  else { el.textContent = 'Review'; el.className = 'stat-val fail'; }
-
-  const sel = document.getElementById('domain-pick');
-  if(!sel.options.length){
-    [...new Set(QUESTIONS.map(q => q.domain))].sort().forEach(d => {
-      const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o);
-    });
-  }
-  document.getElementById('weak-btn').disabled = data.attempted < 20;
-}
-
-/* ---------- quiz ---------- */
-let queue = [], idx = 0, hits = 0, answered = false, mode = 'practice', sessionDomains = {};
-const shuffle = a => a.slice().sort(() => Math.random() - .5);
-
-function weakDomains(){
-  return Object.keys(data.domains)
-    .filter(d => data.domains[d].n >= 3)
-    .sort((a,b) => (data.domains[a].c/data.domains[a].n) - (data.domains[b].c/data.domains[b].n))
-    .slice(0,3);
-}
-
-function startQuiz(m){
-  mode = m; idx = 0; hits = 0; sessionDomains = {};
-  let pool = QUESTIONS;
-  if(m === 'domain') pool = QUESTIONS.filter(q => q.domain === document.getElementById('domain-pick').value);
-  if(m === 'weak'){
-    const w = weakDomains();
-    if(w.length) pool = QUESTIONS.filter(q => w.includes(q.domain));
-  }
-  queue = shuffle(pool);
-  if(m === 'exam' || m === 'weak') queue = queue.slice(0,10);
-  if(!queue.length){ alert('No questions in that domain yet.'); return; }
-  show('quiz'); setTitle('Question 1', false); renderQuestion();
-}
-
-function renderQuestion(){
-  answered = false;
-  const q = queue[idx];
-  setTitle('Question ' + (idx+1) + ' of ' + queue.length, false);
-  document.getElementById('prog-fill').style.width = (idx/queue.length*100) + '%';
-  document.getElementById('q-domain').textContent = q.domain;
-  document.getElementById('q-text').textContent = q.q;
-  const box = document.getElementById('q-options');
-  box.innerHTML = '';
-  q.options.forEach((opt,i) => {
-    const b = document.createElement('button');
-    b.className = 'option'; b.textContent = opt;
-    b.onclick = () => answer(i);
-    box.appendChild(b);
-  });
-  document.getElementById('q-exp').classList.add('hidden');
-  document.getElementById('next-btn').classList.add('hidden');
-}
-
-function answer(pick){
-  if(answered) return;
-  answered = true;
-  const q = queue[idx], btns = document.querySelectorAll('#q-options .option');
-  const right = pick === q.correct;
-  btns[pick].classList.add(right ? 'correct' : 'incorrect');
-  if(!right) btns[q.correct].classList.add('correct');
-  if(right) hits++;
-
-  const d = sessionDomains[q.domain] || (sessionDomains[q.domain] = {n:0,c:0});
-  d.n++; if(right) d.c++;
-
-  data.attempted++; if(right) data.correct++;
-  const g = data.domains[q.domain] || (data.domains[q.domain] = {n:0,c:0});
-  g.n++; if(right) g.c++;
-  save(data);
-
-  const exp = document.getElementById('q-exp');
-  exp.textContent = q.explanation;
-  exp.classList.remove('hidden');
-  const nb = document.getElementById('next-btn');
-  nb.textContent = idx === queue.length-1 ? 'See results' : 'Next question';
-  nb.classList.remove('hidden');
-}
-
-function nextQuestion(){ idx++; idx < queue.length ? renderQuestion() : finish(); }
-function endSession(){ if(idx > 0 || answered) finish(); else showTab('study'); }
-
-function finish(){
-  const total = answered ? idx+1 : idx;
-  if(total > 0){
-    data.history.unshift({
-      date: new Date().toLocaleDateString(),
-      pct: Math.round(hits/total*100),
-      n: total, mode: mode
-    });
-    data.history = data.history.slice(0,25);
-    save(data);
-  }
-  const pct = total ? Math.round(hits/total*100) : 0;
-  document.getElementById('r-score').textContent = pct + '%';
-  document.getElementById('r-title').textContent = pct >= 75 ? 'Above the line' : 'Worth another pass';
-  document.getElementById('r-note').textContent =
-    pct >= 75 ? hits + ' of ' + total + ' correct. That clears the usual 70–75% threshold.'
-              : hits + ' of ' + total + ' correct. Read the explanations for the ones you missed, then run Weak spots.';
-  document.getElementById('r-breakdown').innerHTML =
-    Object.keys(sessionDomains).map(d => bar(d, sessionDomains[d].c, sessionDomains[d].n)).join('') ||
-    '<p class="muted">Nothing answered.</p>';
-  show('results'); setTitle('Session complete', false);
-}
-
-function bar(name, c, n){
-  const p = Math.round(c/n*100);
-  const col = p >= 80 ? 'var(--green)' : p >= 60 ? 'var(--amber)' : 'var(--red)';
-  return '<div class="bar-row"><span class="name">' + esc(name) + '</span>' +
-    '<span class="bar-track"><span class="bar-fill" style="width:' + p + '%;background:' + col + '"></span></span>' +
-    '<span class="pct">' + p + '% · ' + n + '</span></div>';
-}
-function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-/* ---------- flashcards (Leitner) ---------- */
-let deck = [], cardIdx = 0, flipped = false;
-const cardKey = c => c.front;
-
-function startCards(){
-  const weighted = CARDS.map((c,i) => ({c:c, box: data.boxes[cardKey(c)] || 1, i:i}));
-  // lower boxes come up more often: box 1 always, box 2 half the time, box 3+ rarely
-  deck = shuffle(weighted.filter(w =>
-    w.box <= 1 || Math.random() < 1/Math.pow(2, w.box-1)
-  )).map(w => w.c);
-  if(!deck.length) deck = shuffle(CARDS).slice(0,10);
-  cardIdx = 0;
-  document.getElementById('cards-empty').classList.add('hidden');
-  document.getElementById('cards-live').classList.remove('hidden');
-  renderCard();
-}
-function renderCard(){
-  if(cardIdx >= deck.length){
-    document.getElementById('cards-live').classList.add('hidden');
-    document.getElementById('cards-empty').classList.remove('hidden');
-    document.getElementById('cards-empty').querySelector('p').textContent =
-      'Deck finished — ' + deck.length + ' cards reviewed.';
-    return;
-  }
-  flipped = false;
-  const c = deck[cardIdx];
-  document.getElementById('card-counter').textContent = (cardIdx+1) + ' of ' + deck.length +
-    ' · box ' + (data.boxes[cardKey(c)] || 1);
-  document.getElementById('card-domain').textContent = c.domain;
-  document.getElementById('card-front').textContent = c.front;
-  document.getElementById('card-back').textContent = c.back;
-  document.getElementById('card-back').classList.add('hidden');
-  document.getElementById('card-hint').classList.remove('hidden');
-  document.getElementById('card-rate').classList.add('hidden');
-}
-function flipCard(){
-  if(flipped) return;
-  flipped = true;
-  document.getElementById('card-back').classList.remove('hidden');
-  document.getElementById('card-hint').classList.add('hidden');
-  document.getElementById('card-rate').classList.remove('hidden');
-}
-function rateCard(got){
-  const k = cardKey(deck[cardIdx]);
-  const box = data.boxes[k] || 1;
-  data.boxes[k] = got ? Math.min(box+1, 5) : 1;
-  save(data);
-  cardIdx++; renderCard();
-}
-function resetCardBoxes(){
-  data.boxes = {}; save(data); startCards();
-}
-
-/* ---------- guides ---------- */
-function renderGuideList(){
-  document.getElementById('guide-list').innerHTML = GUIDES.map((g,i) =>
-    '<button class="list-item" onclick="openGuide(' + i + ')"><div>' + esc(g.title) +
-    '</div><div class="sub">' + esc(g.domain) + '</div></button>').join('');
-}
-function openGuide(i){
-  const g = GUIDES[i];
-  document.getElementById('guide-body').innerHTML = '<h2 style="margin-top:0">' + esc(g.title) + '</h2>' + md(g.body);
-  show('guide'); setTitle(g.title, true);
-}
-function md(src){
-  const out = [];
-  let list = null;
-  src.split('\n').forEach(raw => {
-    const line = raw.trim();
-    if(line.startsWith('## ')){
-      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
-      out.push('<h2>' + inline(line.slice(3)) + '</h2>');
-    } else if(line.startsWith('- ')){
-      (list = list || []).push('<li>' + inline(line.slice(2)) + '</li>');
-    } else if(line === ''){
-      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
-    } else {
-      if(list){ out.push('<ul>' + list.join('') + '</ul>'); list = null; }
-      out.push('<p>' + inline(line) + '</p>');
-    }
-  });
-  if(list) out.push('<ul>' + list.join('') + '</ul>');
-  return out.join('');
-}
-function inline(t){ return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
-
-/* ---------- stats ---------- */
-function renderStats(){
-  const names = Object.keys(data.domains).sort((a,b) =>
-    (data.domains[a].c/data.domains[a].n) - (data.domains[b].c/data.domains[b].n));
-  document.getElementById('domain-bars').innerHTML = names.length
-    ? names.map(d => bar(d, data.domains[d].c, data.domains[d].n)).join('')
-    : '<p class="muted">Answer some questions and your weak areas will show up here.</p>';
-
-  document.getElementById('history-list').innerHTML = data.history.length
-    ? data.history.slice(0,12).map(h =>
-        '<div class="bar-row"><span class="name">' + esc(h.date) + ' · ' + esc(h.mode || '') +
-        '</span><span class="pct" style="width:auto;color:' +
-        (h.pct >= 75 ? 'var(--green)' : 'var(--muted)') + '">' + h.pct + '%' +
-        (h.n ? ' of ' + h.n : '') + '</span></div>').join('')
-    : '<p class="muted">No sessions recorded yet.</p>';
-}
-
-function exportProgress(){
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'cts-progress-' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-function importProgress(e){
-  const f = e.target.files[0];
-  if(!f) return;
-  const r = new FileReader();
-  r.onload = () => {
-    try{
-      const d = JSON.parse(r.result);
-      if(typeof d.attempted !== 'number') throw 0;
-      data = Object.assign(blank(), d);
-      data.domains = data.domains||{}; data.history = data.history||[]; data.boxes = data.boxes||{};
-      save(data); renderStats(); renderDashboard();
-      alert('Progress restored: ' + data.attempted + ' questions on record.');
-    }catch(err){ alert("That file isn't a progress export from this app."); }
-  };
-  r.readAsText(f);
-  e.target.value = '';
-}
-function resetProgress(){
-  if(!confirm('Erase your all-time record and flashcard progress? Export first if you want a copy.')) return;
-  localStorage.removeItem(KEY);
-  localStorage.removeItem('cts_quiz_stats');
-  data = load(); renderStats(); renderDashboard();
-}
-
-/* ---------- boot ---------- */
-showTab('study');
-</script>
+<script src="data/questions.js"></script>
+<script src="data/cards.js"></script>
+<script src="data/guides.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

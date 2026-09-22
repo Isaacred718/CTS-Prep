@@ -1,0 +1,475 @@
+/* CTS Prep merged study app — all logic. Data comes from data/questions.js, data/cards.js, data/guides.js */
+(function () {
+'use strict';
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function shuffle(a) {
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function sampleNoRepeat(arr, n) { return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+function md(src) {
+  // minimal markdown: ##, ###, bullets, **bold**, *italic*, `code`
+  const lines = String(src).split('\n');
+  let html = '', inList = false;
+  const inline = t => esc(t)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+  for (const line of lines) {
+    const h2 = line.match(/^##\s+(.*)/), h3 = line.match(/^###\s+(.*)/), li = line.match(/^\s*-\s+(.*)/);
+    if (h2 || h3) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += h2 ? `<h2>${inline(h2[1])}</h2>` : `<h3>${inline(h3[1])}</h3>`;
+    } else if (li) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${inline(li[1])}</li>`;
+    } else if (line.trim() === '') {
+      if (inList) { html += '</ul>'; inList = false; }
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<p>${inline(line)}</p>`;
+    }
+  }
+  if (inList) html += '</ul>';
+  return html;
+}
+const isAdv = d => d.indexOf('Advanced:') === 0;
+const tagCls = d => 'tag' + (isAdv(d) ? ' adv' : '');
+function domainsOf(list) {
+  const m = new Map();
+  list.forEach(q => m.set(q.domain, (m.get(q.domain) || 0) + 1));
+  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+}
+function domainBar(domain, correct, total) {
+  const pct = total ? Math.round(100 * correct / total) : 0;
+  const color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
+  return `<div class="dbar"><div class="dlbl"><span>${esc(domain)}</span><span>${correct}/${total} · ${pct}%</span></div>` +
+    `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:${color}"></div></div></div>`;
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('nav.tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.tabpane').forEach(p => p.classList.remove('active'));
+    $('pane-' + b.dataset.tab).classList.add('active');
+    window.scrollTo(0, 0);
+  });
+});
+
+/* ---------- overview ---------- */
+(function overview() {
+  $('hdr-stats').textContent = `${QUESTIONS.length} questions · ${CARDS.length} cards`;
+  $('ov-stats').innerHTML =
+    statBox(QUESTIONS.length, 'questions') + statBox(CARDS.length, 'flashcards') + statBox(GUIDES.length, 'guides');
+  function statBox(v, l) { return `<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`; }
+  $('ov-blurb').textContent =
+    'Merged from the CTS-Prep and cts-study banks, with full explanations on every question, ' +
+    'new coverage of needs analysis, design, project management, customer relations, troubleshooting and closeout, ' +
+    'plus a practice-test generator that builds a fresh randomized exam every time.';
+  $('ov-domains').innerHTML = domainsOf(QUESTIONS).map(([d, n]) => {
+    const pct = Math.round(100 * n / QUESTIONS.length);
+    return `<div class="dbar"><div class="dlbl"><span>${esc(d)}</span><span>${n}</span></div>` +
+      `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:var(--blue)"></div></div></div>`;
+  }).join('');
+  renderHistory();
+})();
+function renderHistory() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) {}
+  if (!hist.length) return;
+  $('ov-history').innerHTML = hist.slice(0, 5).map(h =>
+    `<div class="hist-row"><span>${esc(h.date)} · ${h.n}Q ${esc(h.mode)}</span>` +
+    `<strong class="${h.score >= 70 ? 'pass' : 'fail'}">${h.score}%</strong></div>`
+  ).join('');
+}
+
+/* ---------- guides ---------- */
+(function guides() {
+  const list = $('guide-list');
+  list.innerHTML = '';
+  GUIDES.forEach((g, i) => {
+    const b = document.createElement('button');
+    b.innerHTML = `<div class="gt">${esc(g.title)}</div><div class="gd">${esc(g.domain)}</div>`;
+    b.addEventListener('click', () => {
+      $('guide-list').parentElement.style.display = 'none';
+      $('guide-view').style.display = '';
+      $('guide-body').innerHTML = md(g.body);
+      window.scrollTo(0, 0);
+    });
+    list.appendChild(b);
+  });
+  $('guide-back').addEventListener('click', () => {
+    $('guide-view').style.display = 'none';
+    $('guide-list').parentElement.style.display = '';
+  });
+})();
+
+/* ---------- flashcards (Leitner) ---------- */
+const FC = (function () {
+  const LS = 'cts_leitner_v1';
+  let boxes = {};
+  try { boxes = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { boxes = {}; }
+  const save = () => localStorage.setItem(LS, JSON.stringify(boxes));
+  const key = c => c.domain + '|' + c.front;
+  const boxOf = c => boxes[key(c)] || 1;
+
+  const cats = [...new Set(CARDS.map(c => c.domain))].sort();
+  const sel = $('fc-filter');
+  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `${c} (${CARDS.filter(x => x.domain === c).length})`; sel.appendChild(o); });
+
+  let deck = [], idx = 0, flipped = false;
+
+  function buildDeck() {
+    const f = sel.value;
+    deck = shuffle(CARDS.filter(c => f === '__all' || c.domain === f)
+      .sort((a, b) => boxOf(a) - boxOf(b)));
+    idx = 0;
+  }
+  function renderBoxes() {
+    const f = sel.value;
+    const list = CARDS.filter(c => f === '__all' || c.domain === f);
+    const counts = [0, 0, 0, 0, 0, 0];
+    list.forEach(c => counts[boxOf(c)]++);
+    $('fc-boxes').innerHTML = [1, 2, 3, 4, 5].map(b =>
+      `<div class="box${deck.length && boxOf(deck[idx]) === b ? 'cur' : ''}"><b>${counts[b]}</b>Box ${b}</div>`).join('');
+    const learned = counts[5];
+    $('fc-progress').textContent = list.length
+      ? `${learned}/${list.length} mastered · ${deck.length - idx} left in deck`
+      : 'No cards in this category yet.';
+    $('fc-count').textContent = `· ${list.length} cards`;
+  }
+  function show() {
+    flipped = false;
+    $('fc-card').classList.remove('flipped');
+    if (!deck.length) { $('fc-front').textContent = 'Deck complete — nice work!'; $('fc-back').textContent = 'Shuffle to run it again.'; }
+    else {
+      const c = deck[idx];
+      $('fc-front').textContent = c.front;
+      $('fc-back').textContent = c.back;
+    }
+    renderBoxes();
+  }
+  function grade(ok) {
+    if (!deck.length) return;
+    const c = deck[idx], k = key(c);
+    boxes[k] = ok ? Math.min(5, boxOf(c) + 1) : 1;
+    save();
+    idx++;
+    if (idx >= deck.length) {
+      // rebuild with remaining weak cards first for continuous drilling
+      const weak = CARDS.filter(x => boxOf(x) < 3 && (sel.value === '__all' || x.domain === sel.value));
+      deck = shuffle(weak); idx = 0;
+      if (!deck.length) { show(); return; }
+    }
+    show();
+  }
+  $('fc-card').addEventListener('click', () => {
+    flipped = !flipped;
+    $('fc-card').classList.toggle('flipped', flipped);
+  });
+  $('fc-got').addEventListener('click', () => grade(true));
+  $('fc-miss').addEventListener('click', () => grade(false));
+  $('fc-shuffle').addEventListener('click', () => { buildDeck(); show(); });
+  $('fc-reset').addEventListener('click', () => {
+    if (!confirm('Reset all flashcard progress?')) return;
+    boxes = {}; save(); buildDeck(); show();
+  });
+  sel.addEventListener('change', () => { buildDeck(); show(); });
+  buildDeck(); show();
+  return { rebuild: () => { buildDeck(); show(); } };
+})();
+
+/* ---------- shared test/quiz engine ---------- */
+function makeTimer(displayEl, minutes, onExpire) {
+  if (!minutes || minutes <= 0) return { stop() {}, el: null };
+  let left = Math.round(minutes * 60);
+  const el = displayEl;
+  el.style.display = '';
+  const tick = () => {
+    const m = Math.floor(left / 60), s = left % 60;
+    el.textContent = `${m}:${String(s).padStart(2, '0')}`;
+    el.classList.toggle('danger', left <= 300);
+    if (left <= 0) { clearInterval(iv); onExpire(); return; }
+    left--;
+  };
+  tick();
+  const iv = setInterval(tick, 1000);
+  return { stop() { clearInterval(iv); }, el };
+}
+
+/* ---------- quiz ---------- */
+const Quiz = (function () {
+  let qs = [], i = 0, results = [], timer = null, total = 0;
+
+  // setup controls
+  const domSel = $('q-domain');
+  domainsOf(QUESTIONS).forEach(([d, n]) => {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = `${d} (${n})`; domSel.appendChild(o);
+  });
+  let qCount = 25;
+  $('q-count-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    $('q-count-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); qCount = +b.dataset.n;
+  }));
+
+  $('q-start').addEventListener('click', () => {
+    const d = domSel.value;
+    let pool = QUESTIONS.filter(q => d === '__all' || q.domain === d);
+    if ($('q-shuffle').checked) pool = shuffle(pool);
+    qs = qCount === 0 ? pool : sampleNoRepeat(pool, qCount);
+    if (!qs.length) { alert('No questions for this selection.'); return; }
+    i = 0; results = []; total = qs.length;
+    $('quiz-setup').style.display = 'none';
+    $('quiz-results').style.display = 'none';
+    $('quiz-run').style.display = '';
+    const mins = +$('q-timer').value || 0;
+    timer = makeTimer($('quiz-timer'), mins, () => finish());
+    show();
+  });
+
+  function show() {
+    const q = qs[i];
+    $('quiz-pos').textContent = `Question ${i + 1} of ${total}`;
+    $('quiz-bar').style.width = (100 * i / total) + '%';
+    $('quiz-tag').className = tagCls(q.domain);
+    $('quiz-tag').textContent = q.domain;
+    $('quiz-q').textContent = q.q;
+    $('quiz-explain').style.display = 'none';
+    $('quiz-next').style.display = 'none';
+    const box = $('quiz-opts'); box.innerHTML = '';
+    const order = shuffle(q.options.map((t, oi) => oi));
+    order.forEach(oi => {
+      const b = document.createElement('button');
+      b.className = 'option'; b.textContent = q.options[oi];
+      b.dataset.oi = oi;
+      b.addEventListener('click', () => answer(oi, b));
+      box.appendChild(b);
+    });
+  }
+  function answer(oi, btn) {
+    const q = qs[i];
+    const ok = oi === q.correct;
+    results.push({ q, picked: oi, ok });
+    [...$('quiz-opts').children].forEach(b => {
+      b.disabled = true;
+      const idxOpt = +b.dataset.oi;
+      if (idxOpt === q.correct) b.classList.add('correct');
+      else if (b === btn) b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+    const ex = $('quiz-explain');
+    ex.innerHTML = `<div class="explain"><strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(q.explanation)}</div>`;
+    ex.style.display = '';
+    $('quiz-next').style.display = '';
+    $('quiz-next').textContent = i + 1 === total ? 'See results →' : 'Next →';
+  }
+  $('quiz-next').addEventListener('click', () => { i++; i < total ? show() : finish(); });
+  $('quiz-quit').addEventListener('click', () => { if (timer) timer.stop(); backToSetup(); });
+
+  function backToSetup() {
+    $('quiz-run').style.display = 'none';
+    $('quiz-results').style.display = 'none';
+    $('quiz-setup').style.display = '';
+  }
+  function finish() {
+    if (timer) timer.stop();
+    const correct = results.filter(r => r.ok).length;
+    const pct = total ? Math.round(100 * correct / total) : 0;
+    $('quiz-run').style.display = 'none';
+    $('quiz-results').style.display = '';
+    const sc = $('qr-score');
+    sc.textContent = pct + '%';
+    sc.className = 'big-score ' + (pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : 'fail');
+    $('qr-verdict').textContent = pct >= 80 ? 'Strong — exam ready on this material.' : pct >= 60 ? 'Getting there — review the weak domains.' : 'Keep studying — hit the guides and cards first.';
+    $('qr-verdict').className = 'verdict ' + (pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : 'fail');
+    const byDom = {};
+    results.forEach(r => {
+      const d = r.q.domain;
+      byDom[d] = byDom[d] || { c: 0, t: 0 };
+      byDom[d].t++; if (r.ok) byDom[d].c++;
+    });
+    $('qr-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
+      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('qr-review-list').style.display = 'none';
+    $('qr-review-list').innerHTML = results.map(r => reviewItem(r.q, r.picked)).join('');
+    window.scrollTo(0, 0);
+  }
+  $('qr-retry').addEventListener('click', backToSetup);
+  $('qr-review').addEventListener('click', () => {
+    const l = $('qr-review-list');
+    l.style.display = l.style.display === 'none' ? '' : 'none';
+  });
+  return {};
+})();
+
+function reviewItem(q, picked) {
+  const ok = picked === q.correct;
+  const mark = ok ? '<span class="pass">✓ Correct</span>' : '<span class="fail">✗ Missed</span>';
+  const your = picked == null ? '<em>unanswered</em>' : esc(q.options[picked]);
+  return `<div class="review-item"><div class="rq">${mark} · ${esc(q.q)}</div>` +
+    `<div class="ra">Your answer: <strong>${your}</strong><br>Correct answer: <strong class="pass">${esc(q.options[q.correct])}</strong></div>` +
+    `<div class="re">${esc(q.explanation)}</div></div>`;
+}
+
+/* ---------- practice test generator ---------- */
+const PTest = (function () {
+  let qs = [], i = 0, answers = [], timer = null, meta = {};
+
+  const allDomains = domainsOf(QUESTIONS).map(([d]) => d);
+  const grid = $('t-domain-grid');
+  allDomains.forEach(d => {
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" value="${esc(d)}" checked> ${esc(d)}`;
+    grid.appendChild(lab);
+  });
+
+  let tLen = 50, tMix = 'balanced';
+  const perQ = 150 / 110; // minutes per question, from the full-sim default
+  $('t-len-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    $('t-len-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); tLen = +b.dataset.n;
+    $('t-timer').value = Math.round(tLen * perQ);
+  }));
+  $('t-mix-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    $('t-mix-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); tMix = b.dataset.m;
+    $('t-domains').style.display = tMix === 'custom' ? '' : 'none';
+  }));
+  $('t-timer').value = Math.round(50 * perQ);
+
+  function buildTest() {
+    let selected = allDomains;
+    if (tMix === 'custom') {
+      const checked = [...grid.querySelectorAll('input:checked')].map(c => c.value);
+      if (checked.length) selected = checked;
+    }
+    const byDom = {};
+    selected.forEach(d => { byDom[d] = QUESTIONS.filter(q => q.domain === d); });
+    let picked = [];
+    if (tMix === 'balanced') {
+      // round-robin across domains so every domain is represented
+      const pools = Object.entries(byDom).map(([d, arr]) => shuffle(arr));
+      let progressed = true;
+      while (picked.length < tLen && progressed) {
+        progressed = false;
+        for (const pool of pools) {
+          if (picked.length >= tLen) break;
+          if (pool.length) { picked.push(pool.pop()); progressed = true; }
+        }
+      }
+    } else {
+      picked = sampleNoRepeat(selected.flatMap(d => byDom[d]), tLen);
+    }
+    return { picked: shuffle(picked), selected, capped: picked.length < tLen };
+  }
+
+  $('t-start').addEventListener('click', () => {
+    const { picked, selected, capped } = buildTest();
+    if (!picked.length) { alert('No questions available for this selection.'); return; }
+    qs = picked; i = 0; answers = new Array(qs.length).fill(null);
+    meta = { n: qs.length, mode: tMix === 'balanced' ? 'balanced' : 'custom', capped };
+    $('test-setup').style.display = 'none';
+    $('test-results').style.display = 'none';
+    $('test-run').style.display = '';
+    const mins = +$('t-timer').value || 0;
+    if (timer) timer.stop();
+    timer = makeTimer($('test-timer'), mins, () => grade(true));
+    if (!mins) $('test-timer').style.display = 'none';
+    show();
+  });
+
+  function show() {
+    const q = qs[i];
+    $('test-pos').textContent = `Question ${i + 1} of ${qs.length}${meta.capped ? ' (capped: bank exhausted)' : ''}`;
+    const answered = answers.filter(a => a !== null).length;
+    $('test-bar').style.width = (100 * answered / qs.length) + '%';
+    $('test-tag').className = tagCls(q.domain);
+    $('test-tag').textContent = q.domain;
+    $('test-q').textContent = q.q;
+    const box = $('test-opts'); box.innerHTML = '';
+    // stable option order per question within a test run
+    q.options.forEach((t, oi) => {
+      const b = document.createElement('button');
+      b.className = 'option' + (answers[i] === oi ? ' correct' : '');
+      if (answers[i] === oi) b.style.borderColor = 'var(--blue)';
+      b.textContent = t;
+      b.addEventListener('click', () => { answers[i] = oi; show(); });
+      box.appendChild(b);
+    });
+    $('test-prev').disabled = i === 0;
+    $('test-next').style.display = i === qs.length - 1 ? 'none' : '';
+    $('test-finish').style.display = i === qs.length - 1 ? '' : 'none';
+    window.scrollTo(0, 0);
+  }
+  $('test-prev').addEventListener('click', () => { if (i > 0) { i--; show(); } });
+  $('test-next').addEventListener('click', () => { if (i < qs.length - 1) { i++; show(); } });
+  $('test-finish').addEventListener('click', () => {
+    const un = answers.filter(a => a === null).length;
+    if (un && !confirm(`${un} question${un > 1 ? 's' : ''} unanswered. Finish and grade anyway?`)) return;
+    grade(false);
+  });
+  $('test-quit').addEventListener('click', () => {
+    if (!confirm('Abandon this test? Progress will be lost.')) return;
+    if (timer) timer.stop();
+    $('test-run').style.display = 'none';
+    $('test-setup').style.display = '';
+  });
+
+  function grade(expired) {
+    if (timer) timer.stop();
+    let correct = 0;
+    const byDom = {};
+    qs.forEach((q, idx) => {
+      const ok = answers[idx] === q.correct;
+      if (ok) correct++;
+      const d = q.domain;
+      byDom[d] = byDom[d] || { c: 0, t: 0 };
+      byDom[d].t++; if (ok) byDom[d].c++;
+    });
+    const pct = Math.round(100 * correct / qs.length);
+    $('test-run').style.display = 'none';
+    $('test-results').style.display = '';
+    const sc = $('tr-score');
+    sc.textContent = pct + '%';
+    sc.className = 'big-score ' + (pct >= 70 ? 'pass' : 'fail');
+    const verdict = $('tr-verdict');
+    if (pct >= 85) { verdict.textContent = 'Excellent — exam ready.'; verdict.className = 'verdict pass'; }
+    else if (pct >= 70) { verdict.textContent = 'Likely pass — keep polishing weak domains.'; verdict.className = 'verdict pass'; }
+    else { verdict.textContent = 'Below the pass heuristic — more study needed.'; verdict.className = 'verdict fail'; }
+    $('tr-note').textContent = (expired ? 'Time expired — test auto-graded. ' : '') +
+      'Pass heuristic: 70%. The real CTS exam uses scaled scoring; treat this as a practice benchmark, not a prediction.';
+    $('tr-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
+      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('tr-review-list').style.display = 'none';
+    $('tr-review-list').innerHTML = qs.map((q, idx) => reviewItem(q, answers[idx])).join('');
+    // history
+    try {
+      const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
+      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode });
+      localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
+    } catch (e) {}
+    renderHistory();
+    window.scrollTo(0, 0);
+  }
+  $('tr-new').addEventListener('click', () => {
+    $('test-results').style.display = 'none';
+    $('test-setup').style.display = '';
+  });
+  $('tr-review').addEventListener('click', () => {
+    const l = $('tr-review-list');
+    l.style.display = l.style.display === 'none' ? '' : 'none';
+  });
+  return {};
+})();
+
+})();
