@@ -48,6 +48,41 @@ cd ~/workspace/cts-merge/merged-app && python3 -m http.server 8080
 ```
 
 Progress (flashcard boxes, test history) is stored in the browser's `localStorage`.
+Signing in with Google syncs it to the cloud — see below.
+
+## Google sign-in & progress sync (optional)
+
+The app works fully offline without an account. Tapping **Sign in with Google** in the
+header syncs your progress to the cloud so it follows you across devices.
+
+- **Backend:** Firebase project `lift-tracker-fade7` (shared with the fitlog-tracker app).
+  The Google sign-in provider is enabled and `isaacred718.github.io` is already an
+  authorized domain, so no extra Firebase setup is needed.
+- **What syncs:** flashcard Leitner boxes + practice-test history.
+- **Where:** one Firestore document per user at `cts_users/{uid}`
+  (kept separate from the fitlog `users/{uid}` docs):
+
+| Field | Contents |
+|---|---|
+| `displayName`, `email`, `photoURL` | from the Google account |
+| `updatedAt` | ms timestamp of the last change — drives the newer-wins merge |
+| `leitnerBoxes` | flashcard boxes: `{ "domain\|front": 1–5 }` |
+| `testHistory` | last 20 practice tests: `{ date, n, score, mode }` |
+
+- **Merge rule:** on sign-in, the newer side wins by `updatedAt` — if the cloud copy is
+  newer it is adopted locally (Leitner boxes + history refresh in the UI); otherwise local
+  progress is pushed up. Local changes are pushed ~2 seconds after you make them
+  (`set(..., { merge: true })`).
+- **Offline-first:** every Firestore call is guarded — if the SDK can't load, you're
+  offline, or a write fails, the app keeps working on `localStorage` and the header
+  shows an Offline / Sync-failed status. Signing out leaves local progress on the device.
+- **Security rules:** see `../firestore-cts.rules` — a signed-in user can read/write only
+  their own `cts_users/{uid}` doc. Merge that block into the existing Firestore rules
+  (don't replace the fitlog rules).
+
+### iOS home-screen note
+When the app is added to the Home Screen (standalone mode), Google sign-in automatically
+uses a redirect flow, since OAuth popups don't work in standalone web apps.
 
 ## Deploy on GitHub Pages
 
@@ -84,12 +119,16 @@ Because everything is static (HTML + CSS + JS, no backend), Pages deployment is 
 
 ```
 merged-app/
-├── index.html        # app shell (5 tabs)
+├── index.html        # app shell (5 tabs) + Firebase CDN scripts + auth UI
 ├── styles.css        # dark glassmorphism theme
 ├── app.js            # all logic: tabs, guides, Leitner cards, quiz, test generator
+├── auth.js           # Google sign-in + Firestore progress sync (offline-first)
 ├── data/
 │   ├── questions.js  # 172 questions: { domain, q, options[4], correct, explanation }
 │   ├── cards.js      # 131 flashcards: { domain, front, back }
 │   └── guides.js     # 7 guides: { title, domain, body }
 └── README.md
 ```
+
+Firestore rules live at `../firestore-cts.rules` (merge into the existing
+`lift-tracker-fade7` ruleset — not part of the deployed site).

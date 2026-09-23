@@ -171,3 +171,20 @@ label.f-label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);
 .verdict{text-align:center;font-size:1.05rem;font-weight:700;margin-bottom:8px}
 .kbd-hint{text-align:center;color:var(--muted);font-size:.75rem;margin-top:10px}
 @media(min-width:560px){.checkgrid{grid-template-columns:1fr 1fr 1fr}}
+
+/* auth + sync status (header) */
+.hdr-title{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+header h1{flex:none}
+.hdr-auth{display:flex;align-items:center;gap:8px}
+#auth-in{display:flex;align-items:center;gap:8px}
+.avatar{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--sunk)}
+.auth-name{font-size:.8rem;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sync-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+.sync-dot.ok{background:var(--green)}
+.sync-dot.busy{background:var(--amber);animation:pulse 1s infinite}
+.sync-dot.err{background:var(--red)}
+.sync-label{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.google-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1f2937;border:none}
+.google-btn:active{opacity:.85}
+.google-btn svg{width:16px;height:16px;flex:0 0 auto}
+@media(max-width:560px){.auth-name{display:none}.sync-label{display:none}}

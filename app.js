@@ -54,6 +54,32 @@ function domainBar(domain, correct, total) {
     `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:${color}"></div></div></div>`;
 }
 
+/* ---------- progress bridge (used by auth.js for Google sign-in / cloud sync) ---------- */
+const LS_BOXES = 'cts_leitner_v1';
+const LS_HIST = 'cts_test_history';
+const LS_META = 'cts_sync_meta_v1';
+function setMetaTs(ts) { try { localStorage.setItem(LS_META, JSON.stringify({ updatedAt: ts || Date.now() })); } catch (e) {} }
+function readMetaTs() { try { return JSON.parse(localStorage.getItem(LS_META) || '{}').updatedAt || 0; } catch (e) { return 0; } }
+function notifyProgress() {
+  setMetaTs(Date.now());
+  if (window.CTS && typeof window.CTS.onChange === 'function') { try { window.CTS.onChange(); } catch (e) {} }
+}
+window.CTS = {
+  onChange: null, // auth.js assigns a debounced cloud-push callback
+  getState() {
+    let boxes = {}, hist = [];
+    try { boxes = JSON.parse(localStorage.getItem(LS_BOXES) || '{}'); } catch (e) {}
+    try { hist = JSON.parse(localStorage.getItem(LS_HIST) || '[]'); } catch (e) {}
+    return { boxes, hist, updatedAt: readMetaTs() };
+  },
+  applyState(s) {
+    if (s && s.boxes) { try { localStorage.setItem(LS_BOXES, JSON.stringify(s.boxes)); } catch (e) {} }
+    if (s && s.hist) { try { localStorage.setItem(LS_HIST, JSON.stringify(s.hist.slice(0, 20))); } catch (e) {} }
+    setMetaTs(s && s.updatedAt); // adopt the cloud timestamp so we don't push straight back
+  },
+  refreshUI() { try { FC.reload(); } catch (e) {} renderHistory(); }
+};
+
 /* ---------- tabs ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b => {
   b.addEventListener('click', () => {
@@ -118,7 +144,7 @@ const FC = (function () {
   const LS = 'cts_leitner_v1';
   let boxes = {};
   try { boxes = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { boxes = {}; }
-  const save = () => localStorage.setItem(LS, JSON.stringify(boxes));
+  const save = () => { localStorage.setItem(LS, JSON.stringify(boxes)); notifyProgress(); };
   const key = c => c.domain + '|' + c.front;
   const boxOf = c => boxes[key(c)] || 1;
 
@@ -185,7 +211,13 @@ const FC = (function () {
   });
   sel.addEventListener('change', () => { buildDeck(); show(); });
   buildDeck(); show();
-  return { rebuild: () => { buildDeck(); show(); } };
+  return {
+    rebuild: () => { buildDeck(); show(); },
+    reload() { // re-read boxes from localStorage (e.g. after adopting cloud state), then redraw
+      try { boxes = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { boxes = {}; }
+      buildDeck(); show();
+    }
+  };
 })();
 
 /* ---------- shared test/quiz engine ---------- */
@@ -458,6 +490,7 @@ const PTest = (function () {
       hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode });
       localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
     } catch (e) {}
+    notifyProgress();
     renderHistory();
     window.scrollTo(0, 0);
   }
