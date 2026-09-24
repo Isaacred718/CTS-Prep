@@ -62,6 +62,7 @@ function setMetaTs(ts) { try { localStorage.setItem(LS_META, JSON.stringify({ up
 function readMetaTs() { try { return JSON.parse(localStorage.getItem(LS_META) || '{}').updatedAt || 0; } catch (e) { return 0; } }
 function notifyProgress() {
   setMetaTs(Date.now());
+  try { renderReadiness(); } catch (e) {}
   if (window.CTS && typeof window.CTS.onChange === 'function') { try { window.CTS.onChange(); } catch (e) {} }
 }
 window.CTS = {
@@ -77,7 +78,7 @@ window.CTS = {
     if (s && s.hist) { try { localStorage.setItem(LS_HIST, JSON.stringify(s.hist.slice(0, 20))); } catch (e) {} }
     setMetaTs(s && s.updatedAt); // adopt the cloud timestamp so we don't push straight back
   },
-  refreshUI() { try { FC.reload(); } catch (e) {} renderHistory(); }
+  refreshUI() { try { FC.reload(); } catch (e) {} renderHistory(); try { renderReadiness(); } catch (e) {} }
 };
 
 /* ---------- tabs ---------- */
@@ -87,6 +88,7 @@ document.querySelectorAll('nav.tabs button').forEach(b => {
     b.classList.add('active');
     document.querySelectorAll('.tabpane').forEach(p => p.classList.remove('active'));
     $('pane-' + b.dataset.tab).classList.add('active');
+    if (b.dataset.tab === 'overview') { try { renderReadiness(); } catch (e) {} }
     window.scrollTo(0, 0);
   });
 });
@@ -107,6 +109,7 @@ document.querySelectorAll('nav.tabs button').forEach(b => {
       `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:var(--blue)"></div></div></div>`;
   }).join('');
   renderHistory();
+  renderReadiness();
 })();
 function renderHistory() {
   let hist = [];
@@ -116,6 +119,134 @@ function renderHistory() {
     `<div class="hist-row"><span>${esc(h.date)} · ${h.n}Q ${esc(h.mode)}</span>` +
     `<strong class="${h.score >= 70 ? 'pass' : 'fail'}">${h.score}%</strong></div>`
   ).join('');
+}
+
+/* ---------- exam readiness ----------
+   Per-domain score = 60% practice-test performance (pooled correct/answered across
+   history entries that carry a per-domain breakdown) + 40% flashcard mastery
+   (% of the domain's cards in Leitner box 4 or 5). With only one signal available,
+   that signal carries full weight; with none, the domain reports "No data yet".
+   Overall = mean of domains with data. Bands echo the 70% pass heuristic. */
+function computeReadiness() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) { hist = []; }
+  let boxes = {};
+  try { boxes = JSON.parse(localStorage.getItem('cts_leitner_v1') || '{}'); } catch (e) { boxes = {}; }
+  const per = domainsOf(QUESTIONS).map(([d]) => {
+    let c = 0, t = 0; // pooled test performance for this domain
+    hist.forEach(h => {
+      const hd = h && h.domains && h.domains[d];
+      if (hd) { c += (+hd.c || 0); t += (+hd.t || 0); }
+    });
+    const test = t > 0 ? 100 * c / t : null;
+    const cards = CARDS.filter(x => x.domain === d);
+    let mastered = 0, touched = 0; // touched = cards with any recorded box (seen at least once)
+    cards.forEach(x => {
+      const b = +boxes[x.domain + '|' + x.front] || 0;
+      if (b > 0) { touched++; if (b >= 4) mastered++; }
+    });
+    const mastery = touched ? 100 * mastered / cards.length : null;
+    let score = null;
+    if (test !== null && mastery !== null) score = 0.6 * test + 0.4 * mastery;
+    else if (test !== null) score = test;
+    else if (mastery !== null) score = mastery;
+    return { domain: d, test, mastery, score: score === null ? null : Math.round(score) };
+  });
+  const scored = per.filter(p => p.score !== null);
+  const overall = scored.length
+    ? Math.round(scored.reduce((a, p) => a + p.score, 0) / scored.length) : null;
+  return { per, overall };
+}
+function readyBand(score) {
+  if (score === null) return { label: 'No data yet', cls: 'muted' };
+  if (score >= 85) return { label: 'Exam ready', cls: 'pass' };
+  if (score >= 70) return { label: 'Almost there', cls: 'info' };
+  if (score >= 50) return { label: 'Building momentum', cls: 'warn' };
+  return { label: 'Early stages', cls: 'fail' };
+}
+function readyColor(score) {
+  if (score >= 85) return 'var(--green)';
+  if (score >= 70) return 'var(--blue)';
+  if (score >= 50) return 'var(--amber)';
+  return 'var(--red)';
+}
+function renderReadiness() {
+  const el = $('ov-readiness');
+  if (!el) return;
+  const { per, overall } = computeReadiness();
+  const b = readyBand(overall);
+  const rows = per.slice().sort((a, c) =>
+    (a.score === null ? 9999 : a.score) - (c.score === null ? 9999 : c.score));
+  el.innerHTML =
+    `<div class="ready-head"><div class="ready-score ${b.cls}">${overall === null ? '—' : overall + '%'}</div>` +
+    `<div><div class="ready-band ${b.cls}">${b.label}</div>` +
+    `<p class="muted small" style="margin:4px 0 0">Practice tests 60% · flashcards 40%. ` +
+    `Pass heuristic: 70% — the real exam uses scaled scoring, so treat this as a study signal, not a prediction.</p></div></div>` +
+    rows.map(p => {
+      if (p.score === null)
+        return `<div class="dbar"><div class="dlbl"><span>${esc(p.domain)}</span>` +
+          `<span class="muted">No data yet</span></div></div>`;
+      const pb = readyBand(p.score);
+      return `<div class="dbar"><div class="dlbl"><span>${esc(p.domain)}</span>` +
+        `<span class="${pb.cls}">${p.score}% · ${pb.label}</span></div>` +
+        `<div class="dtrack"><div class="dfill" style="width:${p.score}%;background:${readyColor(p.score)}"></div></div></div>`;
+    }).join('');
+  renderCareers(per);
+}
+
+/* ---------- career targets ----------
+   Each title maps to the 1–3 CTS domains the role leans on. Titles are ranked by
+   the average readiness of their mapped domains; titles with no signal yet are
+   never given a fake score. */
+const CAREERS = [
+  { title: 'AV Engineer',
+    domains: ['CTS: AV Design', 'CTS: Video & Signal', 'CTS: Sound & Physics'],
+    why: 'Designs, installs and commissions integrated AV systems end to end.' },
+  { title: 'AV Design Engineer',
+    domains: ['CTS: Needs Analysis', 'CTS: AV Design', 'CTS: AVIXA Standards'],
+    why: 'Turns client needs into standards-based system designs and documentation.' },
+  { title: 'AV Project Manager',
+    domains: ['CTS: Project Management', 'CTS: Customer Relations', 'CTS: Commissioning & Closeout'],
+    why: 'Owns scope, schedule and budget from kickoff to client sign-off.' },
+  { title: 'Field Service Engineer',
+    domains: ['CTS: Troubleshooting & Verification', 'CTS: AV Networking', 'CTS: Electrical & Site Survey'],
+    why: 'Diagnoses and repairs deployed AV systems on site.' },
+  { title: 'Lead AV Technician',
+    domains: ['CTS: Sound & Physics', 'CTS: Video & Signal', 'CTS: Customer Relations'],
+    why: 'Runs event and install crews and owns the room on show day.' },
+  { title: 'Control Systems Programmer',
+    domains: ['CTS: Control Systems', 'CTS: AV Networking'],
+    why: 'Programs touch panels, DSP and room automation logic.' },
+  { title: 'UC / Collaboration Engineer',
+    domains: ['CTS: AV Networking', 'CTS: Video & Signal', 'CTS: Control Systems'],
+    why: 'Deploys and supports Teams/Zoom rooms and UC estates.' },
+  { title: 'Broadcast Systems Engineer',
+    domains: ['Advanced: ST 2110 Suite', 'CTS: Video & Signal', 'Advanced: Dante & AES67'],
+    why: 'Builds IP-based broadcast and live-production workflows.' },
+];
+function matchLabel(avg) {
+  if (avg === null) return { label: 'Study to unlock signal', cls: 'muted' };
+  if (avg >= 80) return { label: 'Strong match', cls: 'pass' };
+  if (avg >= 60) return { label: 'Developing', cls: 'info' };
+  return { label: 'Early', cls: 'warn' };
+}
+function renderCareers(per) {
+  const box = $('ov-careers');
+  if (!box) return;
+  const byDom = {};
+  per.forEach(p => { byDom[p.domain] = p.score; });
+  const ranked = CAREERS.map(c => {
+    const scores = c.domains.map(d => byDom[d]).filter(s => s !== null && s !== undefined);
+    const avg = scores.length ? Math.round(scores.reduce((a, s) => a + s, 0) / scores.length) : null;
+    return { title: c.title, domains: c.domains, why: c.why, avg };
+  }).sort((a, b) => (b.avg === null ? -1 : b.avg) - (a.avg === null ? -1 : a.avg));
+  box.innerHTML = ranked.slice(0, 6).map(c => {
+    const m = matchLabel(c.avg);
+    return `<div class="career"><div class="career-top"><h3>${esc(c.title)}</h3>` +
+      `<span class="match ${m.cls}">${m.label}${c.avg !== null ? ' · ' + c.avg + '%' : ''}</span></div>` +
+      `<div class="career-domains">${c.domains.map(esc).join(' · ')}</div>` +
+      `<p class="muted small career-why">${esc(c.why)}</p></div>`;
+  }).join('');
 }
 
 /* ---------- guides ---------- */
@@ -364,6 +495,8 @@ const PTest = (function () {
     lab.innerHTML = `<input type="checkbox" value="${esc(d)}" checked> ${esc(d)}`;
     grid.appendChild(lab);
   });
+  $('t-dom-all').addEventListener('click', () => grid.querySelectorAll('input').forEach(c => c.checked = true));
+  $('t-dom-none').addEventListener('click', () => grid.querySelectorAll('input').forEach(c => c.checked = false));
 
   let tLen = 50, tMix = 'balanced';
   const perQ = 150 / 110; // minutes per question, from the full-sim default
@@ -375,21 +508,18 @@ const PTest = (function () {
   $('t-mix-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
     $('t-mix-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
     b.classList.add('on'); tMix = b.dataset.m;
-    $('t-domains').style.display = tMix === 'custom' ? '' : 'none';
   }));
   $('t-timer').value = Math.round(50 * perQ);
 
   function buildTest() {
-    let selected = allDomains;
-    if (tMix === 'custom') {
-      const checked = [...grid.querySelectorAll('input:checked')].map(c => c.value);
-      if (checked.length) selected = checked;
-    }
+    // selected domains drive both mix modes; nothing checked = all domains
+    const checked = [...grid.querySelectorAll('input:checked')].map(c => c.value);
+    const selected = checked.length ? checked : allDomains;
     const byDom = {};
     selected.forEach(d => { byDom[d] = QUESTIONS.filter(q => q.domain === d); });
     let picked = [];
     if (tMix === 'balanced') {
-      // round-robin across domains so every domain is represented
+      // round-robin across the selected domains so each is represented
       const pools = Object.entries(byDom).map(([d, arr]) => shuffle(arr));
       let progressed = true;
       while (picked.length < tLen && progressed) {
@@ -400,6 +530,7 @@ const PTest = (function () {
         }
       }
     } else {
+      // pure random draw from the combined pool of selected domains
       picked = sampleNoRepeat(selected.flatMap(d => byDom[d]), tLen);
     }
     return { picked: shuffle(picked), selected, capped: picked.length < tLen };
@@ -409,7 +540,7 @@ const PTest = (function () {
     const { picked, selected, capped } = buildTest();
     if (!picked.length) { alert('No questions available for this selection.'); return; }
     qs = picked; i = 0; answers = new Array(qs.length).fill(null);
-    meta = { n: qs.length, mode: tMix === 'balanced' ? 'balanced' : 'custom', capped };
+    meta = { n: qs.length, mode: tMix === 'balanced' ? 'balanced' : 'random', capped };
     $('test-setup').style.display = 'none';
     $('test-results').style.display = 'none';
     $('test-run').style.display = '';
@@ -487,7 +618,7 @@ const PTest = (function () {
     // history
     try {
       const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
-      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode });
+      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode, domains: byDom });
       localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
     } catch (e) {}
     notifyProgress();

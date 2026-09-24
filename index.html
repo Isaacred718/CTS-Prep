@@ -41,6 +41,15 @@
       <p class="muted" style="margin-top:12px" id="ov-blurb"></p>
     </div>
     <div class="card">
+      <h2>Exam Readiness</h2>
+      <div id="ov-readiness"><p class="muted">Take a practice test or drill flashcards to generate your readiness signal.</p></div>
+    </div>
+    <div class="card">
+      <h2>Career targets</h2>
+      <p class="muted small">Ranked by your readiness in the domains each role leans on. CTS certification is commonly preferred or required for engineer and PM-tier roles — it's the credential that unlocks this tier.</p>
+      <div class="career-grid" id="ov-careers"></div>
+    </div>
+    <div class="card">
       <h2>Domain coverage</h2>
       <div id="ov-domains"></div>
     </div>
@@ -148,13 +157,16 @@
         <button data-n="50" class="on">Standard · 50</button>
         <button data-n="110">Full exam sim · 110</button>
       </div>
-      <label class="f-label">Domain mix</label>
-      <div class="seg" id="t-mix-seg">
-        <button data-m="balanced" class="on">Balanced</button>
-        <button data-m="custom">Pick domains</button>
+      <label class="f-label">Domains <span class="muted small">— tap to include / exclude</span></label>
+      <div class="btnrow" style="margin-bottom:4px">
+        <button class="btn sec small" id="t-dom-all">All</button>
+        <button class="btn sec small" id="t-dom-none">None</button>
       </div>
-      <div id="t-domains" style="display:none">
-        <div class="checkgrid" id="t-domain-grid"></div>
+      <div class="checkgrid" id="t-domain-grid"></div>
+      <label class="f-label">Question mix</label>
+      <div class="seg" id="t-mix-seg">
+        <button data-m="balanced" class="on">Balanced across domains</button>
+        <button data-m="random">Pure random</button>
       </div>
       <label class="f-label">Timer (minutes)</label>
       <input type="number" id="t-timer" value="68" min="0" max="240">

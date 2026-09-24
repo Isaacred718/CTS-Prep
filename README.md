@@ -20,16 +20,28 @@ Commissioning & Closeout, and AVIXA Standards — plus clearly-labeled
 ## Features
 
 - **Overview** — dashboard with content stats, domain coverage, recent test history, and a suggested study loop.
+- **Exam Readiness** — per-domain readiness scores (practice tests 60% + flashcard mastery 40%) with an overall band: Exam ready (85+), Almost there (70–84), Building momentum (50–69), Early stages (below 50). Domains are sorted weakest-first so you always see what to study next. Recomputed live as you study and sync.
+- **Career targets** — full-time AV roles ranked by your readiness in the domains each role leans on (AV Engineer, AV Design Engineer, AV Project Manager, Field Service Engineer, Lead AV Technician, Control Systems Programmer, UC/Collaboration Engineer, Broadcast Systems Engineer), with Strong/Developing/Early match labels.
 - **Study Guides** — concise per-domain guides plus an *Exam Cram* (formulas, numbers to memorize, memory aids, common mistakes).
 - **Flashcards** — Leitner 5-box spaced repetition, flip animation, shuffle, category filters, progress tracking (saved in the browser).
 - **Quiz** — domain filter, question-count options, shuffle, optional timer, live progress, immediate per-question explanations, results broken down by domain, and full answer review.
 - **Practice Test generator** — build a fresh randomized test every time:
   - Lengths: **Quick (25)**, **Standard (50)**, **Full exam sim (110)**
-  - Domain mix: **Balanced** (round-robin across all domains) or **pick specific domains**
+  - Domain selection: tap checkboxes to include/exclude any of the 14 domains, with All/None shortcuts
+  - Question mix: **Balanced** (even spread across the selected domains) or **Pure random** (random draw from the selected pool)
   - Timer: scaled default (150 min for the full 110-question sim), adjustable, auto-grades on expiry
   - No repeated questions within a test; prev/next navigation with changeable answers
   - Score %, per-domain breakdown, 70% pass heuristic (labeled as a benchmark, not a prediction),
     full review screen with explanations, and a **Generate new test** button
+
+## How Exam Readiness is computed
+
+Per domain (14 domains):
+- **Practice tests — 60%:** pooled correct ÷ pooled answered across saved practice tests that carry a per-domain breakdown. Tests saved before this feature (no breakdown) are ignored for domain stats.
+- **Flashcards — 40%:** share of the domain's cards sitting in Leitner box 4 or 5.
+- If only one signal exists for a domain, it carries full weight; with neither, the domain shows "No data yet" and is excluded from the overall score.
+
+Overall readiness = mean of the domains that have data. Bands: **85+ Exam ready · 70–84 Almost there · 50–69 Building momentum · below 50 Early stages.** The 70% band echoes the app's pass heuristic — the real CTS exam uses scaled scoring, so readiness is a study signal, not a prediction. Career-target rankings use the average readiness of each role's mapped domains; roles with no supporting data show "Study to unlock signal" instead of a score.
 
 ## Open it locally
 
@@ -67,7 +79,7 @@ header syncs your progress to the cloud so it follows you across devices.
 | `displayName`, `email`, `photoURL` | from the Google account |
 | `updatedAt` | ms timestamp of the last change — drives the newer-wins merge |
 | `leitnerBoxes` | flashcard boxes: `{ "domain\|front": 1–5 }` |
-| `testHistory` | last 20 practice tests: `{ date, n, score, mode }` |
+| `testHistory` | last 20 practice tests: `{ date, n, score, mode, domains: { [domain]: { c, t } } }` — the per-domain breakdown powers the Exam Readiness ratings |
 
 - **Merge rule:** on sign-in, the newer side wins by `updatedAt` — if the cloud copy is
   newer it is adopted locally (Leitner boxes + history refresh in the UI); otherwise local

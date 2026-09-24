@@ -54,6 +54,7 @@ nav.tabs button.active{color:var(--blue);background:rgba(56,189,248,.12)}
 .btn:active{opacity:.75}
 .btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .btn.sec{background:#334155}
+.btn.small{padding:8px 14px;font-size:13px}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:.85rem;padding:10px;font-weight:500}
 .btn.ok{background:linear-gradient(135deg,#059669,#16a34a)}
 .btn.warnb{background:linear-gradient(135deg,#d97706,#ea580c)}
@@ -66,7 +67,22 @@ nav.tabs button.active{color:var(--blue);background:rgba(56,189,248,.12)}
 .stat-box{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:12px 6px}
 .stat-val{font-size:1.35rem;font-weight:700;color:var(--blue)}
 .stat-lbl{font-size:.7rem;color:var(--muted);margin-top:4px}
-.pass{color:var(--green)} .fail{color:var(--red)} .warn{color:var(--amber)}
+.pass{color:var(--green)} .fail{color:var(--red)} .warn{color:var(--amber)} .info{color:var(--blue)}
+
+/* exam readiness */
+.ready-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:12px}
+.ready-score{font-size:2.6rem;font-weight:800;line-height:1;min-width:3.2rem}
+.ready-band{font-weight:700;font-size:1.05rem}
+
+/* career targets */
+.career-grid{display:grid;gap:10px;margin-top:10px}
+@media(min-width:640px){.career-grid{grid-template-columns:1fr 1fr}}
+.career{border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.02)}
+.career-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.career h3{margin:0;font-size:.95rem}
+.career-domains{font-size:.72rem;color:var(--muted);margin-top:6px;line-height:1.5}
+.career-why{margin:8px 0 0}
+.match{display:inline-block;white-space:nowrap;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--line)}
 
 .tag{
   display:inline-block;font-size:.7rem;font-weight:600;padding:4px 9px;border-radius:6px;
