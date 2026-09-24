@@ -93,11 +93,42 @@ document.querySelectorAll('nav.tabs button').forEach(b => {
   });
 });
 
+/* ---------- career targets ----------
+   Each title maps to the 1–3 CTS domains the role leans on. Titles are ranked by
+   the average readiness of their mapped domains; titles with no signal yet are
+   never given a fake score. */
+const CAREERS = [
+  { title: 'AV Engineer',
+    domains: ['CTS: AV Design', 'CTS: Video & Signal', 'CTS: Sound & Physics'],
+    why: 'Designs, installs and commissions integrated AV systems end to end.' },
+  { title: 'AV Design Engineer',
+    domains: ['CTS: Needs Analysis', 'CTS: AV Design', 'CTS: AVIXA Standards'],
+    why: 'Turns client needs into standards-based system designs and documentation.' },
+  { title: 'AV Project Manager',
+    domains: ['CTS: Project Management', 'CTS: Customer Relations', 'CTS: Commissioning & Closeout'],
+    why: 'Owns scope, schedule and budget from kickoff to client sign-off.' },
+  { title: 'Field Service Engineer',
+    domains: ['CTS: Troubleshooting & Verification', 'CTS: AV Networking', 'CTS: Electrical & Site Survey'],
+    why: 'Diagnoses and repairs deployed AV systems on site.' },
+  { title: 'Lead AV Technician',
+    domains: ['CTS: Sound & Physics', 'CTS: Video & Signal', 'CTS: Customer Relations'],
+    why: 'Runs event and install crews and owns the room on show day.' },
+  { title: 'Control Systems Programmer',
+    domains: ['CTS: Control Systems', 'CTS: AV Networking'],
+    why: 'Programs touch panels, DSP and room automation logic.' },
+  { title: 'UC / Collaboration Engineer',
+    domains: ['CTS: AV Networking', 'CTS: Video & Signal', 'CTS: Control Systems'],
+    why: 'Deploys and supports Teams/Zoom rooms and UC estates.' },
+  { title: 'Broadcast Systems Engineer',
+    domains: ['Advanced: ST 2110 Suite', 'CTS: Video & Signal', 'Advanced: Dante & AES67'],
+    why: 'Builds IP-based broadcast and live-production workflows.' },
+];
+
 /* ---------- overview ---------- */
 (function overview() {
-  $('hdr-stats').textContent = `${QUESTIONS.length} questions · ${CARDS.length} cards`;
+  $('hdr-stats').textContent = `${QUESTIONS.length} questions · ${CARDS.length} cards · ${typeof DRILLS !== 'undefined' ? DRILLS.length : 0} drills`;
   $('ov-stats').innerHTML =
-    statBox(QUESTIONS.length, 'questions') + statBox(CARDS.length, 'flashcards') + statBox(GUIDES.length, 'guides');
+    statBox(QUESTIONS.length, 'questions') + statBox(CARDS.length, 'flashcards') + statBox(GUIDES.length, 'guides') + statBox(typeof DRILLS !== 'undefined' ? DRILLS.length : 0, 'drills');
   function statBox(v, l) { return `<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`; }
   $('ov-blurb').textContent =
     'Merged from the CTS-Prep and cts-study banks, with full explanations on every question, ' +
@@ -194,36 +225,6 @@ function renderReadiness() {
   renderCareers(per);
 }
 
-/* ---------- career targets ----------
-   Each title maps to the 1–3 CTS domains the role leans on. Titles are ranked by
-   the average readiness of their mapped domains; titles with no signal yet are
-   never given a fake score. */
-const CAREERS = [
-  { title: 'AV Engineer',
-    domains: ['CTS: AV Design', 'CTS: Video & Signal', 'CTS: Sound & Physics'],
-    why: 'Designs, installs and commissions integrated AV systems end to end.' },
-  { title: 'AV Design Engineer',
-    domains: ['CTS: Needs Analysis', 'CTS: AV Design', 'CTS: AVIXA Standards'],
-    why: 'Turns client needs into standards-based system designs and documentation.' },
-  { title: 'AV Project Manager',
-    domains: ['CTS: Project Management', 'CTS: Customer Relations', 'CTS: Commissioning & Closeout'],
-    why: 'Owns scope, schedule and budget from kickoff to client sign-off.' },
-  { title: 'Field Service Engineer',
-    domains: ['CTS: Troubleshooting & Verification', 'CTS: AV Networking', 'CTS: Electrical & Site Survey'],
-    why: 'Diagnoses and repairs deployed AV systems on site.' },
-  { title: 'Lead AV Technician',
-    domains: ['CTS: Sound & Physics', 'CTS: Video & Signal', 'CTS: Customer Relations'],
-    why: 'Runs event and install crews and owns the room on show day.' },
-  { title: 'Control Systems Programmer',
-    domains: ['CTS: Control Systems', 'CTS: AV Networking'],
-    why: 'Programs touch panels, DSP and room automation logic.' },
-  { title: 'UC / Collaboration Engineer',
-    domains: ['CTS: AV Networking', 'CTS: Video & Signal', 'CTS: Control Systems'],
-    why: 'Deploys and supports Teams/Zoom rooms and UC estates.' },
-  { title: 'Broadcast Systems Engineer',
-    domains: ['Advanced: ST 2110 Suite', 'CTS: Video & Signal', 'Advanced: Dante & AES67'],
-    why: 'Builds IP-based broadcast and live-production workflows.' },
-];
 function matchLabel(avg) {
   if (avg === null) return { label: 'Study to unlock signal', cls: 'muted' };
   if (avg >= 80) return { label: 'Strong match', cls: 'pass' };
@@ -631,6 +632,124 @@ const PTest = (function () {
   });
   $('tr-review').addEventListener('click', () => {
     const l = $('tr-review-list');
+    l.style.display = l.style.display === 'none' ? '' : 'none';
+  });
+  return {};
+})();
+
+/* ---------- scenario drills ----------
+   Exam-style scenario drills weighted to the current CTS Job Task Analysis,
+   with troubleshooting and AV-over-IP decisions carrying the most weight.
+   Results are recorded into cts_test_history (mode 'drill') so they ride the
+   same local + Firestore sync channel as quizzes and practice tests. */
+const Drills = (function () {
+  let qs = [], i = 0, answers = [];
+  if (typeof DRILLS === 'undefined' || !DRILLS.length) return {};
+  $('drill-count').textContent = DRILLS.length;
+
+  function backToSetup() {
+    $('drill-run').style.display = 'none';
+    $('drill-results').style.display = 'none';
+    $('drill-setup').style.display = '';
+  }
+  function show() {
+    const d = qs[i], picked = answers[i];
+    $('drill-pos').textContent = `Drill ${i + 1} of ${qs.length}`;
+    $('drill-bar').style.width = (100 * answers.filter(a => a !== null).length / qs.length) + '%';
+    $('drill-tag').className = 'tag';
+    $('drill-tag').textContent = d.duty;
+    $('drill-task').textContent = d.task;
+    $('drill-scenario').textContent = d.scenario;
+    $('drill-q').textContent = d.question;
+    const box = $('drill-opts'); box.innerHTML = '';
+    const ex = $('drill-explain');
+    d.options.forEach((t, oi) => {
+      const b = document.createElement('button');
+      let cls = 'option';
+      if (picked !== null) {
+        if (oi === d.correct) cls += ' correct';
+        else if (oi === picked) cls += ' wrong';
+      }
+      b.className = cls;
+      b.textContent = t;
+      b.disabled = picked !== null;
+      b.addEventListener('click', () => { answers[i] = oi; show(); });
+      box.appendChild(b);
+    });
+    if (picked !== null) {
+      const ok = picked === d.correct;
+      ex.style.display = '';
+      ex.innerHTML = `<div class="${ok ? 'pass' : 'fail'}" style="font-weight:700;margin-bottom:6px">${ok ? '✓ Correct' : '✗ Not quite — correct answer: ' + esc(d.options[d.correct])}</div><div>${esc(d.explanation)}</div>`;
+      ex.className = 'explain ' + (ok ? 'ok' : 'no');
+      $('drill-next').style.display = '';
+      $('drill-next').textContent = i === qs.length - 1 ? 'See results →' : 'Next →';
+    } else {
+      ex.style.display = 'none';
+      $('drill-next').style.display = 'none';
+    }
+    window.scrollTo(0, 0);
+  }
+  function finish() {
+    let correct = 0;
+    const byDuty = {};
+    qs.forEach((d, idx) => {
+      const ok = answers[idx] === d.correct;
+      if (ok) correct++;
+      byDuty[d.duty] = byDuty[d.duty] || { c: 0, t: 0 };
+      byDuty[d.duty].t++; if (ok) byDuty[d.duty].c++;
+    });
+    const pct = Math.round(100 * correct / qs.length);
+    $('drill-run').style.display = 'none';
+    $('drill-results').style.display = '';
+    const sc = $('dr-score');
+    sc.textContent = pct + '%';
+    sc.className = 'big-score ' + (pct >= 70 ? 'pass' : 'fail');
+    const verdict = $('dr-verdict');
+    if (pct >= 85) { verdict.textContent = 'Excellent — strong decision instincts.'; verdict.className = 'verdict pass'; }
+    else if (pct >= 70) { verdict.textContent = 'Solid — keep polishing the weak duties.'; verdict.className = 'verdict pass'; }
+    else { verdict.textContent = 'Below the pass heuristic — run them again.'; verdict.className = 'verdict fail'; }
+    $('dr-duties').innerHTML = Object.entries(byDuty).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
+      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('dr-review-list').style.display = 'none';
+    $('dr-review-list').innerHTML = qs.map((d, idx) => {
+      const picked = answers[idx], ok = picked === d.correct;
+      const your = picked == null ? '<em>unanswered</em>' : esc(d.options[picked]);
+      return `<div class="review-item"><div class="rq">${ok ? '<span class="pass">✓ Correct</span>' : '<span class="fail">✗ Missed</span>'} · ${esc(d.duty)}</div>` +
+        `<div class="drill-scenario" style="margin:8px 0">${esc(d.scenario)}</div>` +
+        `<div class="ra">Your answer: <strong>${your}</strong><br>Correct answer: <strong class="pass">${esc(d.options[d.correct])}</strong></div>` +
+        `<div class="re">${esc(d.explanation)}</div></div>`;
+    }).join('');
+    // history — same shape as quizzes/tests, so overview + cloud sync pick it up
+    try {
+      const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
+      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: 'drill', domains: byDuty });
+      localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
+    } catch (e) {}
+    notifyProgress();
+    renderHistory();
+    window.scrollTo(0, 0);
+  }
+  $('drill-start').addEventListener('click', () => {
+    qs = shuffle(DRILLS); i = 0; answers = new Array(qs.length).fill(null);
+    $('drill-setup').style.display = 'none';
+    $('drill-results').style.display = 'none';
+    $('drill-run').style.display = '';
+    show();
+  });
+  $('drill-next').addEventListener('click', () => {
+    if (i < qs.length - 1) { i++; show(); }
+    else finish();
+  });
+  $('drill-quit').addEventListener('click', () => {
+    if (!confirm('End this drill run? Progress will be lost.')) return;
+    backToSetup();
+  });
+  $('dr-retry').addEventListener('click', () => {
+    $('drill-results').style.display = 'none';
+    $('drill-setup').style.display = '';
+  });
+  $('dr-review').addEventListener('click', () => {
+    const l = $('dr-review-list');
     l.style.display = l.style.display === 'none' ? '' : 'none';
   });
   return {};

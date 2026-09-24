@@ -105,6 +105,11 @@ nav.tabs button.active{color:var(--blue);background:rgba(56,189,248,.12)}
   padding:12px 14px;margin:14px 0;font-size:.9rem;
 }
 .explain strong{color:var(--blue)}
+.drill-scenario{
+  background:var(--sunk);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;margin:14px 0;font-size:.9rem;line-height:1.5;
+}
+.drill-scenario::before{content:"Scenario — ";font-weight:700;color:var(--blue);}
 
 .progressbar{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden;margin:10px 0}
 .progressbar>div{height:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border-radius:99px;transition:width .25s}

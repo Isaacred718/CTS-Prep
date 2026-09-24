@@ -202,6 +202,41 @@
       <div id="tr-review-list" style="display:none;margin-top:14px"></div>
     </div>
   </section>
+
+  <!-- SCENARIO DRILLS -->
+  <section class="tabpane" id="pane-drills">
+    <div class="card" id="drill-setup">
+      <h2>Scenario Drills</h2>
+      <p class="muted small">Short exam-style scenarios ending in a decision — not isolated facts. Weighted to the current CTS Job Task Analysis, with troubleshooting and AV-over-IP decisions carrying the most weight.</p>
+      <div class="stat-box"><div class="stat-val" id="drill-count"></div><div class="stat-lbl">drills</div></div>
+      <div style="height:12px"></div>
+      <button class="btn" id="drill-start">Start drill run</button>
+    </div>
+    <div class="card" id="drill-run" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="small muted" id="drill-pos"></span>
+      </div>
+      <div class="progressbar"><div id="drill-bar"></div></div>
+      <div style="margin-top:14px"><span class="tag" id="drill-tag"></span> <span class="tag" id="drill-task" style="opacity:.75"></span></div>
+      <div class="drill-scenario" id="drill-scenario"></div>
+      <div class="q-text" id="drill-q"></div>
+      <div id="drill-opts"></div>
+      <div id="drill-explain" style="display:none"></div>
+      <button class="btn" id="drill-next" style="display:none">Next →</button>
+      <button class="btn ghost" id="drill-quit">End drill</button>
+    </div>
+    <div class="card" id="drill-results" style="display:none">
+      <h2>Drill results</h2>
+      <div class="big-score" id="dr-score"></div>
+      <div class="verdict" id="dr-verdict"></div>
+      <div id="dr-duties"></div>
+      <div class="btnrow">
+        <button class="btn" id="dr-retry">Run drills again</button>
+        <button class="btn sec" id="dr-review">Review all drills</button>
+      </div>
+      <div id="dr-review-list" style="display:none;margin-top:14px"></div>
+    </div>
+  </section>
 </div>
 
 <nav class="tabs">
@@ -210,6 +245,7 @@
   <button data-tab="cards"><span class="ico">🃏</span>Cards</button>
   <button data-tab="quiz"><span class="ico">✏️</span>Quiz</button>
   <button data-tab="test"><span class="ico">🎯</span>Practice</button>
+  <button data-tab="drills"><span class="ico">🎛️</span>Drills</button>
 </nav>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -218,6 +254,7 @@
 <script src="data/questions.js"></script>
 <script src="data/cards.js"></script>
 <script src="data/guides.js"></script>
+<script src="data/drills.js"></script>
 <script src="app.js"></script>
 <script src="auth.js"></script>
 </body>
