@@ -6,13 +6,17 @@
    the user is offline, or a write fails, the app keeps working fully on
    localStorage and the header shows an Offline/Sync-failed status.
 
-   iOS home-screen flow (v3): iOS bounces OAuth out of standalone web apps into
-   Safari, so the redirect completes there. v3 makes that fast and patient:
+   iOS home-screen flow (v4): iOS bounces OAuth out of standalone web apps into
+   Safari, so the redirect completes there. v4 makes that fast and patient:
    - index.html paints an instant "Completing sign-in…" splash in Safari and
      loads auth.js before the heavy question-bank scripts, so the sign-in
      finishes (and the "switch back" banner appears) in seconds;
    - the home-screen app, on return, waits up to ~40s for the session Safari
-     created (polling shared site storage) and reloads once it appears. */
+     created (polling shared site storage) and reloads once it appears;
+   - v4: Firestore persistence removed (it could deadlock between Safari and
+     a suspended home-screen app, hanging sync forever); cloud sync has a 12s
+     cap and sign-in shows immediately; if the iOS OAuth sheet stalls, the app
+     tells the user to open it in Safari via the compass icon. */
 (function () {
 'use strict';
 
@@ -284,9 +288,14 @@ function pushNow() {
   if (!ref) return;
   var state = readLocal();
   setStatus('busy', 'Syncing…');
+  var done = false;
+  // Firestore must never hang the UI: 12s cap, then report offline.
+  var timer = setTimeout(function () {
+    if (!done) { done = true; setStatus('err', 'Sync slow — saved locally'); }
+  }, 12000);
   ref.set(toCloudPayload(state), { merge: true }).then(
-    function () { setStatus('ok', 'Synced'); },
-    function () { setStatus('err', 'Sync failed — saved locally'); }
+    function () { if (!done) { done = true; clearTimeout(timer); setStatus('ok', 'Synced'); } },
+    function () { if (!done) { done = true; clearTimeout(timer); setStatus('err', 'Sync failed — saved locally'); } }
   );
 }
 function schedulePush() {
@@ -300,8 +309,15 @@ function wirePush() { if (window.CTS) window.CTS.onChange = schedulePush; }
 function syncOnSignIn(u) {
   var ref = cloudDoc();
   if (!ref) return;
+  // Sign-in state is already shown by renderAuth(); the cloud sync is
+  // best-effort and must never leave the UI stuck on "Syncing…".
   setStatus('busy', 'Syncing…');
-  ref.get().then(function (snap) {
+  var done = false;
+  var timer = setTimeout(function () {
+    if (!done) { done = true; setStatus('ok', 'Signed in — sync pending'); }
+  }, 12000);
+  function finish(fn) { return function (a) { if (!done) { done = true; clearTimeout(timer); fn(a); } }; }
+  ref.get().then(finish(function (snap) {
     var local = readLocal();
     var decision = decideSync(local, snap.exists ? snap.data() : null);
     if (decision === 'adopt') {
@@ -313,9 +329,9 @@ function syncOnSignIn(u) {
     } else {
       pushNow(); // local is newer, or first run: push local up
     }
-  }, function () {
+  }), finish(function () {
     setStatus('err', 'Offline — saved locally');
-  });
+  }));
 }
 
 /* ---------- auth UI ---------- */
@@ -348,6 +364,14 @@ function signIn() {
     // trip waits for the session Safari creates.
     markHandoff();
     auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
+    // iOS opens the OAuth in an overlay sheet instead of navigating away,
+    // so this page stays alive. If we're still here and signed-out 15s
+    // later, the sheet likely stalled: tell the user how to finish in Safari.
+    setTimeout(function () {
+      if (!auth.currentUser && !waiting) {
+        setStatus('busy', 'If the Google window is blank: tap compass, Open in Safari');
+      }
+    }, 15000);
     return;
   }
   auth.signInWithPopup(provider).catch(function (e) {
@@ -381,10 +405,10 @@ function initAuth() {
   } catch (e) { return; }
   auth = firebase.auth();
   db = firebase.firestore();
-  try {
-    var p = db.enablePersistence(); // offline cache for Firestore reads
-    if (p && p.catch) p.catch(function () {}); // multi-tab / unsupported: ignore, app still works
-  } catch (e) {}
+  // NOTE: no enablePersistence(). Firestore's IndexedDB persistence can
+  // deadlock when Safari and the suspended home-screen app contend for the
+  // lock, hanging every read/write forever. We go straight to network;
+  // progress is also kept in localStorage so the app works offline anyway.
 
   // Completes redirect sign-ins (standalone / popup fallback). Settling it
   // tells us a no-user state is definitive, so the splash can hide.
