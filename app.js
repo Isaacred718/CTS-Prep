@@ -824,8 +824,17 @@ const Endless = (function () {
   const seen = {}; // _qi -> times answered this run
   let pool = [], recent = [];
   let eCert = 'CTS';
+  let eSource = 'bank'; // bank | mixed | forge
+  $('e-src-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    $('e-src-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); eSource = b.dataset.s;
+  }));
   let level = 1, peak = 1, streak = 0, bestStreak = 0;
   let correct = 0, total = 0, win = [], cur = null, byDom = {};
+  // timer + lightning-round state
+  let eTimerOn = false, eLightning = false, locked = false, past = [];
+  const TIMER_SECS = 150; // 2:30 per question
+  let timeLeft = TIMER_SECS, timerId = null;
 
   const BEST_KEY = 'cts_endless_best';
   function getBest() { try { return JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch (e) { return {}; } }
@@ -887,9 +896,50 @@ const Endless = (function () {
     $('e-score').textContent = correct + '/' + total;
   }
 
+  function nextQ() {
+    // forged questions are generated fresh per draw, targeted at the current level
+    if (typeof FORGE !== 'undefined' && (eSource === 'forge' || (eSource === 'mixed' && Math.random() < 0.45))) {
+      const gs = FORGE.draw(1, { cert: eCert, diff: Math.round(level) });
+      if (gs.length) return gs[0];
+    }
+    return pick();
+  }
+
+  function fmtTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function drawTimer() {
+    const el = $('e-timer');
+    el.style.display = eTimerOn ? '' : 'none';
+    if (eTimerOn) {
+      el.textContent = '⏱ ' + fmtTime(Math.max(0, timeLeft));
+      el.classList.toggle('low', timeLeft <= 30);
+    }
+  }
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function startTimer() {
+    stopTimer();
+    drawTimer();
+    if (!eTimerOn) return;
+    timeLeft = TIMER_SECS;
+    drawTimer();
+    timerId = setInterval(() => {
+      if (locked) return;
+      timeLeft--;
+      drawTimer();
+      if (timeLeft <= 0) resolve(false, null, true);
+    }, 1000);
+  }
+  function renderPast() {
+    const c = $('e-carousel');
+    if (!eLightning || !past.length) { c.style.display = 'none'; return; }
+    c.style.display = '';
+    c.innerHTML = past.slice(-30).map(ok => `<span class="e-chip ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`).join('');
+    c.scrollLeft = c.scrollWidth;
+  }
+
   function show() {
-    cur = pick();
+    cur = nextQ();
     if (!cur) { finish(); return; }
+    locked = false;
     recent.push(cur); if (recent.length > 30) recent.shift();
     const n = seen[cur._qi] || 0;
     const text = n ? rephrase(cur, n) : cur.q;
@@ -913,18 +963,23 @@ const Endless = (function () {
       box.appendChild(b);
     });
     hud(false);
+    startTimer();
     window.scrollTo(0, 0);
   }
 
-  function answer(oi, btn) {
-    const ok = oi === cur.correct;
+  function resolve(ok, btn, timedOut) {
+    if (locked) return;
+    locked = true;
+    stopTimer();
+    const okFinal = !!ok;
     seen[cur._qi] = (seen[cur._qi] || 0) + 1;
-    total++; win.push(ok); if (win.length > 10) win.shift();
+    total++; win.push(okFinal); if (win.length > 10) win.shift();
+    past.push(okFinal); if (past.length > 30) past.shift();
     const d = cur.domain;
     byDom[d] = byDom[d] || { c: 0, t: 0 };
-    byDom[d].t++; if (ok) byDom[d].c++;
+    byDom[d].t++; if (okFinal) byDom[d].c++;
     let moved;
-    if (ok) {
+    if (okFinal) {
       correct++; streak++; bestStreak = Math.max(bestStreak, streak);
       level = Math.min(5, level + 0.35 + (streak >= 3 ? 0.15 : 0));
       moved = 'up';
@@ -941,19 +996,33 @@ const Endless = (function () {
       else if (b === btn) b.classList.add('wrong');
       else b.classList.add('dim');
     });
-    const ex = $('e-explain');
-    ex.innerHTML = `<div class="explain"><strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(cur.explanation)}` +
-      `<div class="small muted" style="margin-top:6px">Level ${moved} → Lv ${Math.round(level)} · ${levelName()}</div></div>`;
-    ex.style.display = '';
-    $('e-next').style.display = '';
+    renderPast();
+    if (eLightning) {
+      // lightning round: no explanation, auto-advance
+      $('e-explain').style.display = 'none';
+      setTimeout(() => { if ($('endless-run').style.display !== 'none') show(); }, 700);
+    } else {
+      const ex = $('e-explain');
+      ex.innerHTML = `<div class="explain"><strong>${timedOut ? "⏱ Time's up." : (okFinal ? 'Correct.' : 'Not quite.')}</strong> ${esc(cur.explanation)}` +
+        `<div class="small muted" style="margin-top:6px">Level ${moved} → Lv ${Math.round(level)} · ${levelName()}</div></div>`;
+      ex.style.display = '';
+      $('e-next').style.display = '';
+    }
     hud(true);
+  }
+
+  function answer(oi, btn) {
+    if (locked) return;
+    resolve(oi === cur.correct, btn, false);
   }
 
   function start() {
     pool = QUESTIONS.filter(q => eCert === '__all' || certOf(q) === eCert);
     if (!pool.length) { alert('No questions for this certification.'); return; }
+    eTimerOn = $('e-timer-on').checked;
+    eLightning = $('e-lightning').checked;
     recent = []; level = 1; peak = 1; streak = 0; bestStreak = 0;
-    correct = 0; total = 0; win = []; byDom = {};
+    correct = 0; total = 0; win = []; past = []; byDom = {};
     for (const k in seen) delete seen[k];
     $('endless-setup').style.display = 'none';
     $('endless-results').style.display = 'none';
@@ -962,6 +1031,8 @@ const Endless = (function () {
   }
 
   function finish() {
+    stopTimer();
+    locked = true;
     $('endless-run').style.display = 'none';
     $('endless-results').style.display = '';
     const pct = total ? Math.round(100 * correct / total) : 0;
@@ -998,10 +1069,17 @@ const Endless = (function () {
   // read-only test hook, only present when opened from disk (never on the live site)
   if (typeof window !== 'undefined' && location.protocol === 'file:') {
     window.__endless = {
-      state: () => ({ level, peak, streak, bestStreak, correct, total, diff: cur ? cur._diff : null }),
+      state: () => ({ level, peak, streak, bestStreak, correct, total, diff: cur ? cur._diff : null, forged: !!(cur && cur._forged) }),
       correctIndex: () => (cur ? cur.correct : -1),
       questionText: () => (cur && cur._shown ? cur._shown.text : ''),
-      rephrase: (q, n) => rephrase(typeof q === 'number' ? QUESTIONS[q] : q, n)
+      rephrase: (q, n) => rephrase(typeof q === 'number' ? QUESTIONS[q] : q, n),
+      forceTimeout: () => { if (!locked && timerId) { timeLeft = 1; } },
+      past: () => past.slice(),
+      timerText: () => $('e-timer').textContent,
+      timerOn: () => eTimerOn,
+      lightning: () => eLightning,
+      explainVisible: () => $('e-explain').style.display !== 'none',
+      nextVisible: () => $('e-next').style.display !== 'none'
     };
   }
   return {};

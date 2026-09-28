@@ -263,6 +263,14 @@
         <option value="CTS-I">CTS-I</option>
         <option value="__all">All certifications</option>
       </select>
+      <label class="f-label">Question source</label>
+      <div class="seg" id="e-src-seg">
+        <button data-s="bank" class="on">Bank</button><button data-s="mixed">Mixed</button><button data-s="forge">Generated ∞</button>
+      </div>
+      <p class="muted small">Generated questions are built fresh every draw — calculations with new numbers, concepts with rotated distractors. Currently covers CTS core topics.</p>
+      <label class="f-label">Run options</label>
+      <div class="checkrow"><label><input type="checkbox" id="e-timer-on"> ⏱ Per-question timer (2:30)</label></div>
+      <div class="checkrow"><label><input type="checkbox" id="e-lightning"> ⚡ Lightning round — no explanations, auto-advance, result carousel</label></div>
       <p class="muted small" id="e-best"></p>
       <button class="btn" id="e-start">Start endless run</button>
     </div>
@@ -271,6 +279,7 @@
         <div class="e-hud-top">
           <div><div class="e-level" id="e-level">Lv 1</div><div class="e-level-name" id="e-level-name">Foundations</div></div>
           <div class="e-hud-stats">
+            <div id="e-timer" class="e-timer" style="display:none">2:30</div>
             <div id="e-streak"></div>
             <div class="small muted"><span id="e-acc">—</span> · <span id="e-score">0/0</span></div>
           </div>
@@ -278,6 +287,7 @@
         <div class="progressbar e-lvbar"><div id="e-lvbar"></div></div>
       </div>
       <div class="card">
+        <div class="e-carousel" id="e-carousel" style="display:none"></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
           <span class="small muted" id="e-pos"></span>
           <span class="small e-diff" id="e-diff" title="Question difficulty"></span>
@@ -321,6 +331,7 @@
 <script src="data/cards.js"></script>
 <script src="data/guides.js"></script>
 <script src="data/drills.js"></script>
+<script src="forge.js"></script>
 <script src="app.js"></script>
 <script src="auth.js"></script>
 </body>
