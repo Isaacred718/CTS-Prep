@@ -42,6 +42,47 @@ function md(src) {
 }
 const isAdv = d => d.indexOf('Advanced:') === 0;
 const tagCls = d => 'tag' + (isAdv(d) ? ' adv' : '');
+/* ---------- certification helpers ----------
+   Every question carries q.cert ('CTS' | 'CTS-D' | 'CTS-I'). certOf() defaults
+   to 'CTS' so banks written before the cert field existed keep working. */
+const CERTS = ['CTS', 'CTS-D', 'CTS-I'];
+const certOf = q => (q && q.cert) || 'CTS';
+function domainsForCert(cert) {
+  return domainsOf(QUESTIONS.filter(q => cert === '__all' || certOf(q) === cert)).map(([d]) => d);
+}
+function countForCert(cert) {
+  return QUESTIONS.filter(q => certOf(q) === cert).length;
+}
+/* Pure question selection for the practice-test generator (DOM-free, so it can
+   be unit-tested). pool = cert-filtered candidates, selected = domain names. */
+function selectQuestions(pool, selected, tLen, tMix) {
+  const byDom = {};
+  selected.forEach(d => { byDom[d] = pool.filter(q => q.domain === d); });
+  let picked = [];
+  if (tMix === 'balanced') {
+    // round-robin across the selected domains so each is represented
+    const pools = Object.entries(byDom).map(([, arr]) => shuffle(arr));
+    let progressed = true;
+    while (picked.length < tLen && progressed) {
+      progressed = false;
+      for (const p of pools) {
+        if (picked.length >= tLen) break;
+        if (p.length) { picked.push(p.pop()); progressed = true; }
+      }
+    }
+  } else {
+    // pure random draw from the combined pool of selected domains
+    picked = sampleNoRepeat(selected.flatMap(d => byDom[d] || []), tLen);
+  }
+  return { picked: shuffle(picked), capped: picked.length < tLen };
+}
+function pushHistory(entry) {
+  try {
+    const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
+    hist.unshift(entry);
+    localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
+  } catch (e) {}
+}
 function domainsOf(list) {
   const m = new Map();
   list.forEach(q => m.set(q.domain, (m.get(q.domain) || 0) + 1));
@@ -122,18 +163,26 @@ const CAREERS = [
   { title: 'Broadcast Systems Engineer',
     domains: ['Advanced: ST 2110 Suite', 'CTS: Video & Signal', 'Advanced: Dante & AES67'],
     why: 'Builds IP-based broadcast and live-production workflows.' },
+  { title: 'AV Design Engineer',
+    domains: ['CTS-D: Needs Assessment', 'CTS-D: AV System Design', 'CTS-D: Design Calculations'],
+    why: 'Develops AV designs from needs assessment through calculations and documentation. (CTS-D track)' },
+  { title: 'Lead AV Installer',
+    domains: ['CTS-I: Rack Build & Wiring', 'CTS-I: Configuration & Networking', 'CTS-I: Testing & Calibration'],
+    why: 'Leads installation crews: racks, termination, configuration and system verification. (CTS-I track)' },
 ];
 
 /* ---------- overview ---------- */
 (function overview() {
-  $('hdr-stats').textContent = `${QUESTIONS.length} questions · ${CARDS.length} cards · ${typeof DRILLS !== 'undefined' ? DRILLS.length : 0} drills`;
+  $('hdr-stats').textContent =
+    `${countForCert('CTS')} CTS · ${countForCert('CTS-D')} CTS-D · ${countForCert('CTS-I')} CTS-I · ` +
+    `${CARDS.length} cards · ${typeof DRILLS !== 'undefined' ? DRILLS.length : 0} drills`;
   $('ov-stats').innerHTML =
     statBox(QUESTIONS.length, 'questions') + statBox(CARDS.length, 'flashcards') + statBox(GUIDES.length, 'guides') + statBox(typeof DRILLS !== 'undefined' ? DRILLS.length : 0, 'drills');
   function statBox(v, l) { return `<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`; }
   $('ov-blurb').textContent =
     'Merged from the CTS-Prep and cts-study banks, with full explanations on every question, ' +
-    'new coverage of needs analysis, design, project management, customer relations, troubleshooting and closeout, ' +
-    'plus a practice-test generator that builds a fresh randomized exam every time.';
+    'plus 104 CTS-D design questions and 103 CTS-I installation questions grounded in the official AVIXA ' +
+    'content outlines. The practice-test generator filters by certification and builds a fresh randomized exam every time.';
   $('ov-domains').innerHTML = domainsOf(QUESTIONS).map(([d, n]) => {
     const pct = Math.round(100 * n / QUESTIONS.length);
     return `<div class="dbar"><div class="dlbl"><span>${esc(d)}</span><span>${n}</span></div>` +
@@ -141,13 +190,15 @@ const CAREERS = [
   }).join('');
   renderHistory();
   renderReadiness();
+  const rc = $('r-cert');
+  if (rc) rc.addEventListener('change', () => { try { renderReadiness(); } catch (e) {} });
 })();
 function renderHistory() {
   let hist = [];
   try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) {}
   if (!hist.length) return;
   $('ov-history').innerHTML = hist.slice(0, 5).map(h =>
-    `<div class="hist-row"><span>${esc(h.date)} · ${h.n}Q ${esc(h.mode)}</span>` +
+    `<div class="hist-row"><span>${esc(h.date)} · ${h.n}Q ${esc(h.mode)}${h.cert ? ' · ' + esc(h.cert) : ''}</span>` +
     `<strong class="${h.score >= 70 ? 'pass' : 'fail'}">${h.score}%</strong></div>`
   ).join('');
 }
@@ -158,12 +209,12 @@ function renderHistory() {
    (% of the domain's cards in Leitner box 4 or 5). With only one signal available,
    that signal carries full weight; with none, the domain reports "No data yet".
    Overall = mean of domains with data. Bands echo the 70% pass heuristic. */
-function computeReadiness() {
+function computeReadiness(cert) {
   let hist = [];
   try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) { hist = []; }
   let boxes = {};
   try { boxes = JSON.parse(localStorage.getItem('cts_leitner_v1') || '{}'); } catch (e) { boxes = {}; }
-  const per = domainsOf(QUESTIONS).map(([d]) => {
+  const per = domainsOf(QUESTIONS.filter(q => !cert || cert === '__all' || certOf(q) === cert)).map(([d]) => {
     let c = 0, t = 0; // pooled test performance for this domain
     hist.forEach(h => {
       const hd = h && h.domains && h.domains[d];
@@ -204,7 +255,9 @@ function readyColor(score) {
 function renderReadiness() {
   const el = $('ov-readiness');
   if (!el) return;
-  const { per, overall } = computeReadiness();
+  const rc = $('r-cert');
+  const cert = rc ? rc.value : '__all';
+  const { per, overall } = computeReadiness(cert);
   const b = readyBand(overall);
   const rows = per.slice().sort((a, c) =>
     (a.score === null ? 9999 : a.score) - (c.score === null ? 9999 : c.score));
@@ -489,15 +542,20 @@ function reviewItem(q, picked) {
 const PTest = (function () {
   let qs = [], i = 0, answers = [], timer = null, meta = {};
 
-  const allDomains = domainsOf(QUESTIONS).map(([d]) => d);
-  const grid = $('t-domain-grid');
-  allDomains.forEach(d => {
-    const lab = document.createElement('label');
-    lab.innerHTML = `<input type="checkbox" value="${esc(d)}" checked> ${esc(d)}`;
-    grid.appendChild(lab);
-  });
-  $('t-dom-all').addEventListener('click', () => grid.querySelectorAll('input').forEach(c => c.checked = true));
-  $('t-dom-none').addEventListener('click', () => grid.querySelectorAll('input').forEach(c => c.checked = false));
+  let tCert = 'CTS'; // default preserves the pre-expansion behavior (CTS bank only)
+  const domGrid = $('t-domain-grid');
+  function rebuildDomainGrid() {
+    domGrid.innerHTML = '';
+    domainsForCert(tCert).forEach(d => {
+      const lab = document.createElement('label');
+      lab.innerHTML = `<input type="checkbox" value="${esc(d)}" checked> ${esc(d)}`;
+      domGrid.appendChild(lab);
+    });
+  }
+  rebuildDomainGrid();
+  $('t-cert').addEventListener('change', e => { tCert = e.target.value; rebuildDomainGrid(); });
+  $('t-dom-all').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => c.checked = true));
+  $('t-dom-none').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => c.checked = false));
 
   let tLen = 50, tMix = 'balanced';
   const perQ = 150 / 110; // minutes per question, from the full-sim default
@@ -513,28 +571,13 @@ const PTest = (function () {
   $('t-timer').value = Math.round(50 * perQ);
 
   function buildTest() {
-    // selected domains drive both mix modes; nothing checked = all domains
-    const checked = [...grid.querySelectorAll('input:checked')].map(c => c.value);
-    const selected = checked.length ? checked : allDomains;
-    const byDom = {};
-    selected.forEach(d => { byDom[d] = QUESTIONS.filter(q => q.domain === d); });
-    let picked = [];
-    if (tMix === 'balanced') {
-      // round-robin across the selected domains so each is represented
-      const pools = Object.entries(byDom).map(([d, arr]) => shuffle(arr));
-      let progressed = true;
-      while (picked.length < tLen && progressed) {
-        progressed = false;
-        for (const pool of pools) {
-          if (picked.length >= tLen) break;
-          if (pool.length) { picked.push(pool.pop()); progressed = true; }
-        }
-      }
-    } else {
-      // pure random draw from the combined pool of selected domains
-      picked = sampleNoRepeat(selected.flatMap(d => byDom[d]), tLen);
-    }
-    return { picked: shuffle(picked), selected, capped: picked.length < tLen };
+    // selected domains drive both mix modes; nothing checked = all domains of the selected cert
+    const checked = [...domGrid.querySelectorAll('input:checked')].map(c => c.value);
+    const allDoms = domainsForCert(tCert);
+    const selected = checked.length ? checked : allDoms;
+    const pool = QUESTIONS.filter(q => tCert === '__all' || certOf(q) === tCert);
+    const { picked, capped } = selectQuestions(pool, selected, tLen, tMix);
+    return { picked, selected, capped };
   }
 
   $('t-start').addEventListener('click', () => {
@@ -616,12 +659,8 @@ const PTest = (function () {
       .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
     $('tr-review-list').style.display = 'none';
     $('tr-review-list').innerHTML = qs.map((q, idx) => reviewItem(q, answers[idx])).join('');
-    // history
-    try {
-      const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
-      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode, domains: byDom });
-      localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
-    } catch (e) {}
+    // history — new entries carry the certification; old entries without `cert` keep working
+    pushHistory({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode, cert: tCert, domains: byDom });
     notifyProgress();
     renderHistory();
     window.scrollTo(0, 0);

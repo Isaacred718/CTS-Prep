@@ -42,6 +42,13 @@
     </div>
     <div class="card">
       <h2>Exam Readiness</h2>
+      <label class="f-label">Certification</label>
+      <select id="r-cert">
+        <option value="__all" selected>All certifications</option>
+        <option value="CTS">CTS</option>
+        <option value="CTS-D">CTS-D</option>
+        <option value="CTS-I">CTS-I</option>
+      </select>
       <div id="ov-readiness"><p class="muted">Take a practice test or drill flashcards to generate your readiness signal.</p></div>
     </div>
     <div class="card">
@@ -157,6 +164,13 @@
         <button data-n="50" class="on">Standard · 50</button>
         <button data-n="110">Full exam sim · 110</button>
       </div>
+      <label class="f-label">Certification</label>
+      <select id="t-cert">
+        <option value="CTS" selected>CTS</option>
+        <option value="CTS-D">CTS-D</option>
+        <option value="CTS-I">CTS-I</option>
+        <option value="__all">All certifications</option>
+      </select>
       <label class="f-label">Domains <span class="muted small">— tap to include / exclude</span></label>
       <div class="btnrow" style="margin-bottom:4px">
         <button class="btn sec small" id="t-dom-all">All</button>
