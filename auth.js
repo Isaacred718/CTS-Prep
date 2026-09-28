@@ -21,7 +21,7 @@ var PUSH_DEBOUNCE_MS = 2000;
 
 function $(id) { return document.getElementById(id); }
 
-var auth = null, db = null, user = null;
+var auth = null, db = null, user = null, authReady = false;
 var pushTimer = null;
 
 /* ---------- sync status indicator (header) ---------- */
@@ -40,6 +40,43 @@ function isStandalone() {
   if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
   if (window.navigator && window.navigator.standalone === true) return true; // older iOS
   return false;
+}
+
+/* ---------- iOS home-screen auth handoff ----------
+   iOS bounces OAuth out of standalone web apps into Safari: the redirect
+   completes in Safari and the home-screen app never sees it. So before
+   redirecting we mark a handoff in localStorage (site data is shared
+   between Safari and the home-screen app for the same origin). When the
+   user returns to the home-screen app it reloads once to pick up the
+   session Safari just created; Safari itself shows a "go back" banner. */
+var HANDOFF_KEY = 'cts_auth_handoff';
+var HANDOFF_TTL_MS = 2 * 3600 * 1000;
+function markHandoff() { try { localStorage.setItem(HANDOFF_KEY, String(Date.now())); } catch (e) {} }
+function readHandoff() {
+  try {
+    var t = +localStorage.getItem(HANDOFF_KEY);
+    if (t && (Date.now() - t) < HANDOFF_TTL_MS) return t;
+  } catch (e) {}
+  return 0;
+}
+function clearHandoff() { try { localStorage.removeItem(HANDOFF_KEY); } catch (e) {} }
+// Pure decision, unit-testable: should the standalone app reload when it becomes visible?
+function shouldReloadOnReturn(o) {
+  return !!(o && o.visible && o.standalone && o.authReady && !o.hasUser && o.handoff);
+}
+function showHandoffBanner() {
+  if ($('cts-handoff-banner') || !document.body) return;
+  var d = document.createElement('div');
+  d.id = 'cts-handoff-banner';
+  d.setAttribute('style', 'position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;' +
+    'background:#10241a;color:#e8f5ec;border:1px solid #2ecc71;border-radius:14px;' +
+    'padding:14px 16px;font:15px/1.45 system-ui,-apple-system,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.45)');
+  d.innerHTML = '<b>Signed in \u2713</b><br><span style="opacity:.85">Now switch back to your home-screen app ' +
+    '\u2014 you\u2019re signed in there too, and your progress will sync.</span>' +
+    '<br><button id="cts-handoff-ok" style="margin-top:10px;padding:8px 18px;border-radius:10px;border:0;' +
+    'background:#2ecc71;color:#06281a;font-weight:700;font-size:15px">Got it</button>';
+  document.body.appendChild(d);
+  $('cts-handoff-ok').addEventListener('click', function () { d.remove(); });
 }
 
 /* ---------- merge decision: pure function, newer updatedAt wins ----------
@@ -146,6 +183,9 @@ function signIn() {
   setStatus('busy', 'Signing in…');
   if (isStandalone()) {
     // iOS home-screen web apps: popups don't work — redirect straight away.
+    // iOS will bounce the OAuth into Safari; mark the handoff so the return
+    // trip reloads the app and picks up the session Safari created.
+    markHandoff();
     auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
     return;
   }
@@ -191,16 +231,38 @@ function init() {
 
   auth.onAuthStateChanged(function (u) {
     user = u;
+    authReady = true;
     renderAuth();
-    if (u) syncOnSignIn(u);
+    if (u) {
+      if (!isStandalone() && readHandoff()) showHandoffBanner(); // just came back from the home-screen handoff
+      clearHandoff();
+      syncOnSignIn(u);
+    }
     else setStatus('', 'Signed out');
   });
+
+  // Returning to the home-screen app after the Safari round-trip: reload once
+  // so the shared-site-data session is picked up. Only fires on a real
+  // hide -> show transition (or bfcache restore), never in a loop.
+  function maybeReloadOnReturn() {
+    if (shouldReloadOnReturn({
+      visible: !document.hidden,
+      standalone: isStandalone(),
+      authReady: authReady,
+      hasUser: !!(auth && auth.currentUser),
+      handoff: !!readHandoff()
+    })) location.reload();
+  }
+  document.addEventListener('visibilitychange', maybeReloadOnReturn);
+  window.addEventListener('pageshow', function (e) { if (e.persisted) maybeReloadOnReturn(); });
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 
 // exposed for unit-testing the merge logic without a browser
-window.CTSAuth = { decideSync: decideSync, isStandalone: isStandalone, collection: COLLECTION };
+window.CTSAuth = { decideSync: decideSync, isStandalone: isStandalone, collection: COLLECTION,
+  markHandoff: markHandoff, readHandoff: readHandoff, clearHandoff: clearHandoff,
+  shouldReloadOnReturn: shouldReloadOnReturn };
 
 })();
