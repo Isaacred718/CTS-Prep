@@ -21,7 +21,7 @@ var PUSH_DEBOUNCE_MS = 2000;
 
 function $(id) { return document.getElementById(id); }
 
-var auth = null, db = null, user = null, authReady = false;
+var auth = null, db = null, user = null, authReady = false, firstAuthResolved = false;
 var pushTimer = null;
 
 /* ---------- sync status indicator (header) ---------- */
@@ -60,9 +60,46 @@ function readHandoff() {
   return 0;
 }
 function clearHandoff() { try { localStorage.removeItem(HANDOFF_KEY); } catch (e) {} }
+// One-shot guard so the return-trip reload can never loop: one reload per handoff.
+var HANDOFF_RELOAD_KEY = 'cts_auth_handoff_reloaded';
+function handoffReloadDone(t) { try { return localStorage.getItem(HANDOFF_RELOAD_KEY) === String(t); } catch (e) { return false; } }
+function markHandoffReloadDone(t) { try { localStorage.setItem(HANDOFF_RELOAD_KEY, String(t)); } catch (e) {} }
+function clearHandoffReloaded() { try { localStorage.removeItem(HANDOFF_RELOAD_KEY); } catch (e) {} }
 // Pure decision, unit-testable: should the standalone app reload when it becomes visible?
 function shouldReloadOnReturn(o) {
-  return !!(o && o.visible && o.standalone && o.authReady && !o.hasUser && o.handoff);
+  return !!(o && o.visible && o.standalone && o.authReady && !o.hasUser && o.handoff && !o.reloaded);
+}
+/* ---------- sessionStorage mirror for the Firebase redirect flow ----------
+   Firebase's signInWithRedirect keeps its pending state in sessionStorage,
+   which does NOT survive the standalone -> Safari hop (per-tab storage).
+   Mirror every sessionStorage write into localStorage (shared site data on
+   iOS 16.4+) and restore it on load, so Safari's getRedirectResult() can
+   actually complete the sign-in the home-screen app started. */
+var FBSS_PREFIX = 'fbss:';
+function restoreFirebaseSessionStorage() {
+  try {
+    Object.keys(localStorage).forEach(function (k) {
+      if (k.indexOf(FBSS_PREFIX) === 0) {
+        var sk = k.slice(FBSS_PREFIX.length);
+        if (!sessionStorage.getItem(sk)) sessionStorage.setItem(sk, localStorage.getItem(k));
+      }
+    });
+  } catch (e) {}
+}
+function installFirebaseSessionStorageMirror() {
+  try {
+    restoreFirebaseSessionStorage();
+    var origSet = sessionStorage.setItem.bind(sessionStorage);
+    var origRemove = sessionStorage.removeItem.bind(sessionStorage);
+    sessionStorage.setItem = function (key, value) {
+      origSet(key, value);
+      try { localStorage.setItem(FBSS_PREFIX + key, value); } catch (e) {}
+    };
+    sessionStorage.removeItem = function (key) {
+      origRemove(key);
+      try { localStorage.removeItem(FBSS_PREFIX + key); } catch (e) {}
+    };
+  } catch (e) {}
 }
 function showHandoffBanner() {
   if ($('cts-handoff-banner') || !document.body) return;
@@ -217,6 +254,7 @@ function init() {
   if (window.CTS) window.CTS.onChange = schedulePush; // debounced cloud write on local progress
 
   if (!window.firebase) { setStatus('', 'Offline'); return; } // CDN blocked / file:// without network
+  installFirebaseSessionStorageMirror(); // before getRedirectResult: restores the redirect state after the Safari hop
   try {
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   } catch (e) { setStatus('', 'Offline'); return; }
@@ -234,24 +272,37 @@ function init() {
     authReady = true;
     renderAuth();
     if (u) {
-      if (!isStandalone() && readHandoff()) showHandoffBanner(); // just came back from the home-screen handoff
-      clearHandoff();
+      if (isStandalone()) {
+        clearHandoff(); // handoff consumed: this app now holds the session
+        clearHandoffReloaded();
+      } else if (readHandoff()) {
+        showHandoffBanner(); // round-trip finished here (Safari); the home-screen app still needs the marker
+      }
       syncOnSignIn(u);
     }
     else setStatus('', 'Signed out');
+    if (!firstAuthResolved) {
+      firstAuthResolved = true;
+      // Load-time check too: iOS may have killed the app in the background,
+      // relaunching it fresh on return (no visibilitychange fires). Delay a
+      // beat so the SDK can restore the shared session first.
+      setTimeout(maybeReloadOnReturn, 1200);
+    }
   });
 
   // Returning to the home-screen app after the Safari round-trip: reload once
-  // so the shared-site-data session is picked up. Only fires on a real
-  // hide -> show transition (or bfcache restore), never in a loop.
+  // so the shared-site-data session is picked up. One reload per handoff max,
+  // so this can never loop.
   function maybeReloadOnReturn() {
+    var t = readHandoff();
     if (shouldReloadOnReturn({
       visible: !document.hidden,
       standalone: isStandalone(),
       authReady: authReady,
       hasUser: !!(auth && auth.currentUser),
-      handoff: !!readHandoff()
-    })) location.reload();
+      handoff: !!t,
+      reloaded: handoffReloadDone(t)
+    })) { markHandoffReloadDone(t); location.reload(); }
   }
   document.addEventListener('visibilitychange', maybeReloadOnReturn);
   window.addEventListener('pageshow', function (e) { if (e.persisted) maybeReloadOnReturn(); });
@@ -263,6 +314,10 @@ else init();
 // exposed for unit-testing the merge logic without a browser
 window.CTSAuth = { decideSync: decideSync, isStandalone: isStandalone, collection: COLLECTION,
   markHandoff: markHandoff, readHandoff: readHandoff, clearHandoff: clearHandoff,
+  handoffReloadDone: handoffReloadDone, markHandoffReloadDone: markHandoffReloadDone,
+  clearHandoffReloaded: clearHandoffReloaded,
+  installFirebaseSessionStorageMirror: installFirebaseSessionStorageMirror,
+  restoreFirebaseSessionStorage: restoreFirebaseSessionStorage,
   shouldReloadOnReturn: shouldReloadOnReturn };
 
 })();
