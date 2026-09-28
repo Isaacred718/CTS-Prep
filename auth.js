@@ -366,10 +366,17 @@ function signIn() {
     auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
     // iOS opens the OAuth in an overlay sheet instead of navigating away,
     // so this page stays alive. If we're still here and signed-out 15s
-    // later, the sheet likely stalled: tell the user how to finish in Safari.
+    // later, the sheet likely stalled: start waiting (in case it actually
+    // completed) and tell the user how to finish in Safari.
     setTimeout(function () {
+      if (auth.currentUser || waiting) return;
+      handleReturnTrip(); // enters waiting mode if the handoff is fresh
       if (!auth.currentUser && !waiting) {
+        // No fresh handoff (or waiting already gave up): show the manual path.
         setStatus('busy', 'If the Google window is blank: tap compass, Open in Safari');
+      } else if (!auth.currentUser) {
+        // Waiting is running; make its status carry the Safari fallback.
+        setStatus('busy', 'Completing sign-in… (blank window? tap compass, Open in Safari)');
       }
     }, 15000);
     return;
