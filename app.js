@@ -794,4 +794,217 @@ const Drills = (function () {
   return {};
 })();
 
+/* ---------- endless adaptive mode ----------
+   Difficulty 1-5 is auto-tagged per question at load (length + signal words).
+   The player's level floats 1.0-5.0: correct answers push it up, misses pull
+   it down, and the next question is drawn from the bucket nearest the level.
+   Questions seen before in a run come back rephrased (stem rewrite + shuffled
+   options). The HUD tracks level, streak and rolling accuracy in real time.
+   Quitting pushes a history entry so the run feeds exam readiness like any
+   other practice. */
+(function tagDifficulty() {
+  QUESTIONS.forEach((q, i) => { q._qi = i; });
+  const HARD = /calculat|scenario|troubleshoot|commission|best practice|most likely|except|difference between|compare|sequence|how many|how much|how long|how far/i;
+  const EASY = /^(what is|what are|what does|which (cable|connector)|what do the letters)/i;
+  QUESTIONS.forEach(q => {
+    let d = 2;
+    if (q.q.length > 90) d++;
+    if (q.q.length > 140) d++;
+    if (HARD.test(q.q)) d++;
+    if (EASY.test(q.q)) d--;
+    const avgOpt = q.options.reduce((a, o) => a + o.length, 0) / q.options.length;
+    if (avgOpt > 45) d++;
+    q._diff = Math.min(5, Math.max(1, d));
+  });
+})();
+
+const LEVEL_NAMES = ['Foundations', 'Core Knowledge', 'Proficient', 'Advanced', 'Expert'];
+
+const Endless = (function () {
+  const seen = {}; // _qi -> times answered this run
+  let pool = [], recent = [];
+  let eCert = 'CTS';
+  let level = 1, peak = 1, streak = 0, bestStreak = 0;
+  let correct = 0, total = 0, win = [], cur = null, byDom = {};
+
+  const BEST_KEY = 'cts_endless_best';
+  function getBest() { try { return JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch (e) { return {}; } }
+  function renderBest() {
+    const b = getBest()[eCert];
+    $('e-best').textContent = b ? `Personal best on this cert: Lv ${b} · ${LEVEL_NAMES[b - 1]}` : 'No runs yet on this cert — set the bar.';
+  }
+  $('e-cert').addEventListener('change', e => { eCert = e.target.value; renderBest(); });
+  renderBest();
+
+  const diffPips = d => '●'.repeat(d) + '○'.repeat(5 - d);
+  const levelName = () => LEVEL_NAMES[Math.min(4, Math.max(0, Math.round(level) - 1))];
+
+  /* --- rephrase engine: meaning-preserving rewrites, rotated by repeat count --- */
+  const lcfirst = s => s.charAt(0).toLowerCase() + s.slice(1);
+  const REWRITES = [
+    [/^What is ([^?]+)\?$/i, 'Which of the following best describes $1?'],
+    [/^What are ([^?]+)\?$/i, 'Which of the following best describes $1?'],
+    [/^Which of the following is NOT ([^?]+)\?$/i, 'All of the following are $1 EXCEPT:']
+  ];
+  const FALLBACKS = [
+    s => 'Quick check: ' + lcfirst(s),
+    s => 'On a real project, ' + lcfirst(s),
+    s => 'Think it through: ' + lcfirst(s),
+    s => 'You are on site and ' + lcfirst(s)
+  ];
+  function rephrase(q, n) {
+    // odd repeats use a pattern-matching rewrite when one fits; even repeats
+    // use a cosmetic fallback, so back-to-back repeats never read identically
+    const matches = REWRITES.filter(rw => rw[0].test(q.q));
+    if (matches.length && n % 2 === 1) {
+      const rw = matches[Math.floor((n - 1) / 2) % matches.length];
+      return q.q.replace(rw[0], rw[1]);
+    }
+    return FALLBACKS[(n - 1) % FALLBACKS.length](q.q);
+  }
+
+  function pick() {
+    const target = Math.round(level);
+    const cands = pool.length > recent.length ? pool.filter(q => recent.indexOf(q) === -1) : pool.slice();
+    let best = null, bestScore = 1e9;
+    for (const q of cands) {
+      let s = Math.abs(q._diff - target) + Math.random() * 0.6;
+      if (seen[q._qi]) s += 1.5; // prefer unseen questions
+      if (s < bestScore) { bestScore = s; best = q; }
+    }
+    return best;
+  }
+
+  function hud(bump) {
+    const lv = Math.round(level);
+    const el = $('e-level');
+    el.textContent = 'Lv ' + lv;
+    if (bump) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+    $('e-level-name').textContent = levelName();
+    $('e-lvbar').style.width = (level >= 5 ? 100 : Math.round(100 * (level - Math.floor(level)))) + '%';
+    $('e-streak').textContent = streak > 1 ? '🔥 ' + streak : '';
+    $('e-acc').textContent = win.length ? Math.round(100 * win.filter(Boolean).length / win.length) + '% last ' + win.length : '—';
+    $('e-score').textContent = correct + '/' + total;
+  }
+
+  function show() {
+    cur = pick();
+    if (!cur) { finish(); return; }
+    recent.push(cur); if (recent.length > 30) recent.shift();
+    const n = seen[cur._qi] || 0;
+    const text = n ? rephrase(cur, n) : cur.q;
+    const order = shuffle(cur.options.map((_, oi) => oi));
+    cur._shown = { text, order, rephrased: n > 0 };
+    $('e-pos').textContent = 'Question ' + (total + 1) + ' · endless';
+    $('e-diff').textContent = diffPips(cur._diff);
+    $('e-tag').className = tagCls(cur.domain);
+    $('e-tag').textContent = cur.domain;
+    const rp = $('e-reph');
+    rp.style.display = cur._shown.rephrased ? '' : 'none';
+    $('e-q').textContent = text;
+    $('e-explain').style.display = 'none';
+    $('e-next').style.display = 'none';
+    const box = $('e-opts'); box.innerHTML = '';
+    order.forEach(oi => {
+      const b = document.createElement('button');
+      b.className = 'option'; b.textContent = cur.options[oi];
+      b.dataset.oi = oi;
+      b.addEventListener('click', () => answer(oi, b));
+      box.appendChild(b);
+    });
+    hud(false);
+    window.scrollTo(0, 0);
+  }
+
+  function answer(oi, btn) {
+    const ok = oi === cur.correct;
+    seen[cur._qi] = (seen[cur._qi] || 0) + 1;
+    total++; win.push(ok); if (win.length > 10) win.shift();
+    const d = cur.domain;
+    byDom[d] = byDom[d] || { c: 0, t: 0 };
+    byDom[d].t++; if (ok) byDom[d].c++;
+    let moved;
+    if (ok) {
+      correct++; streak++; bestStreak = Math.max(bestStreak, streak);
+      level = Math.min(5, level + 0.35 + (streak >= 3 ? 0.15 : 0));
+      moved = 'up';
+    } else {
+      streak = 0;
+      level = Math.max(1, level - 0.5);
+      moved = 'down';
+    }
+    peak = Math.max(peak, Math.round(level));
+    [...$('e-opts').children].forEach(b => {
+      b.disabled = true;
+      const idxOpt = +b.dataset.oi;
+      if (idxOpt === cur.correct) b.classList.add('correct');
+      else if (b === btn) b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+    const ex = $('e-explain');
+    ex.innerHTML = `<div class="explain"><strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(cur.explanation)}` +
+      `<div class="small muted" style="margin-top:6px">Level ${moved} → Lv ${Math.round(level)} · ${levelName()}</div></div>`;
+    ex.style.display = '';
+    $('e-next').style.display = '';
+    hud(true);
+  }
+
+  function start() {
+    pool = QUESTIONS.filter(q => eCert === '__all' || certOf(q) === eCert);
+    if (!pool.length) { alert('No questions for this certification.'); return; }
+    recent = []; level = 1; peak = 1; streak = 0; bestStreak = 0;
+    correct = 0; total = 0; win = []; byDom = {};
+    for (const k in seen) delete seen[k];
+    $('endless-setup').style.display = 'none';
+    $('endless-results').style.display = 'none';
+    $('endless-run').style.display = '';
+    show();
+  }
+
+  function finish() {
+    $('endless-run').style.display = 'none';
+    $('endless-results').style.display = '';
+    const pct = total ? Math.round(100 * correct / total) : 0;
+    $('er-level').textContent = 'Lv ' + peak;
+    $('er-level-name').textContent = 'Peak level · ' + LEVEL_NAMES[peak - 1];
+    $('er-score').textContent = correct + '/' + total + ' correct (' + pct + '%)';
+    $('er-streak').textContent = 'Best streak: ' + bestStreak;
+    $('er-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
+      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    if (total > 0) {
+      pushHistory({ date: new Date().toLocaleDateString(), n: total, score: pct, mode: 'endless', cert: eCert, domains: byDom });
+      notifyProgress();
+      renderHistory();
+      const bb = getBest();
+      if (!bb[eCert] || peak > bb[eCert]) { bb[eCert] = peak; try { localStorage.setItem(BEST_KEY, JSON.stringify(bb)); } catch (e) {} }
+    }
+    renderBest();
+    window.scrollTo(0, 0);
+  }
+
+  $('e-start').addEventListener('click', start);
+  $('e-next').addEventListener('click', show);
+  $('e-quit').addEventListener('click', () => {
+    if (!total || confirm('End this run? Your progress so far will be saved.')) finish();
+  });
+  $('er-again').addEventListener('click', () => {
+    $('endless-results').style.display = 'none';
+    $('endless-setup').style.display = '';
+  });
+  $('er-done').addEventListener('click', () => {
+    $('endless-results').style.display = 'none';
+    $('endless-setup').style.display = '';
+  });
+  // read-only test hook, only present when opened from disk (never on the live site)
+  if (typeof window !== 'undefined' && location.protocol === 'file:') {
+    window.__endless = {
+      state: () => ({ level, peak, streak, bestStreak, correct, total, diff: cur ? cur._diff : null }),
+      correctIndex: () => (cur ? cur.correct : -1),
+      questionText: () => (cur && cur._shown ? cur._shown.text : ''),
+      rephrase: (q, n) => rephrase(typeof q === 'number' ? QUESTIONS[q] : q, n)
+    };
+  }
+  return {};
+})();
+
 })();

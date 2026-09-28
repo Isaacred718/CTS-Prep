@@ -209,3 +209,14 @@ header h1{flex:none}
 .google-btn:active{opacity:.85}
 .google-btn svg{width:16px;height:16px;flex:0 0 auto}
 @media(max-width:560px){.auth-name{display:none}.sync-label{display:none}}
+
+/* ---------- endless adaptive mode ---------- */
+.e-hud-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.e-level{font-size:1.7rem;font-weight:800;color:var(--blue);line-height:1.1;transition:transform .2s}
+.e-level.bump{transform:scale(1.25)}
+.e-level-name{font-size:.75rem;color:var(--muted)}
+.e-hud-stats{text-align:right}
+#e-streak{font-weight:700;font-size:1.05rem}
+.e-lvbar{margin:4px 0 0}
+.e-diff{color:var(--amber);letter-spacing:3px;font-size:.8rem;white-space:nowrap}
+.e-reph{background:rgba(167,139,250,.16)!important;color:var(--violet)!important;border:1px solid rgba(167,139,250,.45)}
