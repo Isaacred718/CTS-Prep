@@ -10,6 +10,24 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- Instant sign-in splash: if Safari loaded this page to complete a home-screen
+     app sign-in handoff, show it immediately (before any scripts) so the user
+     waits instead of switching back early. Hidden by auth.js when auth resolves. -->
+<div id="handoff-splash" style="display:none;position:fixed;inset:0;z-index:10000;background:#0f172a;color:#e8f5ec;align-items:center;justify-content:center;text-align:center;padding:24px;font-family:system-ui,-apple-system,sans-serif">
+  <div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px">Completing sign-in&hellip;</div>
+    <div style="font-size:14px;opacity:.8">Please wait a moment, then return to your<br>home-screen app. You will be signed in there too.</div>
+  </div>
+</div>
+<script>
+try {
+  var __t = +localStorage.getItem('cts_auth_handoff');
+  var __std = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+  if (__t && (Date.now() - __t) < 7200000 && !__std) {
+    document.getElementById('handoff-splash').style.display = 'flex';
+  }
+} catch (e) {}
+</script>
 <header>
   <div class="hdr-title">
     <h1>CTS Prep</h1>
@@ -327,12 +345,14 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="data/questions.js"></script>
-<script src="data/cards.js"></script>
-<script src="data/guides.js"></script>
-<script src="data/drills.js"></script>
-<script src="forge.js"></script>
-<script src="app.js"></script>
-<script src="auth.js?v=2"></script>
+<!-- auth.js first (not deferred): Safari must complete the redirect sign-in ASAP.
+     The heavy question-bank scripts are deferred so they don't block it. -->
+<script src="auth.js?v=3"></script>
+<script src="data/questions.js" defer></script>
+<script src="data/cards.js" defer></script>
+<script src="data/guides.js" defer></script>
+<script src="data/drills.js" defer></script>
+<script src="forge.js" defer></script>
+<script src="app.js" defer></script>
 </body>
 </html>
