@@ -46,6 +46,34 @@ function setStatus(mode, label) {
   dot.title = label || 'Sync status';
 }
 
+/* ---------- offline mode ----------
+   A service worker (sw.js) caches the app shell so it loads with no
+   internet. Everything except Google sign-in and cloud sync works offline;
+   progress keeps saving to localStorage and syncs when back online. */
+function updateOfflineUI() {
+  var offline = !navigator.onLine;
+  var badge = $('offline-badge');
+  if (badge) badge.style.display = offline ? '' : 'none';
+  var btnIn = $('btn-signin');
+  if (btnIn) {
+    btnIn.disabled = offline;
+    btnIn.title = offline ? 'Sign-in needs internet' : '';
+    btnIn.style.opacity = offline ? '.5' : '';
+  }
+  // Don't stomp a more specific status (signing in, syncing, error).
+  var lab = $('sync-label');
+  if (offline && lab && !lab.textContent) {
+    setStatus('', 'Offline — progress saves on this device');
+  }
+}
+window.addEventListener('online', function () {
+  var badge = $('offline-badge');
+  if (badge) badge.style.display = 'none';
+  setStatus('', '');
+  if (typeof syncOnSignIn === 'function' && user) syncOnSignIn(user);
+});
+window.addEventListener('offline', updateOfflineUI);
+
 /* ---------- standalone / PWA detection ----------
    Home-screen web apps (iOS "Add to Home Screen", Android TWA-ish installs)
    cannot open OAuth popups, so sign-in must go through the redirect flow. */
@@ -465,6 +493,7 @@ function initDom() {
   if (btnOut) btnOut.addEventListener('click', signOut);
   wirePush(); // debounced cloud write on local progress
   if (!window.firebase || !auth) setStatus('', 'Offline');
+  updateOfflineUI();
   renderAuth();
 }
 
