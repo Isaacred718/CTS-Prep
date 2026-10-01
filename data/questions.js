@@ -241,10 +241,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is the defining architectural change ST 2110 makes relative to ST 2022-6?",
     "options": [
-      "It compresses video to reduce bandwidth",
+      "It replaces uncompressed SDI with a compressed IP payload to reduce overall network bandwidth",
       "It carries video, audio, and ancillary data as separate essence streams rather than one encapsulated SDI signal",
-      "It replaces PTP with NTP",
-      "It requires fiber rather than copper"
+      "It replaces the PTP precision clocking of ST 2022-6 with standard NTP time synchronization",
+      "It requires single-mode fiber for every link because copper cabling cannot carry separate essence streams"
     ],
     "correct": 1,
     "explanation": "ST 2022-6 wraps a whole SDI signal in IP. ST 2110 splits essences into independent streams that can be routed, shuffled, and processed separately."
@@ -254,10 +254,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What does ST 2110-21 define?",
     "options": [
-      "Ancillary data mapping",
+      "Ancillary data mapping for embedding captions and timecode into 2110 streams",
       "Traffic shaping and sender timing models (narrow, narrow linear, wide)",
-      "Audio channel counts",
-      "Stream encryption"
+      "Audio channel counts and sample rates permitted per 2110 essence stream",
+      "Stream encryption, specifying the cipher suite senders must apply to essence packets"
     ],
     "correct": 1,
     "explanation": "ST 2110-21 specifies sender packet pacing so receivers can size buffers. Narrow senders pace tightly to the video timing; wide senders are burstier and demand more receiver buffer."
@@ -306,10 +306,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "In a PTP domain, what is the role of the Boundary Clock in a leaf-spine media network?",
     "options": [
-      "It generates the master reference from GPS",
+      "It generates the master time reference from a GPS receiver and distributes it as the domain grandmaster",
       "It terminates PTP on one port and regenerates timing to downstream devices, reducing load and jitter on the grandmaster",
-      "It converts PTP to NTP for legacy gear",
-      "It measures multicast bandwidth"
+      "It converts incoming PTP timing to NTP so that legacy devices can synchronize to the media network",
+      "It measures multicast bandwidth on the leaf-spine fabric to detect oversubscription of media flows"
     ],
     "correct": 1,
     "explanation": "A Boundary Clock syncs to the upstream grandmaster and acts as master to devices below it, which scales PTP distribution and limits accumulated jitter."
@@ -319,10 +319,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What does SDP (Session Description Protocol) provide in an ST 2110 workflow?",
     "options": [
-      "Encryption of the media payload",
+      "The encryption keys and cipher suite used to secure the media payload as it crosses the network",
       "The stream's multicast address, port, payload type, and format parameters that let a receiver interpret it",
-      "The physical patch record of the facility",
-      "Automatic switch configuration"
+      "The facility’s physical patch record, mapping every installed cable run to its switch ports",
+      "The automatic switch-configuration instructions that provision VLANs and multicast routing"
     ],
     "correct": 1,
     "explanation": "The SDP file is the contract describing a stream. NMOS IS-05 typically hands SDP data to the receiver during connection management."
@@ -930,10 +930,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Object-based surround sound format?",
     "options": [
-      "5.1",
-      "7.1",
+      "Dolby 5.1",
+      "Dolby 7.1",
       "Dolby Atmos",
-      "DTS"
+      "DTS-HD MA"
     ],
     "correct": 2,
     "explanation": "Dolby Atmos is an object-based format: instead of mixing to fixed channels (like 5.1 or 7.1), sounds are treated as objects with 3D position metadata that the renderer places in the room — including overhead speakers. The playback system adapts the mix to however many speakers are installed. 5.1/7.1 are channel-based; Atmos adds the height/object dimension."
@@ -982,10 +982,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Device discovery protocol?",
     "options": [
-      "DHCP",
-      "DNS",
+      "DHCP server",
+      "DNS server",
       "Bonjour/mDNS",
-      "SMTP"
+      "SMTP relay"
     ],
     "correct": 2,
     "explanation": "Bonjour (Apple's implementation of mDNS/DNS-SD) lets AV devices discover each other on a local network with zero configuration — no DNS server needed. Many AV products (Dante, AirPlay, control systems, printers) rely on it for automatic discovery. DHCP assigns addresses and DNS resolves names, but neither provides service discovery the way mDNS does."
@@ -1320,10 +1320,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Digital audio connector?",
     "options": [
-      "RCA",
-      "XLR",
+      "RCA phono plug",
+      "XLR connector",
       "Optical TOSLINK",
-      "1/4 inch"
+      "1/4-inch TS plug"
     ],
     "correct": 2,
     "explanation": "Optical TOSLINK (Toshiba Link) carries digital audio as pulses of light through fiber, immune to electrical interference and ground loops — a classic fix for hum between a TV and a soundbar. It typically carries stereo PCM or compressed surround (Dolby Digital/DTS). RCA and XLR are analog electrical connectors; TOSLINK is digital optical."
@@ -1632,10 +1632,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What document is the primary deliverable of a completed needs analysis?",
     "options": [
-      "A detailed equipment list with part numbers",
+      "A detailed equipment list with manufacturer part numbers and quoted unit pricing",
       "A needs assessment / program report capturing requirements, constraints, and success criteria",
-      "The final as-built drawings",
-      "A service contract"
+      "The final as-built drawings showing exactly what was installed in the field",
+      "A signed service and maintenance contract covering post-warranty support and response times"
     ],
     "correct": 1,
     "explanation": "The needs assessment (program report) captures what was discovered: business goals, user workflows, technical requirements, constraints, budget range, and how success will be measured. It becomes the foundation the design is built on and the benchmark the final system is judged against — long before any equipment is specified."
@@ -1736,10 +1736,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Why must ambient light levels be measured during the design phase for a projection system?",
     "options": [
-      "Ambient light has no effect on projected images",
+      "Ambient light has no measurable effect on projected images, so measuring it during design adds nothing of value",
       "Projected contrast washes out as ambient light rises, so the design must compensate with brightness, screen selection, or light control",
-      "It determines the projector's throw ratio",
-      "It is only needed for the electrical permit"
+      "Ambient light measurement determines the projector’s throw ratio, which then drives the lens selection for the room",
+      "Ambient light readings are only required to satisfy the electrical permit and have no bearing on the projection design"
     ],
     "correct": 1,
     "explanation": "A projector can't project black — dark areas of the image are just the screen showing ambient light. As ambient light rises, contrast ratio collapses regardless of lumen output. Measuring it tells you whether you need a brighter projector, an ambient-light-rejecting screen, or lighting control — decisions that must happen in design, not after installation."
@@ -1788,10 +1788,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "For a seated audience, how high should the bottom of a presentation screen typically be mounted?",
     "options": [
-      "At floor level for maximum image size",
+      "At floor level, to maximize the projected image size when ceiling height limits the screen placement",
       "High enough to clear seated viewers' sight lines — typically around 42-48 inches above the finished floor",
-      "At the ceiling, regardless of room size",
-      "At seated eye level"
+      "Flush with the ceiling in every room, regardless of room depth, ceiling height, or viewer sight lines",
+      "With the bottom of the screen at seated eye level, so viewers look straight ahead at the image"
     ],
     "correct": 1,
     "explanation": "If the bottom of the image sits below the sight lines of the back rows, those viewers see the backs of heads instead of content. The 42-48 inch guideline keeps the image above a seated audience's heads. Screen height, ceiling height, and projector placement all interact here — it's a three-way design compromise."
@@ -1841,9 +1841,9 @@ const QUESTIONS = [
     "q": "What is an RFI and when is it used?",
     "options": [
       "A Request for Information — used during construction to get clarification on ambiguous or conflicting design documents",
-      "A type of wireless microphone",
-      "A final invoice submitted at closeout",
-      "A radio frequency interference report"
+      "A wireless microphone system — an RF transmitter and receiver pair used for speech reinforcement in auditoriums",
+      "A final progress billing invoice — submitted at closeout to release the last retained project funds",
+      "An RF interference field report — documents wireless spectrum conflicts discovered during site surveys"
     ],
     "correct": 0,
     "explanation": "When drawings and specs conflict — or a field condition doesn't match the plan — the installer submits an RFI to get a formal, documented answer from the designer before proceeding. Guessing instead of asking is how expensive rework happens. RFIs create the paper trail that protects everyone."
@@ -1853,10 +1853,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What are submittals in the AV construction process?",
     "options": [
-      "The final payment applications",
+      "The final payment applications submitted at project closeout, requesting release of the retained contract balance",
       "Shop drawings, product data, and samples submitted for approval before procurement and installation",
-      "Employee time sheets",
-      "Warranty claim forms"
+      "Employee time sheets submitted weekly, documenting each installer's billable hours against the project budget",
+      "Warranty claim forms submitted after installation, requesting manufacturer replacement of defective equipment"
     ],
     "correct": 1,
     "explanation": "Submittals prove that what you plan to install matches what was specified — exact models, shop drawings showing how it fits, and samples where needed. Approval happens before purchase, so a wrong or substituted product gets caught on paper instead of in the ceiling. Skipping submittals is a classic cause of rejected work."
@@ -1866,10 +1866,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is a schedule of values in AV contracting?",
     "options": [
-      "A list of equipment discounts",
+      "A negotiated list of equipment discounts and dealer margins, showing the client every markup applied to the original quote",
       "A line-item breakdown of the contract price tied to work progress, used as the basis for progress billing",
-      "The project calendar",
-      "A warranty schedule"
+      "A calendar view of the project timeline, marking each milestone date when the next phase of construction is scheduled to begin",
+      "A schedule of warranty coverage periods for each installed device, listing when manufacturer support expires per line item"
     ],
     "correct": 1,
     "explanation": "The schedule of values breaks the lump-sum price into billable chunks (engineering, rough-in, trim-out, programming, commissioning...). Each pay application bills the percentage complete per line. It aligns cash flow with actual progress and gives the client transparency into what they're paying for."
@@ -1905,10 +1905,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is a milestone in a project schedule?",
     "options": [
-      "A daily task assigned to the lead technician",
+      "A daily task assigned to the lead technician, tracked on the project’s punch list each morning",
       "A significant checkpoint or event marking major progress, such as rough-in complete or system go-live",
-      "The final invoice amount",
-      "A type of cable milestone marker"
+      "The final invoice amount submitted to the client when the project reaches closeout",
+      "A type of cable milestone marker clipped onto wire runs to label each completed pull"
     ],
     "correct": 1,
     "explanation": "Milestones are zero-duration markers of major progress — design approval, rough-in complete, commissioning done, go-live. They give the client and the team shared checkpoints to measure progress against, and slipping a milestone is the early warning that the schedule is at risk."
@@ -1918,10 +1918,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is the purpose of a pre-installation / kickoff meeting with all trades?",
     "options": [
-      "It is purely social",
+      "It serves a purely social function — the trades meet for introductions and lunch before real coordination begins",
       "To align schedule, sequencing, responsibilities, site rules, and communication before work begins",
-      "To negotiate the contract price",
-      "To train the end users"
+      "To renegotiate the contract price and the final scope of work with every subcontractor present at once",
+      "To train the end users on the new system while each trade demonstrates the devices they will install"
     ],
     "correct": 1,
     "explanation": "Most installation conflicts — AV rough-in blocked by HVAC ductwork, electricians unaware of AV power needs, painters painting over cable labels — come from trades working from different assumptions. A kickoff meeting puts everyone on the same sequence and the same rules before the first hole is drilled."
@@ -2022,10 +2022,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Why is active listening more valuable than technical expertise in an initial client meeting?",
     "options": [
-      "Technical expertise is never needed",
+      "Technical expertise is never needed in a client meeting — only the contract terms and pricing matter",
       "Understanding the client's actual problem matters more than showcasing what you know; solutions follow understanding",
-      "Clients dislike technical people",
-      "Listening wastes meeting time"
+      "Clients dislike overly technical people, so expertise should be concealed during initial meetings",
+      "Listening wastes valuable meeting time that would be better spent presenting product options and pricing"
     ],
     "correct": 1,
     "explanation": "Clients buy outcomes, not specifications. The integrator who asks sharp questions and truly hears the answers designs the right system; the one who leads with product knowledge often solves the wrong problem brilliantly. Expertise matters enormously — but only after understanding directs it."
@@ -2035,10 +2035,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is the 'half-splitting' method of AV troubleshooting?",
     "options": [
-      "Cutting all cables in half",
+      "Cutting each cable in the signal chain in half to physically expose the precise location of the fault",
       "Testing at the midpoint of a signal path to determine which half contains the fault, then repeating on the faulty half",
-      "Replacing half the equipment at random",
-      "Splitting the crew into two teams"
+      "Replacing half of the equipment at random and checking whether the fault condition disappears on its own",
+      "Splitting the installation crew into two teams so each team can troubleshoot half of the system in parallel"
     ],
     "correct": 1,
     "explanation": "Half-splitting is binary search applied to signal flow: test the middle, and one test eliminates half the system as the culprit. It's dramatically faster than checking sources-to-destination in order. Combined with a signal flow diagram, it's the professional's default fault-isolation method."
@@ -2087,10 +2087,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "There is no audio from any zone of a distributed system. What is the most logical first check?",
     "options": [
-      "Rewire all the loudspeakers",
+      "Rewire all the loudspeakers in every zone, since a single bad speaker connection is the most likely cause of total silence",
       "Verify the common upstream points first: source selection, system mute, main power, and the DSP/processor status",
-      "Replace the amplifiers",
-      "Check the projector lamp"
+      "Replace the amplifiers one at a time, starting with the oldest unit, because simultaneous amplifier failure explains all-zone outages",
+      "Check the projector lamp hours and replace the lamp, since a failed lamp can mute the audio outputs of a distributed system"
     ],
     "correct": 1,
     "explanation": "A fault affecting every zone lives upstream of the zones — at the source, the system-wide mute, the DSP, or power. Troubleshooting from the common point outward finds system-wide faults in one step; starting at individual speakers wastes hours. Always ask 'what do all the failures have in common?' first."
@@ -2126,10 +2126,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "An AV device is not reachable on the network. Which troubleshooting step comes first?",
     "options": [
-      "Replace the network switch",
+      "Replace the network switch with a higher-capacity managed model before verifying link lights, cabling, or IP addressing",
       "Check the physical layer: link lights, cable, port, then IP addressing (DHCP/static, correct subnet/VLAN)",
-      "Reinstall the device firmware",
-      "Call the ISP"
+      "Reinstall the device firmware to factory defaults, then re-upload its configuration before checking link lights",
+      "Call the ISP's support line to reset the WAN connection before checking the device's link lights, cable, or subnet assignment"
     ],
     "correct": 1,
     "explanation": "Network troubleshooting follows the OSI model from the bottom up: no link light means a physical problem (cable, port, PoE), and link-with-no-communication means an addressing problem (wrong subnet, VLAN, or DHCP failure). Skipping to firmware or switch replacement before checking Layer 1 wastes time and risks breaking what works."
@@ -2139,10 +2139,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Why is gain staging verified before any other audio troubleshooting step?",
     "options": [
-      "It is not important",
+      "Gain staging is not important — modern DSPs auto-correct any level mismatch, so audio troubleshooting can begin anywhere in the chain",
       "Proper gain staging ensures each device operates in its optimal range; incorrect staging causes noise, distortion, or weak signal that mimics other faults",
-      "It only affects the subwoofers",
-      "Gain staging is done after the client moves in"
+      "It only affects the subwoofers — full-range speakers and microphones operate independently of the system's overall gain structure",
+      "Gain staging is performed after the client moves in — verifying levels before troubleshooting wastes valuable commissioning time"
     ],
     "correct": 1,
     "explanation": "If the first device in the chain is clipping or starved, every downstream symptom — distortion, hiss, weak output — is a lie told by bad gain structure. Verifying unity gain through the chain (each stage neither clipping nor buried in noise) eliminates a whole class of phantom faults before you chase real ones."
@@ -2152,10 +2152,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "How does commissioning differ from installation?",
     "options": [
-      "They are identical activities",
+      "They are identical activities — commissioning is simply another word for the installation phase of a project",
       "Installation puts the equipment in place; commissioning systematically verifies every function performs to the design intent",
-      "Commissioning happens before design",
-      "Only the client performs commissioning"
+      "Commissioning happens before design, since it establishes the performance targets the design must meet",
+      "Only the client performs commissioning — the integrator's work ends the moment installation is finished"
     ],
     "correct": 1,
     "explanation": "Installation ends when everything is connected; commissioning ends when everything is proven. Commissioning tests each input, output, preset, control function, and failure mode against the design documents and records the results. A system that was installed but never commissioned is an unverified system."
@@ -2165,10 +2165,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What are as-built drawings and why do they matter?",
     "options": [
-      "Marketing renderings of the finished room",
+      "Stylized marketing renderings of the finished room, produced for client presentations and the firm’s portfolio",
       "Drawings updated to reflect what was actually installed, serving as the accurate record for future service and expansion",
-      "The original proposal drawings",
-      "Drawings of the building's architecture"
+      "The original proposal drawings, reproduced unchanged at closeout and archived as the permanent system record",
+      "The architect’s original building drawings, issued before AV design began and never updated during construction"
     ],
     "correct": 1,
     "explanation": "Field conditions always force deviations from the design — a rerouted conduit, a substituted model, a moved rack. As-builts capture reality, and the service tech who arrives three years later depends on them entirely. Delivering design drawings labeled as as-builts is a closeout failure."
@@ -2204,10 +2204,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What does final acceptance / sign-off signify on an AV project?",
     "options": [
-      "The installer can stop answering the phone",
+      "The installer is released from all further support obligations and may stop responding to the client's calls",
       "The client formally acknowledges the system is complete and performing per the contract, triggering final payment and warranty start",
-      "The equipment warranties expire",
-      "The design phase begins"
+      "All equipment manufacturer warranties terminate immediately and the client assumes full responsibility for failures",
+      "The design phase officially begins, since sign-off marks the point where the system can finally be engineered"
     ],
     "correct": 1,
     "explanation": "Sign-off is the contractual finish line: punch list cleared, commissioning documented, training delivered — the client agrees the contracted scope is complete. It releases final payment and starts warranty clocks. Never treat a project as done without it; undocumented 'we're basically finished' projects generate unpaid callbacks."
@@ -2217,10 +2217,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Why is 'attic stock' (spare parts) often specified at closeout?",
     "options": [
-      "To increase the project cost",
+      "To pad the project cost with extra hardware the client will likely never touch or bother to inventory",
       "To ensure critical consumables and failure-prone parts are on hand for fast recovery without waiting on procurement",
-      "It is required by law everywhere",
-      "Spare parts are never useful"
+      "Because federal law requires every AV installation to ship with a fixed minimum quantity of spare parts at closeout",
+      "Spare parts serve no practical purpose and should be deliberately omitted from every closeout package"
     ],
     "correct": 1,
     "explanation": "A spare projector lamp, a couple of key cables, replacement batteries for wireless mics — attic stock turns a potential week-long outage into a ten-minute swap. It's cheap insurance specified at closeout when procurement is already mobilized, and the client will remember who thought of it."
@@ -2230,16 +2230,15 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is the purpose of a post-project lessons-learned review?",
     "options": [
-      "To assign blame for problems",
+      "To assign blame for project problems to the specific team members responsible",
       "To capture what went well and what didn't so future projects benefit from the experience",
-      "To renegotiate the contract",
-      "It serves no purpose"
+      "To renegotiate the contract terms based on what the review reveals about profitability",
+      "It serves no purpose and should be skipped so the team can move straight to billable work"
     ],
     "correct": 1,
     "explanation": "Every project teaches something — an estimating miss, a coordination win, a product to avoid. A blameless review converts that experience into institutional knowledge: updated checklists, better estimates, fewer repeated mistakes. Companies that skip this step pay tuition on the same lessons repeatedly."
-  }
-,
-{
+  },
+  {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
     "q": "A university asks you to design lecture capture for 40 classrooms. Several faculty members have strong opinions about features, but who must you formally identify FIRST before the design can be approved?",
@@ -2309,10 +2308,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Which element belongs in the AV scope of work document produced during the design phase?",
     "options": [
-      "The installer's internal labor rates",
+      "The installer’s internal labor rates, material markups, and profit margins for each line item",
       "A clear statement of inclusions, exclusions, and the performance criteria the system will be verified against",
-      "The designer's resume",
-      "Marketing brochures for the specified products"
+      "The designer’s resume, certifications, portfolio of completed projects, and client references",
+      "Glossy marketing brochures for each specified product, bound into the contract appendix as exhibits"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty A Task 6: the scope of work defines what the project includes — and just as importantly what it excludes (e.g., 'client-provided network drops excluded'). It becomes the contractual baseline that change orders are measured against."
@@ -2348,10 +2347,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "How should a designer assess the technical skill level of the client's in-house support staff?",
     "options": [
-      "Assume they are beginners",
+      "Assume they are beginners with no AV knowledge, since in-house staff never have meaningful technical experience with systems",
       "Ask about their current responsibilities, tools they use, and systems they already support — then confirm by observing",
-      "Give them a written exam",
-      "Rely on the client's HR job titles"
+      "Give them a written exam on AV theory before the design starts, because test scores are the only valid measure of skill level",
+      "Rely on the client's HR job titles alone, since titles like 'AV Technician' always accurately reflect hands-on capability"
     ],
     "correct": 1,
     "explanation": "Skill assessment is evidence-based: what systems do they support today, what tools (Dante Controller, DSP software) can they already drive, and what breaks them. This determines how much remote management, monitoring, and simplification the design must include."
@@ -2374,10 +2373,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why do enterprise clients standardize AV equipment across dozens of rooms, and what does the designer gain from knowing the standard?",
     "options": [
-      "It is purely about bulk purchase discounts",
+      "It is purely about bulk purchase discounts — standardization saves nothing on training, spare parts, or support costs across the enterprise",
       "Standardization cuts training, spares, and support costs; the designer gains a pre-approved product palette that speeds design and approval",
-      "It has no real benefit",
-      "It is required by law"
+      "It has no real benefit — every room is unique, so standardizing equipment across dozens of rooms only limits the designer's creativity",
+      "It is required by federal law — enterprises that fail to standardize AV equipment across every room face regulatory penalties"
     ],
     "correct": 1,
     "explanation": "A published standard means one control UI to learn, interchangeable spares, and faster troubleshooting. For the designer it means fewer submittal battles and a design the client's support team can actually sustain."
@@ -2387,10 +2386,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Before detailed design begins, what formal step protects both the designer and the client?",
     "options": [
-      "Ordering long-lead equipment",
+      "Ordering long-lead equipment immediately so delivery never delays the schedule",
       "Obtaining written sign-off on the needs assessment / program document",
-      "Starting rough-in",
-      "Hiring the installer"
+      "Starting conduit rough-in before the program document is finalized",
+      "Hiring the installation contractor before the program document is signed"
     ],
     "correct": 1,
     "explanation": "The signed program document is the baseline: it records what was asked for, what was agreed, and what success looks like. Design changes after sign-off are handled as revisions — not as 'you should have known.'"
@@ -2400,10 +2399,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A client asks for larger displays because 'nobody can read the slides.' Observation shows the real problem is uncontrolled daylight washing out the screen. What is the correct design response?",
     "options": [
-      "Specify the larger displays as requested",
+      "Specify the larger displays exactly as requested, since the client’s stated solution is authoritative",
       "Address the root cause first — lighting control/shades — then verify whether display size still needs to change",
-      "Add more loudspeakers",
-      "Recommend the client buy brighter laptops"
+      "Add more loudspeakers to the room to draw the audience’s attention away from the washed-out display",
+      "Recommend that the client purchase brighter laptops so the source content overcomes the daylight washout"
     ],
     "correct": 1,
     "explanation": "A needs assessment that stops at the stated request produces an expensive wrong answer. The designer's value is diagnosing root cause: no display, however large, fixes 500 lux of daylight on the screen. Solve light control, then size the display to the viewing geometry."
@@ -2413,23 +2412,23 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A 300-seat auditorium design must include hearing assistance. What drives this requirement?",
     "options": [
-      "It is a nice-to-have upgrade",
+      "It is merely a nice-to-have experiential upgrade that improves comfort but carries no actual code or legal requirement",
       "Accessibility obligations (e.g., ADA in the US) typically require assistive listening in assembly spaces, sized to a percentage of seating",
-      "Only if the client requests it",
-      "Hearing assistance is obsolete with modern loudspeakers"
+      "Hearing assistance is only required when the client specifically requests it during the needs assessment process",
+      "Hearing assistance is completely obsolete — modern loudspeaker coverage has eliminated the need for assistive listening"
     ],
     "correct": 1,
     "explanation": "Accessibility is a needs-assessment item, not an afterthought. In the US, the ADA requires assistive listening systems in assembly areas, generally with receivers for ~4% of seats. The designer must capture the seat count and plan coverage, or the venue cannot legally open."
   },
-{
+  {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
     "q": "On the architect's reflected ceiling plan (RCP), you need to confirm projector locations won't clash with HVAC diffusers. What is the RCP actually showing you?",
     "options": [
-      "The floor finishes",
+      "The floor finishes — the RCP documents carpet, tile, and wood selections for each area of the floor plan",
       "The ceiling as seen from above, showing lights, diffusers, sprinklers, and ceiling-mounted equipment positions",
-      "The structural steel layout",
-      "The plumbing runs"
+      "The structural steel layout — the RCP shows beams, columns, and load ratings for rigging calculations",
+      "The plumbing runs — the RCP traces water and waste piping above the ceiling for coordination"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 1: the reflected ceiling plan is the designer's primary coordination tool — it shows everything competing for ceiling space. Reviewing A/E drawings early catches projector-vs-diffuser and speaker-vs-sprinkler clashes before they become field change orders."
@@ -2439,10 +2438,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The interior designer proposes a glass-walled huddle room with a hard concrete floor. What is your coordination responsibility?",
     "options": [
-      "None — finishes are the interior designer's domain",
+      "No action is required — finish selections are the interior designer’s sole responsibility, so AV has no input",
       "Flag the acoustic consequences (flutter echo, high reverberation) and propose treatments or adjusted expectations in writing",
-      "Specify more expensive microphones to compensate",
-      "Cancel the project"
+      "Specify higher-priced beamforming microphones to compensate for the room’s poor acoustics instead of treating it",
+      "Cancel the project entirely, since an acoustically poor room can never support a functioning AV system"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 2: coordinating with architectural/interior professionals means raising AV impacts of finish choices early. Glass + concrete can push RT60 past 1.5 seconds, wrecking speech intelligibility. Document the concern and the options while finishes can still change."
@@ -2465,10 +2464,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A line-array loudspeaker cluster weighing 900 lbs will hang from the roof structure. What must happen before you finalize the rigging design?",
     "options": [
-      "The installer can field-verify the steel",
+      "The installer can field-verify the steel by visual inspection and proceed with the rigging plan",
       "A licensed structural engineer must verify the structure can support the load and approve the attachment method",
-      "Hang it from the nearest sprinkler pipe",
-      "Use heavier chain to be safe"
+      "Hang the cluster from the nearest sprinkler pipe, since fire-suppression piping is securely anchored",
+      "Use heavier chain and extra shackles to be safe, since stronger hardware offsets the unknown load path"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 4: structural coordination is non-negotiable for suspended loads. Only a structural engineer can approve attachment points and load paths. Improvised rigging kills people and ends companies."
@@ -2478,10 +2477,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What electrical infrastructure information must the AV designer specify or coordinate for a large auditorium rack room?",
     "options": [
-      "The brand of the electrician's tools",
+      "The brand and model of the electrician's hand tools, so the rack drawings can note the equipment used on site",
       "Dedicated circuits, panel locations, isolated-ground receptacles where needed, and total connected load for the electrical engineer",
-      "The color of the outlet covers",
-      "Nothing — power is always adequate"
+      "The color of the outlet and switch plate covers, so every receptacle matches the rack room's interior design palette",
+      "Nothing needs specifying — standard building power is always adequate for any AV rack room regardless of connected load"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 5: the designer provides the electrical engineer with connected load, circuit counts, and special requirements (isolated ground, sequenced power). AV sharing noisy circuits with dimmers or motors is a hum-and-buzz guarantee."
@@ -2491,10 +2490,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The lighting designer plans a preset that drives house lights to full during video playback. What is the coordination issue?",
     "options": [
-      "There is none — lighting is independent",
+      "There is no coordination issue — the house lighting system operates independently of AV, so designers need not coordinate presets",
       "Full house light on the screen destroys contrast; lighting presets and AV control must be coordinated so presentation modes dim the correct zones",
-      "AV designers should never talk to lighting designers",
-      "Brighter rooms are always better for video"
+      "The AV designer should avoid consulting the lighting designer and leave all preset issues to be resolved during commissioning",
+      "Brighter rooms always improve the viewing experience, so driving house lights to full is the correct video-playback preset"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 6: lighting zones over the screen vs. over the audience must be separately controllable and coordinated with AV presets. This is agreed on drawings and in the sequence of operations — not discovered at commissioning."
@@ -2504,10 +2503,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The client's IT security team requires 802.1X authentication and MACsec on all switch ports the AV system will use. When should this surface in the design process?",
     "options": [
-      "At commissioning, when devices fail to connect",
+      "At commissioning, when the AV devices fail to authenticate and the failed connections stall the whole project",
       "During design coordination with IT/network security — it affects device selection, switch configuration, and the project schedule",
-      "Never — AV devices are exempt from security policy",
-      "After the client signs off"
+      "Never — AV devices are exempt from the client’s IT security policy and may simply be whitelisted on request",
+      "After the client signs off on the finished system, as a punch-list item for the security team to resolve"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 7: network security requirements discovered at commissioning cause weeks of delay. The designer coordinates with IT early: which devices support 802.1X supplicants, who configures the switch, and what the InfoSec review timeline is."
@@ -2517,10 +2516,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The acoustical consultant specifies NC-25 for a videoconferencing suite. What does this mean for your microphone and DSP design?",
     "options": [
-      "Nothing — NC ratings only concern architects",
+      "Nothing — NC ratings are purely an architectural and HVAC concern, so microphone selection, placement, and AEC tuning can proceed without reference to the noise criterion",
       "The background noise target is very low, so microphone placement and AEC can assume a quiet room; if the room can't meet NC-25, you must design for the actual noise floor",
-      "NC-25 means 25 microphones are required",
-      "Louder loudspeakers are needed"
+      "NC-25 means 25 microphones are required by code for any videoconferencing suite, with one microphone per 25 square feet of floor area regardless of table layout",
+      "Louder program loudspeakers are required to overcome NC-25, so the design should specify higher-SPL speakers that can mask the room's very low background noise"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 8: Noise Criterion ratings set the room's background noise target. NC-25 is quiet (good for conferencing). The designer must confirm the HVAC and envelope can actually achieve it — designing AEC and mic coverage for NC-25 in an NC-40 room guarantees complaints."
@@ -2530,10 +2529,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Your design includes ceiling speakers in a plenum air-handling space and cable above the ceiling. What life-safety coordination items apply?",
     "options": [
-      "None — AV is low voltage",
+      "No coordination is required — low-voltage AV equipment is entirely exempt from life-safety and building code review",
       "Plenum-rated cable, coordination with the fire alarm/mass notification interface, and verifying speaker back-cans don't violate fire separation",
-      "Only the cable color matters",
-      "Life safety applies solely to the electrical contractor"
+      "Only the cable jacket color matters for code compliance, provided it visually matches the ceiling tiles and trim in the plenum space",
+      "Life-safety rules apply solely to the electrical contractor, so AV speakers and cable need no fire or code review at all"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty B Task 9: low voltage doesn't mean no life-safety impact. Plenum spaces require plenum-rated cable, penetrations need firestopping, and in many jurisdictions the AV system must mute or override for emergency notification. Coordinate with the fire protection engineer."
@@ -2556,10 +2555,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The millwork shop drawings show a credenza 18 inches deep for the rack. Your rack needs 30 inches with service clearance. What is the correct action?",
     "options": [
-      "Order a shallower rack and hope for airflow",
+      "Order a shallower rack than specified and hope the reduced depth still allows adequate airflow and service access",
       "Issue the dimensional conflict to the architect/millworker in writing during submittal review, with the required clearances",
-      "Cut the back off the credenza in the field",
-      "Leave the rack in the hallway"
+      "Cut the back off the credenza on site during installation to force the rack into the shallow cabinet",
+      "Abandon the credenza location and leave the equipment rack standing in the hallway outside the room"
     ],
     "correct": 1,
     "explanation": "Submittal review is where dimensional conflicts are caught on paper. The designer provides cut sheets with required depth, ventilation, and service access — and formally flags conflicts. Field surgery on custom millwork is the expensive alternative."
@@ -2569,10 +2568,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Floor boxes for table connectivity must land under a 20-foot conference table. Whose drawings determine the final location?",
     "options": [
-      "The AV designer's alone",
+      "The AV designer's drawings alone determine the location, since furniture and electrical always conform to the AV floor plan",
       "It must be coordinated across the furniture plan, the electrical drawings, and the AV infrastructure drawings — all three must agree",
-      "The installer's best guess on site",
-      "Whoever pours the concrete decides"
+      "The installer's best guess on site is sufficient, because floor boxes can be relocated easily after the concrete is poured",
+      "Whoever pours the concrete decides the location, so AV and electrical must accept wherever the box lands under the table"
     ],
     "correct": 1,
     "explanation": "Floor boxes are a classic three-trade collision: furniture layout, power, and AV. The designer cross-checks all three documents and issues a coordinated location. A box a foot off the table center is a permanent, visible failure."
@@ -2582,10 +2581,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A wall-mounted touch panel is drawn at 60 inches to center in a public corridor. What coordination issue exists?",
     "options": [
-      "None — 60 inches is standard",
+      "No coordination issue exists — 60 inches to center is the universal mounting standard for touch panels in every public corridor",
       "ADA reach-range requirements generally cap operable controls at 48 inches maximum for forward reach; the mounting height must be coordinated down",
-      "Touch panels are exempt from ADA",
-      "Higher is better for visibility"
+      "Touch panels are exempt from ADA — accessibility reach ranges apply only to door hardware and public drinking fountains",
+      "Higher mounting is always better — visibility improves with height, so the panel should be raised rather than lowered"
     ],
     "correct": 1,
     "explanation": "ADA Standards set maximum reach ranges (48\" for unobstructed forward reach) for operable parts. The designer coordinates mounting heights with the architect so the installation is both usable and code-compliant."
@@ -2595,10 +2594,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The security consultant's camera layout and your videoconference camera layout both cover the boardroom. Why coordinate rather than work independently?",
     "options": [
-      "There is no benefit to coordination",
+      "There is no benefit to coordination, because AV and security systems operate on completely separate networks with no shared infrastructure",
       "Shared infrastructure (pathways, power, network), consistent privacy expectations, and avoiding duplicate ceiling devices all require one coordinated plan",
-      "AV cameras can replace security cameras",
-      "Security always takes priority"
+      "AV videoconference cameras can fully replace security cameras, so the security consultant's layout should be deleted from the project",
+      "Security always takes priority over AV, so the videoconference layout must be abandoned wherever it overlaps the camera coverage plan"
     ],
     "correct": 1,
     "explanation": "Overlapping trades without coordination means doubled conduit runs, conflicting privacy policies, and a ceiling cluttered with redundant devices. One coordinated RCP and pathway plan serves both systems."
@@ -2621,10 +2620,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the AV designer's deliverable to the electrical engineer for a divisible ballroom with three AV racks?",
     "options": [
-      "A verbal estimate of 'a lot of power'",
+      "A verbal estimate of ‘a lot of power’ — telling the electrical engineer the racks need plenty of juice is sufficient for proper circuit sizing",
       "A written electrical requirements package: connected load per rack, number and type of dedicated circuits, receptacle locations, and any isolated-ground or sequencing needs",
-      "The equipment owner's manuals",
-      "Nothing — the EE sizes everything"
+      "The equipment owner’s manuals — handing the electrical engineer a stack of manufacturer manuals fully covers the power coordination requirement",
+      "Nothing — the EE sizes everything — electrical engineers automatically know every AV power requirement, so the AV designer provides zero input"
     ],
     "correct": 1,
     "explanation": "The electrical engineer can't size what they don't know. The designer provides load calcs, circuit schedules, and special requirements in the construction documents so power is right the first time."
@@ -2634,10 +2633,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "During a coordination meeting, the GC says AV conduit can go in 'after the drywall.' What is the risk, and how do you respond?",
     "options": [
-      "Agree — it saves time",
+      "Agree — it saves time — installing conduit after drywall is faster since the crew can see the finished surfaces",
       "Respond in writing that rough-in after drywall requires cutting and patching, adds cost and delay, and needs a formal schedule/cost decision",
-      "Install wireless everything instead",
-      "Skip the conduit"
+      "Install wireless everything instead — drop all conduit and run the entire AV system on Wi-Fi, eliminating the rough-in conflict",
+      "Skip the conduit — surface-raceway and exposed cable are acceptable substitutes, so the conduit can be deleted from the scope"
     ],
     "correct": 1,
     "explanation": "Sequence matters: AV rough-in belongs before drywall close-up. If the schedule forces otherwise, the cost and patching responsibility must be documented and agreed — not absorbed silently by the AV contractor."
@@ -2647,15 +2646,15 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The architect asks you to 'just mark up our PDF' instead of producing AV drawings. Why should the AV designer still produce dedicated infrastructure and system drawings?",
     "options": [
-      "Markups are sufficient for construction",
+      "Markups are sufficient for construction — a redlined PDF carries the same contractual weight as dedicated AV drawings, so producing a full drawing set adds no value",
       "Dedicated AV drawings (conduit/backbox plans, risers, rack elevations, reflected ceiling AV plans) are the contract documents the installer builds from; markups are ambiguous and unenforceable",
-      "PDFs can't be printed",
-      "Architects prefer markups"
+      "PDFs can’t be printed — redlined markups exist only as digital files that cannot be printed, so the installer has no buildable documents without dedicated drawings",
+      "Architects prefer markups — the design team explicitly forbids dedicated AV drawing sets, so redlined markups are the only deliverable the contract allows"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty C Tasks 3–4: AV infrastructure and system drawings are formal deliverables — they define pathways, device locations, wiring, and rack build. A redline on someone else's PDF is not a buildable, biddable document set."
   },
-{
+  {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
     "q": "You are designing speech reinforcement for a 200-seat fan-shaped auditorium. Which loudspeaker approach best delivers even coverage?",
@@ -2673,10 +2672,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A boardroom table seats 12 and will use ceiling microphones for soft-codec conferencing. What is the critical design consideration?",
     "options": [
-      "Ceiling microphones work in any room without further design",
+      "Ceiling microphones work in any room without further design — microphone placement and room acoustics need no engineering attention whatsoever",
       "Each talker must be within the microphone's pickup range in a room with controlled reverberation and noise — typically one mic per 2–3 talkers, coordinated with AEC",
-      "More microphones always equals better audio",
-      "Ceiling mics eliminate the need for a DSP"
+      "More microphones always equals better audio, so pack as many elements as possible across the ceiling and let them sum naturally for maximum pickup",
+      "Ceiling microphones eliminate the need for a DSP entirely — no acoustic echo cancellation, automixing, or other processing is required at all"
     ],
     "correct": 1,
     "explanation": "Ceiling mics are not magic: pickup distance (usually 8–12 ft), room RT60, and HVAC noise determine performance. The design places enough elements to cover every seat and pairs them with acoustic echo cancellation referenced to the far-end audio."
@@ -2686,10 +2685,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "For a videoconference room, the farthest viewer sits 18 feet from the display. What is the design rule for minimum image size?",
     "options": [
-      "Any size works if the resolution is 4K",
+      "Any display size works as long as the resolution is 4K, since pixel density fully replaces image-height rules and guarantees legibility at any distance",
       "The farthest viewer should be no more than 4–6 times the image height away (AVIXA DISCAS guidance), so content like spreadsheets remains legible",
-      "Bigger is always better regardless of distance",
-      "Image size doesn't matter for video calls"
+      "Bigger is always better regardless of viewing distance, so always specify the largest display that physically fits the wall",
+      "Image size doesn't matter for video calls, because participants mostly watch the far end on their own laptop screens"
     ],
     "correct": 1,
     "explanation": "AVIXA's DISCAS standard ties image height to viewing distance: basic decision-making content is legible to about 6x image height; detailed content (spreadsheets) needs ~4x. At 18 ft, you need roughly a 4.5-ft-tall image — about a 98-inch 16:9 display."
@@ -2699,10 +2698,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A client wants to display one 4K source on four 1080p displays in a video wall. What must the design address?",
     "options": [
-      "Nothing — any splitter works",
+      "Nothing — any consumer HDMI splitter will automatically downscale, manage EDID, and strip HDCP for a mixed-resolution video wall",
       "Downscaling per output, EDID management so the source outputs a compatible format, HDCP compliance across the chain, and bezel compensation",
-      "Just buy longer HDMI cables",
-      "4K sources can't feed 1080p displays"
+      "Just buy longer active HDMI cables for each display, since cable length is the only factor in distributing 4K to 1080p screens",
+      "4K sources cannot feed 1080p displays at all, so the client must replace the source with a native 1080p player for the video wall"
     ],
     "correct": 1,
     "explanation": "Mixed-resolution distribution requires deliberate design: the switcher/scaler must downscale 4K to 1080p per output, EDID must be managed so the source negotiates correctly, and HDCP must be supported end-to-end or content goes black."
@@ -2712,10 +2711,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "You are designing control for a divisible room with three modes: whole, A/B split, and separate. What is the key control design principle?",
     "options": [
-      "One fixed panel layout for all modes",
+      "One fixed panel layout for all three modes, so users only ever learn a single interface that never changes regardless of the partition state",
       "The UI must reflect the current room state — separate controls per space in split mode, combined in whole mode — with clear mode indication and no dead buttons",
-      "Give every user the admin password",
-      "Control systems can't handle divisible rooms"
+      "Give every user the admin password right on the touch panel, since full system access for everyone eliminates all confusion about room modes",
+      "Control systems can't handle divisible rooms at all, so each space needs a completely separate control processor and user interface"
     ],
     "correct": 1,
     "explanation": "Divisible-room control is a classic design problem: the interface must dynamically match the acoustic reality. Show only the controls valid for the current partition state, indicate the mode clearly, and prevent Room A from changing Room B's volume."
@@ -2725,10 +2724,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "An enterprise wants 50 Dante-enabled rooms on the corporate network. What must the AV design specify for the network?",
     "options": [
-      "Any unmanaged switch will do",
+      "Any unmanaged switch will do — Dante auto-configures QoS, multicast routing, and clocking on any hardware with zero setup",
       "Managed switches with QoS/DSCP for PTP and audio, IGMP snooping/querier for multicast flows, adequate bandwidth, and coordination with IT on VLANs",
-      "Dante doesn't need network configuration",
-      "Wi-Fi is fine for Dante"
+      "Dante needs no network configuration at all — plug every device into any switch and multicast flows route themselves perfectly",
+      "Standard office Wi-Fi is fine for Dante — wireless access points handle PTP clocking and multicast audio with no dropouts"
     ],
     "correct": 1,
     "explanation": "Dante is real-time audio over IP: it needs QoS prioritizing PTP clocking, IGMP snooping so multicast doesn't flood every port, and gigabit (or better) backbones. The AV designer specifies these switch requirements for IT — 'the network just works' is not a design."
@@ -2738,10 +2737,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A lecture hall needs both in-room reinforcement and a separate record/stream mix. How should the DSP be designed?",
     "options": [
-      "One mix fits all purposes",
+      "One mix fits all purposes — the in-room reinforcement feed is ideal for the stream, since remote viewers want to hear exactly what the room hears",
       "Separate mix buses: a reinforcement mix optimized for the room and a discrete stream/record mix (often with different EQ, levels, and audience mics excluded or balanced differently)",
-      "Just turn up the room mics for the stream",
-      "Streaming doesn't need audio design"
+      "Just turn up the room mics for the stream — pushing the audience mics hotter in the reinforcement mix produces a complete broadcast-ready stream",
+      "Streaming doesn’t need audio design — remote viewers accept any audio quality, so the stream can tap the room reinforcement feed with no dedicated engineering"
     ],
     "correct": 1,
     "explanation": "Room reinforcement and streaming are different products: the room needs the lecturer over the PA; the stream needs lecturer + audience questions at broadcast balance. The DSP design provides independent mixes, each with its own processing."
@@ -2751,10 +2750,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "When designing a streaming encoder workflow for town halls, what must be specified beyond the encoder itself?",
     "options": [
-      "Nothing — encoders are plug-and-play",
+      "Nothing beyond the encoder — modern encoders are plug-and-play and negotiate the entire workflow automatically",
       "Target bitrate/resolution per platform, network uplink capacity, CDN or platform destination, redundancy, and monitoring",
-      "Only the encoder's color",
-      "Streaming never needs redundancy"
+      "Only the encoder's exterior color matters, so the streaming hardware matches the rack's overall aesthetic",
+      "Streaming workflows never require redundancy — one encoder and one ISP connection are always sufficient"
     ],
     "correct": 1,
     "explanation": "A stream design is end-to-end: 1080p to a CDN needs ~6–8 Mbps of reliable uplink per stream; the design specifies bitrates, primary/backup paths, and how anyone knows the stream died. An encoder with no uplink plan is a paperweight."
@@ -2764,10 +2763,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A museum gallery has 85 dBA ambient noise from interactive exhibits. What does this demand of the audio design for a narration system?",
     "options": [
-      "Standard ceiling speakers at normal levels",
+      "Standard ceiling speakers at normal levels — a typical 70V ceiling speaker layout at conversation volume stays fully intelligible even over 85 dBA of exhibit noise",
       "The design must achieve ~10–15 dB signal-to-noise for intelligibility — requiring directional speakers, zoned levels, and possibly exhibit noise mitigation; if physics won't allow it, expectations must be reset",
-      "Just add more speakers",
-      "Narration systems work in any noise"
+      "Just add more speakers — doubling the speaker count doubles intelligibility, so a dense enough ceiling speaker grid overcomes any ambient noise level",
+      "Narration systems work in any noise — speech intelligibility is independent of background noise level, so loud galleries need no special audio design"
     ],
     "correct": 1,
     "explanation": "Intelligibility needs signal comfortably above noise. At 85 dBA ambient, narration needs ~95–100 dBA at the listener — potentially unsafe and impractical. The designer must confront this with directional audio, zoning, or honest expectation-setting, not wishful speaker counts."
@@ -2777,10 +2776,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "You must choose between projection and direct-view LED for a bright atrium with 24/7 operation. What drives the decision?",
     "options": [
-      "Projection is always cheaper",
+      "Purchase price alone (projection always wins), the projector's lamp wattage, fan noise level, and whichever vendor returns calls the fastest",
       "Ambient light level (LED wins in high ambient), duty cycle and maintenance (LED has no lamps/filters), viewing angles, and total cost of ownership",
-      "LED is always better",
-      "Whichever the client saw at a trade show"
+      "Brand prestige (LED always wins), pixel pitch alone, the architect's favorite bezel finish, and whichever trade-show booth the client visited last",
+      "Whichever technology the installer has in stock, throw distance alone, the remote control's battery life, and the color of the display bezel"
     ],
     "correct": 1,
     "explanation": "High ambient light kills projected contrast; 24/7 operation kills lamp/filter maintenance budgets. Direct-view LED costs more upfront but holds contrast in bright spaces and runs maintenance-light. The design compares total cost of ownership, not just purchase price."
@@ -2790,10 +2789,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A global company wants identical Teams Room experiences in 200 rooms across 30 countries. What is the central design strategy?",
     "options": [
-      "Let each region design independently",
+      "Let each region design its rooms independently from scratch, since local engineers always understand their needs better than any central standard",
       "A standardized room kit — fixed BOM, standard control UI, standard network/security profile — with documented regional variants for power, code, and sourcing",
-      "Buy whatever is cheapest locally per room",
-      "Standards don't scale globally"
+      "Buy whatever is cheapest from local suppliers per room, because per-room cost savings always outweigh the benefits of an identical user experience",
+      "Standards don't scale globally across different countries, so identical room experiences are impossible given the variation in codes and supply chains"
     ],
     "correct": 1,
     "explanation": "Scale demands standardization: one kit, one UI, one support playbook. The design defines the standard plus the allowed regional deltas (230V power, local codes, approved alternates). Without it, 200 rooms become 200 snowflakes."
@@ -2803,10 +2802,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "In a courtroom, the judge requires that attorney microphones NEVER feed the public address when in recess. How is this designed?",
     "options": [
-      "Trust the operator to mute",
+      "Trust the operator to mute — the court reporter watches the proceedings and mutes the attorneys’ microphones at the mixer whenever recess is called",
       "A positive-action privacy/mute system — e.g., a keyswitch or control logic that physically/logically removes mics from all outputs including record, with clear status indication",
-      "Turn the volume down",
-      "Courtrooms don't need special design"
+      "Turn the volume down — the operator lowers the PA master fader during recess, which keeps the attorney microphones out of the public address feed",
+      "Courtrooms don’t need special design — standard conference audio handles recess privacy adequately, since the attorneys simply stop talking when recess begins"
     ],
     "correct": 1,
     "explanation": "Privacy in sensitive spaces must be engineered, not procedural. The design provides a deterministic mute (separate from the operator's fader) with visible status, so 'is the mic live?' is never a guess."
@@ -2816,10 +2815,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the purpose of a DSP's acoustic echo canceller (AEC) in a soft-codec room, and what does it require?",
     "options": [
-      "It makes the room louder; it requires bigger amplifiers",
+      "It boosts the room's loudspeaker output so the far end hears it louder; it requires bridging larger power amplifiers directly onto every microphone channel",
       "It removes the far-end's own audio (played through room loudspeakers) from the microphone signal so remote participants don't hear echo; it requires a clean reference of the far-end audio",
-      "It cancels all room noise",
-      "AEC is only for large auditoriums"
+      "It digitally erases all background noise in the room, including HVAC rumble; it requires mounting every microphone within six inches of the talker's mouth",
+      "It only functions in auditoriums seating 500 or more; it requires a second dedicated DSP frame running nothing but the acoustic echo cancellation process"
     ],
     "correct": 1,
     "explanation": "AEC compares the mic signal against a reference of what the loudspeakers are playing and subtracts it. No reference (or a reference tapped after processing changes) = echo for the far end. The design must route a proper AEC reference for every mic channel."
@@ -2829,10 +2828,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A performing arts center needs a system that visiting engineers can walk up to and mix on with no training. What design approach serves this?",
     "options": [
-      "A fully custom DSP with a unique workflow",
+      "A fully custom DSP layout with a unique workflow that guest engineers can explore and master during soundcheck",
       "Industry-standard console surfaces and documented, conventional signal flow — familiarity IS the feature for guest operators",
-      "The cheapest mixer available",
-      "No console — iPad only"
+      "The lowest-cost analog mixer available, since visiting engineers adapt quickly to whatever hardware is cheapest",
+      "No physical console at all — an iPad app handles the mix, since guest engineers prefer touchscreen-only control"
     ],
     "correct": 1,
     "explanation": "For guest-operator venues, the design optimizes for zero-learning-curve: standard console layouts, labeled patch, conventional gain structure. Clever custom workflows that confuse a visiting engineer at soundcheck are a design failure."
@@ -2842,10 +2841,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "You are designing BYOD wireless presentation for a university. What are the key design decisions?",
     "options": [
-      "Pick any consumer dongle",
+      "Pick any consumer dongle — any $30 streaming stick performs identically in an enterprise deployment, so network, security, and protocol decisions are unnecessary",
       "Network architecture (dedicated VLAN/SSID vs. corporate LAN), security and onboarding method, supported protocols (AirPlay/Miracast/Chromecast), latency expectations, and management",
-      "Wireless presentation has no design considerations",
-      "Only the button color matters"
+      "Wireless presentation has no design considerations — BYOD sharing behaves identically on every network, so the designer need specify nothing at all",
+      "Only the button color matters — the share button’s color is the designer’s sole BYOD decision; network architecture and security belong to the client"
     ],
     "correct": 1,
     "explanation": "Enterprise wireless presentation is a network and security design: how guests onboard, which VLAN carries the traffic, whether mDNS traverses subnets, and what latency is acceptable for video. The dongle is the last decision, not the first."
@@ -2855,10 +2854,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A 2,000-seat arena needs emergency voice evacuation override of the entertainment audio system. What is the design requirement?",
     "options": [
-      "The operator will turn it down in an emergency",
+      "The operator will turn it down in an emergency — the house audio engineer manually ducks the entertainment system when the fire alarm sounds",
       "A supervised, fail-safe override path — typically relay or DSP logic that forces evacuation audio to all zones regardless of system state, coordinated with the fire alarm panel",
-      "Louder entertainment speakers",
-      "Emergency override is optional"
+      "Louder entertainment speakers — the evacuation requirement is satisfied by specifying entertainment speakers loud enough to double as the emergency alarm",
+      "Emergency override is optional — voice evacuation may share the entertainment audio path with no dedicated override, at the designer’s discretion"
     ],
     "correct": 1,
     "explanation": "Life-safety override must be automatic, supervised (faults reported), and independent of operator action or entertainment system state. The design coordinates the interface with the fire alarm system and documents it for the AHJ."
@@ -2868,10 +2867,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is 'gain structure' and why does the designer care before the installer touches a knob?",
     "options": [
-      "It is the installer's problem",
+      "It is the installer’s problem — gain staging is purely field work; the designer never specifies nominal levels, and the drawings carry no gain-structure information",
       "The staging of signal levels through every device (mic → preamp → DSP → amplifier) to maximize signal-to-noise without clipping; the designer specifies nominal levels and headroom so the system is quiet and clean",
-      "It means turning everything up",
-      "Gain structure only applies to analog systems"
+      "It means turning everything up — proper gain structure means maximizing every gain stage in the chain, since hotter signals always produce better sound",
+      "Gain structure only applies to analog systems — digital DSPs and amplifiers self-optimize their internal levels, so gain staging is irrelevant in digital signal chains"
     ],
     "correct": 1,
     "explanation": "Gain structure is designed, not discovered: each stage should operate in its linear range with ~12–20 dB of headroom. The designer documents target levels (e.g., 0 dBu nominal, +24 dBu clip) so commissioning verifies rather than guesses."
@@ -2881,10 +2880,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A client wants to add 20 networked AV endpoints next year without new switch hardware. What should the design include now?",
     "options": [
-      "Nothing — deal with it next year",
+      "Nothing — deal with it next year — switches can be swapped and recabled in a day, so planning for growth wastes design effort",
       "Spare switch port capacity, PoE budget headroom, documented VLAN/IP scheme with reserved addresses, and pathway space — designed-in scalability",
-      "A note saying 'good luck'",
-      "Wireless for everything"
+      "A note saying ‘good luck’ — a documented warning that expansion will require new hardware satisfies the designer’s obligation",
+      "Wireless for everything — future endpoints will all be wireless, so wired port capacity and PoE budgets need no planning"
     ],
     "correct": 1,
     "explanation": "Scalability is a design deliverable: 20–30% spare ports, PoE budget with margin, an IP plan with room to grow, and empty conduit. Retrofitting capacity later costs multiples of designing it in."
@@ -2894,10 +2893,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "For a video wall with a 1.2mm pixel pitch viewed from 10 feet, what design check matters most?",
     "options": [
-      "The wall's weight only",
+      "The wall’s weight only — structural loading is the sole design check that matters; pixel pitch has no relationship to viewing distance or perceived image quality",
       "Pixel pitch vs. viewing distance — at 10 ft, ~1.2mm pitch is near retina resolution; going finer wastes budget, going coarser shows pixels. Verify with the pitch/distance relationship",
-      "Brighter is always better",
-      "Pixel pitch is marketing"
+      "Brighter is always better — specify the highest-nit panels available; brightness is the only specification that affects what the viewer perceives at 10 feet",
+      "Pixel pitch is marketing — pitch specifications are manufacturer hype with no engineering basis, so a 1.2mm and a 4mm wall look identical from 10 feet"
     ],
     "correct": 1,
     "explanation": "LED pitch should match the closest viewing distance: a common rule is ~1mm pitch per 3–4 feet of viewing distance (some use 1mm per 8 ft for critical viewing). At 10 ft, 1.2–1.5mm is appropriate; finer pitch in a lobby viewed from 15 ft is money burned."
@@ -2907,10 +2906,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A house of worship wants to livestream with volunteer operators. What is the most robust design approach?",
     "options": [
-      "A complex manual switcher with 12 inputs",
+      "A complex manual vision switcher with 12 inputs that volunteers can learn to operate reliably over a few consecutive Sunday services",
       "Automated/simple workflows: preset camera shots, automix on microphones, one-button stream start/stop, and remote monitoring so a pro can assist",
-      "No design needed — volunteers figure it out",
-      "Ban volunteers from touching equipment"
+      "No formal design work is needed — volunteers will naturally figure out the cameras and the stream on their first Sunday",
+      "Ban all volunteers from touching any of the equipment and require a professionally paid operator at every single service"
     ],
     "correct": 1,
     "explanation": "Volunteer-operated systems must be designed for the lowest skill level present: automation (automix, presets), single-button operations, and remote oversight. Complexity that requires a trained operator every Sunday is a design that fails most Sundays."
@@ -2920,10 +2919,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the design purpose of a 'tech table' or operator position in a multi-purpose venue?",
     "options": [
-      "It is decorative",
+      "It is decorative — the tech table is a furniture showpiece for the room’s design photos and carries no power, network, or sightline requirements",
       "A defined location with power, network, audio/data connectivity, and sightlines to the room so operators can mix, present, or troubleshoot from the optimal position",
-      "A place to store cables",
-      "Only large arenas need one"
+      "A place to store cables — the tech table is primarily spare-cable storage with a work surface, so it needs no power, network, or sightlines",
+      "Only large arenas need one — tech tables exist only in stadiums; multi-purpose venues operate fine with the operator tucked in a back hallway"
     ],
     "correct": 1,
     "explanation": "The operator position is infrastructure: floor boxes with power/data/audio tie-lines at the mix position, in the drawings, roughed in during construction. Mixing from a random corner with extension cords is what happens when it isn't designed."
@@ -2933,10 +2932,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "When designing for HDCP-protected content (Blu-ray, streaming sticks) across a distributed system, what must be true?",
     "options": [
-      "HDCP works automatically over any extender",
+      "HDCP works automatically over any extender or matrix, so the design needs no HDCP planning as long as the source is HDCP-compliant",
       "Every device in the chain — switcher, extender, display — must support the required HDCP version, and the design must account for key limits and repeater depth",
-      "HDCP can be ignored in commercial systems",
-      "Only the display matters"
+      "HDCP can be ignored entirely in commercial systems, since content protection rules only apply to residential home theater installations",
+      "Only the display's HDCP version matters; switchers, extenders, and scalers pass the encrypted signal through without participating"
     ],
     "correct": 1,
     "explanation": "HDCP is a chain-of-trust: one non-compliant device or an exceeded repeater/key limit blacks the whole path. The designer verifies HDCP versions end-to-end and designs EDID/HDCP management rather than hoping the chain negotiates."
@@ -2946,10 +2945,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A corporate lobby wants a 'wow' video wall but the facilities team has no AV staff. What should the design prioritize?",
     "options": [
-      "The most complex system possible",
+      "The most complex system possible — maximum features and manual controls give the facilities team the most options, even with no AV staff",
       "Remote monitoring and management, automated on/off scheduling, simple content update workflow, and a service contract — operability without local staff",
-      "A bigger wall",
-      "Manual operation only"
+      "A bigger wall — the wow factor scales with size alone, so the design should maximize square footage and skip the management features",
+      "Manual operation only — a fully manual system with no automation is cheapest, and the facilities team will learn the controls quickly"
     ],
     "correct": 1,
     "explanation": "Designing for zero local staff means the system must run itself: astronomical-clock scheduling, SNMP/cloud monitoring with alerts, and content updates a marketing person can do. The design includes the service model, not just the hardware."
@@ -2959,15 +2958,15 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why would a designer specify Dante Domain Manager or a similar management platform for a campus deployment?",
     "options": [
-      "It makes audio sound better",
+      "It makes audio sound better — Domain Manager applies enhancement algorithms that improve Dante audio fidelity and reduce latency",
       "Centralized authentication, role-based access, audit logging, and managed Dante routing across subnets — required when IT policy governs dozens of networked audio devices",
-      "It is required for all Dante systems",
-      "It replaces the DSP"
+      "It is required for all Dante systems — every Dante network, even two devices, must run Domain Manager or audio will not pass",
+      "It replaces the DSP — Domain Manager performs all mixing, EQ, and processing, so the hardware DSP can be removed from the design"
     ],
     "correct": 1,
     "explanation": "At campus scale, unmanaged Dante is an IT security finding. A management platform provides user authentication, change auditing, and routed (unicast) audio across subnets — the design answers IT's governance questions before they're asked."
   },
-{
+  {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
     "q": "A projector with a 1.5–2.0:1 throw ratio lens must fill a 10-foot-wide screen. What is the allowable projector-to-screen distance range?",
@@ -3063,10 +3062,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A 16:9 display has a 60-inch diagonal. What is its image width?",
     "options": [
-      "60 inches",
+      "60 inches — image width always equals the diagonal",
       "Approximately 52.3 inches (diagonal × 0.871)",
-      "48 inches",
-      "36 inches"
+      "48 inches — a 60-inch 16:9 diagonal is 48 wide",
+      "36 inches — width equals 60% of the diagonal"
     ],
     "correct": 1,
     "explanation": "For 16:9, width = diagonal × 0.871 and height = diagonal × 0.490. A 60\" diagonal is ~52.3\" wide × 29.4\" tall. Designers use this constantly for throw, viewing, and millwork coordination."
@@ -3076,10 +3075,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the maximum recommended viewing angle (horizontal) for the farthest off-axis seat to a flat display?",
     "options": [
-      "90 degrees",
+      "90 degrees — viewers at 90° off-axis see full image quality, so seating may wrap fully around the display",
       "45 degrees off-axis (viewers beyond ~45° from perpendicular see degraded image and glare)",
-      "10 degrees",
-      "Viewing angle doesn't matter"
+      "10 degrees — only viewers within 10° of perpendicular get a usable image; all seats must face dead-on",
+      "Viewing angle doesn’t matter — off-axis viewers see identical brightness and color at any angle"
     ],
     "correct": 1,
     "explanation": "AVIXA guidance: viewers seated more than ~45° off the display's perpendicular axis get poor contrast and color shift (worse on VA panels). The design checks the worst seat — wide rooms may need multiple or angled displays."
@@ -3089,10 +3088,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "An amplifier rated 500W per channel will drive loudspeakers rated 250W continuous. What headroom concern applies?",
     "options": [
-      "None — more power is always safe",
+      "No concern exists — amplifiers always self-limit to the connected speaker's rating, so any extra headroom above 250W is automatically safe",
       "The amplifier can deliver twice the speaker's continuous rating; the design must include limiting (in DSP or amp) to protect the drivers from clipping and thermal damage",
-      "Speakers can't be damaged by clean power",
-      "Use a smaller amplifier instead"
+      "Speakers are immune to damage from clean, unclipped power — only distorted signals harm drivers, no matter how much wattage is delivered",
+      "The only safe fix is a smaller amplifier — headroom must never exceed the speaker's continuous rating or the manufacturer's warranty is void"
     ],
     "correct": 1,
     "explanation": "Headroom is good (amplifier clipping destroys drivers faster than clean power), but 2x continuous power into the speakers demands properly set limiters. The designer specifies limiter thresholds — typically based on the speaker's peak rating and measured voltage."
@@ -3115,10 +3114,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A projector outputs 6,000 lumens onto a 120 sq ft screen (gain 1.0). What is the approximate screen luminance in foot-lamberts?",
     "options": [
-      "6,000 fL",
+      "6,000 fL (no division)",
       "50 fL (lumens ÷ area)",
-      "120 fL",
-      "720 fL"
+      "120 fL (screen area only)",
+      "720 fL (lumens ÷ gain)"
     ],
     "correct": 1,
     "explanation": "Foot-lamberts = (lumens × screen gain) ÷ screen area in sq ft. 6,000 ÷ 120 = 50 fL — a solid brightness for a dimmed room. In high ambient light, the designer compares this against the ambient washing the screen to check contrast."
@@ -3128,10 +3127,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Cat6A cable has a 90-meter permanent link limit (100m channel). A design shows a 130-meter horizontal run to a projector. What is the correct response?",
     "options": [
-      "It's close enough — install it",
+      "It’s close enough — install it — 130 meters is near enough to the 100m limit that the link will certify",
       "Redesign: add an intermediate IDF/rack, switch to fiber, or relocate the endpoint — copper twisted-pair cannot be stretched past its length limit",
-      "Use Cat5e instead",
-      "Boost the signal with a bigger switch"
+      "Use Cat5e instead — Cat5e has a longer distance rating than Cat6A, so swapping cable types solves the 130m run",
+      "Boost the signal with a bigger switch — a higher-powered switch pushes the signal the extra 30 meters without issues"
     ],
     "correct": 1,
     "explanation": "Copper length limits are physics (attenuation, delay skew), not suggestions. The design must respect 90m permanent link / 100m channel for Cat6A — beyond that, fiber or a closer telecom room is required."
@@ -3141,10 +3140,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A PoE++ (802.3bt Type 4) switch port can deliver up to what power, and why does the designer track the PoE budget?",
     "options": [
-      "15.4W — budgets don't matter",
+      "15.4W per port — PoE++ still delivers the original 802.3af 15.4W, and power budgets don’t matter because the switch sheds load automatically when oversubscribed",
       "Up to 90W per port (71.3W at the device after cable loss); the switch's total PoE budget is shared, so the designer sums every powered endpoint to avoid overloading the supply",
-      "Unlimited power",
-      "PoE is only for phones"
+      "Unlimited power — a PoE++ switch delivers whatever wattage each device requests with no per-port or total budget limit, so designers never need to plan PoE capacity",
+      "PoE is only for phones — PoE++ exists solely for VoIP desk handsets, so AV endpoints like PTZ cameras and touch panels always need separate power supplies"
     ],
     "correct": 1,
     "explanation": "802.3bt delivers up to 90W/port, but the switch has a finite total PoE budget (e.g., 740W). Twenty PTZ cameras at 25W each = 500W — fine; add 20 more and the switch shuts ports down. The designer does the arithmetic."
@@ -3154,10 +3153,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the minimum bend radius rule of thumb for fiber optic cable during installation?",
     "options": [
-      "Bend it as tightly as needed",
+      "Bend it as tightly as needed — fiber optic glass is flexible enough for any bend radius without signal loss",
       "Typically 10x the cable diameter under load (20x long-term for some cables) — tighter bends cause macrobending loss and can crack the glass",
-      "Fiber has no bend limit",
-      "1 inch regardless of cable size"
+      "Fiber has no bend limit — unlike copper, fiber can be tied in knots with zero effect on light transmission",
+      "1 inch regardless of cable size — every fiber cable uses a flat 1-inch minimum bend radius, independent of diameter"
     ],
     "correct": 1,
     "explanation": "Macrobending bleeds light out of the core; micro-cracks from tight bends fail later. The design specifies bend-radius-compliant pathways (sweep elbows, not 90° conduit bends) and the installer honors them."
@@ -3180,10 +3179,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Screen gain of 1.3 vs 1.0: what is the trade-off the designer is calculating?",
     "options": [
-      "Higher gain is always better",
+      "Higher gain is always better for every room, because a 1.3 screen delivers a full 30 percent more lumens than the projector itself outputs",
       "Gain 1.3 focuses reflected light toward the audience (brighter on-axis) but narrows the viewing cone and can hotspot; gain 1.0 spreads evenly",
-      "Gain affects only the price",
-      "Gain is irrelevant for modern projectors"
+      "Gain affects only the purchase price of the screen, so choose 1.3 when the budget allows and 1.0 when value-engineering the project",
+      "Gain is irrelevant for modern laser projectors, since their brightness makes screen surface characteristics obsolete in every application"
     ],
     "correct": 1,
     "explanation": "High-gain screens buy on-axis brightness at the cost of off-axis uniformity — side seats see a dimmer, possibly hotspotted image. The designer matches gain to the room geometry: narrow rooms can use gain; wide rooms need unity or negative gain."
@@ -3193,10 +3192,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A 70V distributed system has 12 ceiling speakers tapped at 7.5W each. What is the minimum amplifier size, following the 20% headroom practice?",
     "options": [
-      "90W",
+      "Exactly 90W (12 × 7.5) — no headroom is needed on 70V systems",
       "At least ~110W (12 × 7.5 = 90W, plus 20% headroom ≈ 108W)",
-      "1000W",
-      "7.5W"
+      "1000W (apply a 10× safety multiplier to the 90W tap total for commercial jobs)",
+      "7.5W — size the amp to one speaker tap, since only one tap draws power at a time"
     ],
     "correct": 1,
     "explanation": "Sum the taps (90W) and add headroom so the amp never clips on peaks: 90 × 1.2 = 108W → specify the next standard size up (120W). An amp sized exactly to the tap total will clip on transients."
@@ -3206,10 +3205,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Voltage drop on a long 70V speaker run causes what problem, and how does the designer prevent it?",
     "options": [
-      "No problem — 70V is immune",
+      "No problem — 70V is immune — constant-voltage distribution experiences zero wire loss at any distance or gauge, so the designer never needs to calculate voltage drop",
       "Excessive drop (from undersized wire on long runs) robs the far speakers of power and unbalances the system; the designer calculates wire gauge vs. distance or moves to a lower-impedance/higher-voltage design",
-      "Voltage drop only affects 8-ohm systems",
-      "Thicker wire is never needed"
+      "Voltage drop only affects 8-ohm systems — 70V constant-voltage lines are immune to wire resistance, so the designer never considers gauge on long 70V runs",
+      "Thicker wire is never needed — 24 AWG suffices for every 70V run because the high voltage keeps current tiny, which eliminates voltage drop entirely"
     ],
     "correct": 1,
     "explanation": "70V reduces current but doesn't repeal Ohm's law: a 500-ft run of 18 AWG can lose meaningful power. The designer checks the loop resistance against the load and upsizes wire or shortens runs — not the installer on a ladder."
@@ -3219,23 +3218,23 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "An ST 2110 uncompressed 1080p59.94 stream needs about 1.5 Gbps. A design puts 24 such streams on one 25 Gbps uplink. Is this sound?",
     "options": [
-      "Yes — 24 × 1.5 = 36 Gbps fits in 25 Gbps",
+      "Yes — 24 × 1.5 = 36 Gbps fits within a 25 Gbps uplink because 2110 streams share the capacity dynamically",
       "No — 36 Gbps exceeds the 25 Gbps uplink; the design needs more uplinks, 100G, or compressed (2110-22/JPEG XS) essence",
-      "Bandwidth doesn't apply to 2110",
-      "Uplinks are unlimited"
+      "Bandwidth calculations do not apply to ST 2110 — uncompressed essence adapts to whatever uplink is available",
+      "Uplinks have effectively unlimited capacity on modern switches, so oversubscription never constrains 2110 designs"
     ],
     "correct": 1,
     "explanation": "24 × 1.5 Gbps = 36 Gbps > 25 Gbps uplink. Broadcast IP designs must sum every essence flow (video + audio + ancillary) against uplink capacity. Options: LAG/more uplinks, 100G core, or JPEG XS compression (~10:1 visually lossless)."
   },
-{
+  {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
     "q": "What is the purpose of an AV block diagram (flow diagram) in the design documentation set?",
     "options": [
-      "It is decorative",
+      "It is decorative — the block diagram is presentation artwork for the proposal cover, with no role in communicating the design",
       "It shows every device and the signal flow between them — sources, processing, distribution, endpoints — so the design intent is unambiguous",
-      "It replaces the equipment list",
-      "It is only for the client"
+      "It replaces the equipment list — the flow diagram documents every part number and quantity, so a separate BOM is redundant",
+      "It is only for the client — the block diagram is a sales visual; installers and programmers never reference it during the build"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty C Task 4: the block diagram is the design's single source of truth for signal flow. The installer builds from it, the programmer programs from it, and troubleshooting starts from it. Ambiguity here becomes field improvisation."
@@ -3245,10 +3244,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What distinguishes AV infrastructure drawings from AV system drawings?",
     "options": [
-      "They are the same thing",
+      "They are the same thing — infrastructure and system drawings are two names for a single identical document, and producing both is pure duplication",
       "Infrastructure drawings show pathways, conduit, backboxes, and cable schedules (the building's AV skeleton); system drawings show devices, connections, rack elevations, and signal flow (the nervous system)",
-      "Infrastructure drawings are optional",
-      "System drawings are only for large projects"
+      "Infrastructure drawings are optional — pathways, conduit, and backboxes are the electrician’s concern, so AV infrastructure drawings add nothing to the package",
+      "System drawings are only for large projects — on small jobs, device connections and signal flow are documented with a hand sketch taped inside the rack door"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty C Tasks 3–4: infrastructure (conduit/backbox/cable schedule) is built by the electrical contractor during rough-in; system drawings (rack elevations, point-to-point wiring, RCP device plans) are built by the AV integrator. Different audiences, different bid packages."
@@ -3258,10 +3257,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A cable schedule lists 'C-101, 2× Cat6A + 1× 18/2, AV Rack → Lectern floor box.' What is the designer communicating?",
     "options": [
-      "A purchase order",
+      "A purchase order — the cable schedule is the financial document authorizing the vendor to ship cable to the jobsite",
       "Exactly which cables, in what quantities, run from where to where — the installer's pull list, with unique IDs for labeling and testing",
-      "The cable manufacturer's address",
-      "Nothing useful"
+      "The cable manufacturer’s address — the schedule lists where to order each cable type, serving as the project’s vendor directory",
+      "Nothing useful — cable schedules are bureaucratic filler; experienced installers pull whatever cable looks right for each location"
     ],
     "correct": 1,
     "explanation": "The cable schedule turns the drawings into a buildable list: unique cable IDs, types, endpoints. Every cable gets labeled to its ID at both ends, and test results are recorded against the same ID. No schedule = mystery cables."
@@ -3271,10 +3270,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why does the design include a rack elevation drawing with exact RU positions?",
     "options": [
-      "For decoration",
+      "For decoration — a nicely rendered rack elevation impresses the client during the proposal, but experienced installers ignore it and lay out the gear by feel on site",
       "It defines device placement, ventilation spacing, power sequencing order, weight distribution, and wire management — the rack is built from this drawing, not improvised",
-      "Racks build themselves",
-      "Any order works"
+      "Racks build themselves — modern AV devices auto-negotiate mounting position and power sequencing over the network, so the elevation drawing is only a formality",
+      "Any order works — placement, ventilation gaps, and power sequencing are just preferences, so equipment can be racked in whatever order makes the cable runs shortest"
     ],
     "correct": 1,
     "explanation": "The rack elevation is a construction document: heavy amps low, ventilation gaps where specified, sequenced power order, patch fields accessible. A rack built 'however it fits' overheats and can't be serviced."
@@ -3284,10 +3283,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What belongs in the AV equipment list / bill of materials (BOM)?",
     "options": [
-      "Only the big-ticket items",
+      "Only the big-ticket items — displays, processors, and speakers; small parts like mounts and connectors are field-supplied and need no documentation",
       "Every device with manufacturer, model, quantity, and accessories — including mounts, plates, connectors, and cable — so procurement is complete and the bid is comparable",
-      "The installer's labor hours",
-      "Marketing descriptions"
+      "The installer’s labor hours — the BOM tracks crew hours per device, since labor is the largest line item in the equipment budget",
+      "Marketing descriptions — glossy feature bullets for each product, since the BOM’s purpose is selling the system to the client’s executives"
     ],
     "correct": 1,
     "explanation": "An incomplete BOM is where projects bleed: the forgotten $40 connectors, the missing rack shelves, the unpriced control license. The designer lists everything down to the wall plates so bids are apples-to-apples and nothing is 'discovered' mid-install."
@@ -3297,10 +3296,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is a 'sequence of operations' document in an AV design package?",
     "options": [
-      "The installer's work schedule",
+      "The installer’s work schedule — a day-by-day timetable showing crew assignments, which rooms get worked in what order, and the target completion date for the GC",
       "A written narrative of how the system behaves — what happens when a user presses each button, how rooms combine, automation logic — that the programmer implements and the client approves",
-      "A packing list",
-      "The warranty terms"
+      "A packing list — an itemized manifest of every box and component shipped to the jobsite, which the receiving crew checks off as deliveries arrive",
+      "The warranty terms — the legal document defining each manufacturer’s warranty period, coverage exclusions, and the RMA process for failed equipment"
     ],
     "correct": 1,
     "explanation": "The sequence of operations is the control system's functional spec: press 'Present' → display on, shade down, source routed, volume set. The client signs it (agreeing what they're buying) and the programmer codes to it (agreeing what to build)."
@@ -3310,10 +3309,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "TIA-606 labeling (e.g., '1A-B03' style identifiers) matters in AV documentation because:",
     "options": [
-      "Labels look professional",
+      "Labels are decorative and add no technical value — the cable schedule alone lets any technician trace cables years later without identifiers on the wire",
       "A consistent, documented labeling scheme lets anyone trace any cable, port, or device years later — essential for service and moves/adds/changes",
-      "It is required for the equipment to function",
-      "Labels are optional"
+      "Labels are required for the equipment to power on — without a printed label on every cable, the devices refuse to boot and the system cannot function",
+      "Labeling only matters during the first week of installation — after acceptance the labels fade and no service technician ever needs them again"
     ],
     "correct": 1,
     "explanation": "Five years later, nobody remembers what the blue cable was. TIA-606-style labels tied to the cable schedule and as-builts make the system serviceable by people who never met the installer."
@@ -3323,10 +3322,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What are 'as-built' drawings, and when are they produced?",
     "options": [
-      "The original design drawings",
+      "The original design drawings as issued for construction, which remain accurate because installations always match the design exactly",
       "Drawings updated to reflect what was ACTUALLY installed — produced at project end from field redlines, and handed to the client for future service",
-      "Drawings of the building's architecture",
-      "They are produced before construction"
+      "Drawings of the building's architecture and structure, produced by the architect to show walls, doors, and ceiling heights",
+      "They are produced before construction begins, serving as the bid documents that each contractor uses to price their work against"
     ],
     "correct": 1,
     "explanation": "Field conditions always differ from design. As-builts capture the truth: actual cable routes, final IP addresses, substituted models. They're the document the next technician works from — worthless if never updated."
@@ -3336,10 +3335,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "An installer submits an RFI: 'Drawing A-201 shows the projector at 18 ft; structural steel is at 16 ft. Advise.' What is the RFI process protecting?",
     "options": [
-      "Nothing — RFIs are paperwork",
+      "Nothing — RFIs are paperwork — the installer should resolve the steel conflict in the field without bothering the design team",
       "It creates a documented question-and-answer record so conflicts are resolved by the design team in writing, not by field improvisation",
-      "The installer's profit",
-      "The architect's ego"
+      "The installer’s profit — the RFI process exists to generate change orders and increase the contractor’s margin",
+      "The architect’s ego — RFIs flatter the design team by asking their opinion on matters the field could decide alone"
     ],
     "correct": 1,
     "explanation": "RFIs (Requests for Information) are the formal channel for build conflicts. The designer answers in writing — possibly revising the design — creating a record that protects everyone when the question 'who decided this?' comes up later."
@@ -3349,10 +3348,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the purpose of equipment submittals in the design-bid-build process?",
     "options": [
-      "To delay the project",
+      "To delay the project — submittals exist to slow procurement and give the designer billable review hours",
       "The contractor submits proposed products for designer review BEFORE purchase, verifying they meet the specification — catching substitutions early",
-      "To increase paperwork",
-      "Submittals are only for architects"
+      "To increase paperwork — submittals generate document volume to justify the design fee, with no effect on what gets purchased",
+      "Submittals are only for architects — AV equipment is exempt from the submittal process, which applies to architectural finishes alone"
     ],
     "correct": 1,
     "explanation": "Submittals are quality control: the designer checks that the proposed projector actually meets the specified lumens, throw, and lens shift before it's bought. 'Or equal' substitutions die here, not on the jobsite."
@@ -3362,10 +3361,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A reflected ceiling AV plan shows speaker symbols with coverage angles. What is the installer expected to derive from it?",
     "options": [
-      "Just the speaker count",
+      "Just the speaker count — the plan communicates how many speakers to order; placement is decided by the installer on the ladder",
       "Exact speaker locations, spacing, and aiming — the coverage design, coordinated with lights and sprinklers, that the installer lays out and the verifier tests against",
-      "The speaker brand",
-      "Nothing — speakers go wherever they fit"
+      "The speaker brand — the symbols identify the manufacturer and model; the layout itself is left to the installing contractor",
+      "Nothing — speakers go wherever they fit — the symbols are diagrammatic only, so the installer places speakers around the lights and sprinklers"
     ],
     "correct": 1,
     "explanation": "The RCP AV plan IS the coverage design: locations derived from the ±3 dB coverage calculation, coordinated with other ceiling trades. The installer places per plan; verification measures against it."
@@ -3375,10 +3374,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why does the design package include an IP address schedule for networked AV?",
     "options": [
-      "IP addresses configure themselves",
+      "IP addresses configure themselves through plug-and-play — DHCP auto-assigns every address, so documenting the scheme is redundant",
       "A documented scheme (VLANs, static reservations, address ranges) prevents conflicts, speeds commissioning, and lets IT and future technicians manage the system",
-      "DHCP makes documentation unnecessary",
-      "It is only for the programmer"
+      "DHCP eliminates the need for documentation — dynamically assigned addresses never conflict and future technicians never need to know them",
+      "The IP schedule is written only for the control programmer — IT staff and future technicians never touch networked AV IP addresses"
     ],
     "correct": 1,
     "explanation": "Fifty AV devices on DHCP with no documentation is a troubleshooting nightmare. The IP schedule assigns static addresses or documented reservations per VLAN — commissioning goes faster and the next tech isn't guessing."
@@ -3388,10 +3387,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is drawing revision control (Rev A, B, C / delta triangles) protecting on an AV project?",
     "options": [
-      "The designer's artistic vision",
+      "The designer’s artistic vision — revision control protects the aesthetic integrity of the drawings against unauthorized changes",
       "It ensures everyone builds from the CURRENT set — superseded drawings are marked void so the installer doesn't rough-in from last month's device locations",
-      "It makes drawings look official",
-      "Revision control is optional"
+      "It makes drawings look official — revision triangles are decorative marks that lend authority to the drawing set",
+      "Revision control is optional — installers reliably track which version is current from memory, so formal revision control adds nothing"
     ],
     "correct": 1,
     "explanation": "Building from Rev B when Rev D moved the projector 4 feet is a classic expensive error. Revision clouds, deltas, and a current-drawing log keep the field, the GC, and the design team on the same set."
@@ -3401,10 +3400,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The O&M (Operations & Maintenance) manual the designer specifies should contain what?",
     "options": [
-      "Only the equipment warranties",
+      "Only the equipment warranties — the O&M manual is just a binder of manufacturer warranty cards, since the client calls the integrator for any operational question",
       "System overview, as-builts, IP/passwords (secured), operating instructions, maintenance schedules, troubleshooting basics, and vendor contacts — everything needed to run the system",
-      "The designer's invoice",
-      "Blank pages"
+      "The designer’s invoice — the O&M manual records the design fees, payment milestones, and final invoice so the client has a complete financial history",
+      "Blank pages — the O&M manual ships with blank sections so the client’s own staff can write in operating procedures as they learn the system"
     ],
     "correct": 1,
     "explanation": "The O&M manual is the system's owner's manual: how to operate it, how to maintain it, who to call. A system handed over without one is handed over incomplete."
@@ -3414,10 +3413,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A riser diagram in the AV package shows what?",
     "options": [
-      "The building's plumbing",
+      "The building’s plumbing — the riser diagram traces water and waste stacks between floors for the AV rough-in",
       "Vertical distribution between floors/racks — backbone cable, floor-to-floor pathways, and IDF/MDF relationships",
-      "The projector's rise time",
-      "Employee hierarchy"
+      "The projector’s rise time — the diagram charts how quickly the projector lamp reaches full brightness",
+      "Employee hierarchy — the riser shows the client’s org chart, clarifying who approves the AV design"
     ],
     "correct": 1,
     "explanation": "The riser shows the vertical backbone: which racks feed which floors, backbone cable counts, and pathway routing between levels. Multi-floor projects can't be cabled correctly without it."
@@ -3427,10 +3426,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Before issuing the design for bid, what final documentation QA step should the designer perform?",
     "options": [
-      "None — issue it immediately",
+      "None — issue it immediately — speed to bid matters more than accuracy, so the package goes out without any QA review",
       "A coordination check: do the drawings, BOM, cable schedule, and specifications agree with each other (quantities, model numbers, locations)?",
-      "Add more pages",
-      "Remove the specifications to save printing"
+      "Add more pages — a thicker bid package impresses bidders, so the QA step is padding the document count",
+      "Remove the specifications to save printing — dropping the spec section cuts printing costs, which is the designer’s final QA duty"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty C Task 5 (Finalize Project Documentation): internal QA catches the drawing that shows 12 speakers while the BOM lists 10. Inconsistent bid documents produce inconsistent bids — and disputes."
@@ -3440,10 +3439,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is 'system performance verification' in the CTS-D context, and how does it differ from the installer's own testing?",
     "options": [
-      "They are the same thing",
+      "They are the same thing — the installer’s button-press checks and the designer’s verification are identical activities with different names",
       "Verification is independent confirmation — by the designer or a third party — that the installed system meets the documented design criteria, using calibrated measurements",
-      "Verification is just paperwork",
-      "Only the installer can verify"
+      "Verification is just paperwork — it’s a signature on a form confirming the installer’s word, requiring no independent measurement",
+      "Only the installer can verify — the installing contractor is the sole party qualified to confirm the system meets the design criteria"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty D Task 2: the designer (or commissioning agent) verifies performance against the design criteria — measured SPL coverage, intelligibility, video resolution — independently of the installer's checkout. Self-graded homework isn't verification."
@@ -3453,10 +3452,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "During verification, you measure speech intelligibility with STI. The design criterion was STI ≥ 0.60 ('good'). You measure 0.45 in several seats. What is the correct response?",
     "options": [
-      "Sign off anyway — it sounds fine to you",
+      "Sign off anyway — the room sounds subjectively fine to you, so the STI number can be safely ignored at acceptance",
       "Document the failure, diagnose the cause (noise, reverberation, coverage, EQ), and require corrective action before acceptance",
-      "Lower the criterion to 0.45",
-      "Measure again until you get 0.60"
+      "Lower the design criterion from 0.60 to 0.45 so that the measured result officially passes verification",
+      "Keep re-measuring different seats until one of them reads 0.60, then record that single seat as the official result"
     ],
     "correct": 1,
     "explanation": "Verification without consequences is theater. A failed criterion triggers documented diagnosis and remediation — acoustic treatment, speaker re-aiming, noise mitigation — then re-verification. The criterion doesn't move to meet the measurement."
@@ -3466,10 +3465,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What should the designer's verification test plan be based on?",
     "options": [
-      "Whatever tests are quick",
+      "Whatever tests are quick — the fastest checks that fit the site visit define the plan; formal criteria and thresholds slow down closeout",
       "The performance criteria established in the design documentation — every specified criterion gets a defined test method, instrument, and pass/fail threshold",
-      "The installer's preferences",
-      "Industry gossip"
+      "The installer’s preferences — the lead technician chooses whatever tests they’re comfortable with, since they know the system best",
+      "Industry gossip — the test plan follows whatever methods are trending on installer forums, keeping the verification current with field practice"
     ],
     "correct": 1,
     "explanation": "You can't verify what you never specified. The design documents set measurable criteria (SPL ±3 dB, STI ≥ 0.60, 4K60 end-to-end); the verification plan tests each one with a stated method. Criteria → test plan → measured result."
@@ -3479,10 +3478,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "A punch list item reads 'Boardroom display flickers intermittently.' What makes a punch list effective at closeout?",
     "options": [
-      "Vague descriptions are fine",
+      "Vague descriptions are fine — ‘display flickers’ is specific enough for the punch list; the technician will figure out the rest",
       "Each item is specific, assigned, and verifiable — location, symptom, responsible party, and a defined re-test — so closeout actually closes",
-      "Punch lists should be verbal",
-      "Ignore intermittent issues"
+      "Punch lists should be verbal — spoken punch items avoid paperwork and get resolved faster than written lists",
+      "Ignore intermittent issues — flickers that come and go aren’t real problems, so they don’t belong on the punch list"
     ],
     "correct": 1,
     "explanation": "'Display flickers' with no location or owner lingers forever. Effective punch lists name the room, the symptom, who fixes it, and how it's verified fixed — then they're tracked to zero."
@@ -3492,10 +3491,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What does the Certificate of Substantial Completion signify for the AV designer at closeout?",
     "options": [
-      "The project is over",
+      "The project is over — the certificate ends all obligations, so no warranty, documentation, or training follows it",
       "The system is usable for its intended purpose — triggering warranty start, final documentation delivery, and training — even if minor punch items remain",
-      "All punch items are done",
-      "The designer is no longer involved"
+      "All punch items are done — the certificate is only issued after every punch item is closed, with zero exceptions",
+      "The designer is no longer involved — the certificate permanently releases the designer from any further project participation"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty D Task 3: substantial completion is the milestone where the owner can use the system. It starts warranty clocks and releases retention per contract terms. The designer typically verifies readiness for this milestone."
@@ -3505,10 +3504,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why should the designer participate in project implementation communication (site meetings, field reports)?",
     "options": [
-      "To bill more hours",
+      "To bill more hours — site meetings exist to generate additional billable time, with no benefit to the installed system",
       "To protect design intent — answering RFIs, reviewing submittals, and catching deviations while they're cheap to correct",
-      "Designers should never visit sites",
-      "It is purely social"
+      "Designers should never visit sites — the design is complete at issue, so any site presence only confuses the installer",
+      "It is purely social — implementation meetings are networking events for the design team, unrelated to the project’s success"
     ],
     "correct": 1,
     "explanation": "CTS-D Duty D Task 1: design intent erodes without the designer in the loop. A two-minute RFI answer during rough-in prevents a two-day rework after drywall. Presence is cheap insurance."
@@ -3518,10 +3517,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "At closeout, the client asks for the admin passwords, DSP files, and control system source code. What is the correct position?",
     "options": [
-      "Refuse — that's proprietary",
+      "Refuse to release passwords and source code — keeping them proprietary protects the integrator's future service revenue and builds healthy dependency",
       "Hand over complete documentation and credentials per the contract — the client owns their system; withholding it creates dependency, not value",
-      "Charge extra for passwords",
-      "Passwords aren't part of closeout"
+      "Charge the client a separate licensing fee for every admin password — withholding credentials until payment keeps the handover profitable",
+      "Treat passwords as outside closeout scope — hand over only the user remotes and promise the admin credentials will arrive in a later email"
     ],
     "correct": 1,
     "explanation": "Closeout delivers a complete, ownable system: admin credentials, uncompiled/compiled code as contracted, DSP project files, as-builts. Clients who can't access their own system will never hire you again — and may sue."
@@ -3531,10 +3530,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is 'attic stock' and why is it specified at closeout?",
     "options": [
-      "Insulation for the rack room",
+      "Insulation for the rack room — attic stock is thermal insulation specified for the rack closet to control equipment heat",
       "Spare consumables and failure-prone parts (lamps, batteries, key cables) left with the client so common failures are a swap, not a procurement cycle",
-      "Old equipment stored in the attic",
-      "It is a joke term"
+      "Old equipment stored in the attic — attic stock is the pile of legacy gear left above the ceiling during upgrades",
+      "It is a joke term — attic stock is installer slang with no contractual meaning and never appears in specifications"
     ],
     "correct": 1,
     "explanation": "A spare wireless mic battery or projector lamp on the shelf turns a crisis into a ten-minute fix. Specifying attic stock at closeout — when procurement is mobilized — is cheap resilience."
@@ -3544,10 +3543,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "The verification report shows the videoconference room meets all criteria except the camera framing preset for the whiteboard. What happens next?",
     "options": [
-      "Accept the system — it's minor",
+      "Accept the system as substantially complete — a single camera framing preset is too minor to hold up final acceptance",
       "The deficiency is documented, corrected (re-aim/re-program the preset), and re-verified before final acceptance",
-      "Delete that criterion",
-      "Blame the camera manufacturer"
+      "Delete the whiteboard framing criterion from the verification report so the remaining criteria show a clean pass",
+      "File a warranty claim with the camera manufacturer and defer the preset re-aiming until they respond"
     ],
     "correct": 1,
     "explanation": "Verification is binary against criteria: pass or correct-and-reverify. Documented deficiencies with assigned correction and re-test keep closeout honest and the system complete."
@@ -3557,10 +3556,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Why does the designer conduct or witness end-user training at closeout?",
     "options": [
-      "Training is the installer's job alone",
+      "To demonstrate the system's cost savings to the client's finance team — and to let the installer run all training alone with no design review of the UI or documentation",
       "To confirm the training matches the designed operation — and to hear firsthand where the UI or documentation confuses users, while fixes are still easy",
-      "Designers enjoy public speaking",
-      "Training doesn't matter"
+      "To certify that the training is entertaining enough to hold attention — and to rely on verbal handoffs instead of written documentation once users look confident",
+      "To verify that every attendance sheet is fully signed — and to push all UI and documentation feedback into the warranty period, when fixes cost far more"
     ],
     "correct": 1,
     "explanation": "Training is where design assumptions meet reality. Watching users struggle with a control page reveals design flaws no checklist catches — and it's far cheaper to fix the UI before the support calls start."
@@ -3570,10 +3569,10 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "What is the value of a post-project review for the design practice?",
     "options": [
-      "None — move on to the next project",
+      "It has no value — moving straight to the next project is always more profitable than spending hours reviewing completed work",
       "Capturing what the design got right and wrong (estimates, coordination wins, product issues) improves future designs and estimating accuracy",
-      "It is only for assigning blame",
-      "Clients dislike reviews"
+      "It exists only to assign blame — post-project reviews document which person caused every problem, for the permanent record",
+      "Clients dislike reviews — asking about lessons learned damages the relationship, so post-project reviews should never be offered"
     ],
     "correct": 1,
     "explanation": "Every project teaches: which calculations held, which coordination failed, which products to avoid. A blameless review converts experience into better templates, checklists, and estimates."
@@ -3583,23 +3582,23 @@ const QUESTIONS = [
     "cert": "CTS-D",
     "q": "Final acceptance testing reveals the assistive listening system doesn't cover the back rows. The design specified the correct transmitter power. What is the likely field issue?",
     "options": [
-      "The design was wrong",
+      "The design was wrong — the transmitter power specification was miscalculated, so the entire assistive listening design must be redone",
       "Installation/commissioning issue — antenna placement, orientation, or configuration — to be corrected and re-verified; the design criteria stand",
-      "Assistive listening never works",
-      "Accept it as-is"
+      "Assistive listening never works — these systems cannot cover large rooms regardless of design, so the back rows will never receive the signal",
+      "Accept it as-is — partial coverage satisfies the requirement as long as the front rows work, so no correction is needed"
     ],
     "correct": 1,
     "explanation": "Verification distinguishes design errors from implementation errors. Correct design + failed measurement = field correction (antenna placement is the classic culprit for loop/IR systems), then re-verification against the unchanged criterion."
   },
-{
+  {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
     "q": "Before mobilizing to site, you review the AV design package. What are you primarily verifying?",
     "options": [
-      "That you like the equipment brands",
+      "That you personally like the equipment brands — brand preference is the primary criterion for validating an AV design package",
       "That the drawings, BOM, and scope are complete and coordinated — so material orders, labor plans, and RFIs happen BEFORE the crew is standing around",
-      "The designer's credentials",
-      "That the client paid the deposit"
+      "The designer's professional credentials — verifying their certifications matters more than reviewing the drawings or the BOM",
+      "That the client paid the deposit — payment status is the only thing worth verifying before mobilizing the crew to the site"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty A Task 1: reviewing project documentation before mobilization catches missing equipment, drawing conflicts, and scope gaps while they're cheap. The crew arriving to discover half the BOM was never ordered is a planning failure."
@@ -3609,10 +3608,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "During the technical site survey, you find the equipment room is 4 feet narrower than the drawings show. What is the correct action?",
     "options": [
-      "Squeeze the racks in anyway",
+      "Squeeze the racks into the smaller room anyway and force the layout to fit on site during installation",
       "Document the discrepancy with measurements and photos, and issue an RFI — the rack layout must be revised before rough-in",
-      "Skip the site survey next time",
-      "Order smaller racks without telling anyone"
+      "Skip the technical site survey entirely on future projects so these discrepancies never come to light",
+      "Order smaller racks and install them quietly without telling the client or revising any of the drawings"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty A Task 2: the technical site survey verifies field conditions against the design. Discrepancies get documented and resolved through RFIs — not absorbed silently. A rack that doesn't fit is discovered with a tape measure, not a saw."
@@ -3622,10 +3621,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What does 'staging' the installation mean, and why does it happen before site work?",
     "options": [
-      "It means acting out the installation",
+      "It means acting out the installation — the crew rehearses the install like a play, walking through each step without touching equipment",
       "Pre-assembling, labeling, firmware-updating, and testing racks and major assemblies in the shop so site time is installation, not assembly and troubleshooting",
-      "It is a theatrical term",
-      "Staging wastes time"
+      "It is a theatrical term — staging refers to theater stage work and has no meaning in AV installation project management",
+      "Staging wastes time — shop assembly duplicates site work, so best practice is to ship everything boxed and assemble it all on site"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty A Task 3: shop staging catches DOA equipment, lets programmers load code, and means the rack arrives tested. An hour of shop time saves three hours of ladder time."
@@ -3635,10 +3634,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The GC's schedule shows drywall closing in 5 days, but your cable isn't on site. What facility-readiness issue is this?",
     "options": [
-      "None — cable can go in after drywall",
+      "None — cable can be fished through finished drywall at no extra cost, so material delays have no impact on the close-up schedule",
       "The site is not ready for your phase: materials, pathways, and preceding trades must be sequenced BEFORE close-up, or you face destructive rework",
-      "Drywall schedules don't affect AV",
-      "Install wireless instead"
+      "Drywall schedules only affect the painters and finish carpenters; AV rough-in floats independently of the GC's close-up milestones",
+      "Install wireless access points and wireless HDMI links instead of cable, since wireless systems eliminate the need for any in-wall rough-in"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty A Task 4: evaluating facility readiness means confirming the site can actually receive your work — power on, pathways in, preceding trades complete, materials on hand. Working out of sequence multiplies cost."
@@ -3648,10 +3647,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "On day one at the site, what should the lead installer establish FIRST?",
     "options": [
-      "Start pulling cable immediately",
+      "Start pulling cable immediately — billable progress on day one matters more than storage, safety orientation, or planning",
       "Site logistics: material storage/security, power for tools, trash/wash areas, safety orientation, GC contacts, and the day's work plan",
-      "Take a long lunch",
-      "Wait for instructions"
+      "Take a long lunch — easing into the job with an extended lunch builds crew morale better than any logistics setup",
+      "Wait for instructions — the lead should stand by until the GC personally assigns each task for the day"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty A Task 5: on-site preparation — secure storage (gear walks away), safety briefing, GC coordination, and a plan for the day. Crews that 'just start pulling' spend the afternoon looking for the cable they left in the truck."
@@ -3661,10 +3660,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The design calls for a projector mount at a location where you find a sprinkler head 12 inches away. What do you do?",
     "options": [
-      "Mount it anyway — close enough",
+      "Mount it anyway — close enough — a projector mount 12 inches from a sprinkler head has adequate clearance, so proceed with the installation",
       "Stop and resolve: document the clash, check clearances with the GC/designer — relocating a sprinkler or the mount requires coordinated approval, not a field decision",
-      "Remove the sprinkler head",
-      "Mount the projector to the sprinkler pipe"
+      "Remove the sprinkler head — unscrew the sprinkler head to clear the mount location; the fire suppression system works fine with one head removed",
+      "Mount the projector to the sprinkler pipe — the sprinkler pipe is sturdy overhead support, so hanging the projector mount from it resolves the clash"
     ],
     "correct": 1,
     "explanation": "Field clashes with life-safety systems are never solved unilaterally. Document, photograph, RFI. Moving sprinklers needs the fire protection engineer; moving the projector needs throw-distance verification."
@@ -3674,10 +3673,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why should firmware on all networked AV devices be updated and standardized during staging rather than on site?",
     "options": [
-      "Firmware doesn't matter",
+      "Firmware doesn’t matter — firmware versions have no effect on device compatibility, so updating is pure busywork",
       "Staged updates catch incompatibilities (Dante versions, control system firmware) on the bench with internet access — not on a ladder with no connectivity",
-      "Newer firmware is always worse",
-      "The client prefers old firmware"
+      "Newer firmware is always worse — every firmware update introduces bugs, so the oldest available version is the safest choice",
+      "The client prefers old firmware — end users distrust updates, so the installer should preserve the factory firmware forever"
     ],
     "correct": 1,
     "explanation": "Mismatched firmware between Dante devices, DSPs, and control processors is a classic commissioning time-burn. Standardize versions in the shop, document them, and verify interoperability before mobilization."
@@ -3687,10 +3686,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What belongs on a pre-mobilization checklist for the lead installer?",
     "options": [
-      "Only the crew's lunch orders",
+      "Only the crew’s lunch orders — confirming the lunch spot and headcount is the lead’s sole pre-mobilization duty; the rest sorts itself out on site",
       "Drawings and BOM verified, materials received and staged, tools calibrated and packed, site contacts confirmed, safety plan reviewed, schedule understood",
-      "Just show up",
-      "The client's phone number"
+      "Just show up — an experienced lead needs no checklist; drawings, materials, and tools can be figured out after arriving on site",
+      "The client’s phone number — having the client on speed dial replaces the checklist, since any missing item can be resolved with a call"
     ],
     "correct": 1,
     "explanation": "Mobilization without a checklist is how crews arrive missing the lift, the labels, or the right drawings. The checklist converts the project plan into packed trucks and a ready crew."
@@ -3700,10 +3699,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The site survey reveals asbestos tile where floor boxes were designed. What is the correct response?",
     "options": [
-      "Cut through it — it's just tile",
+      "Cut through it — asbestos floor tile is just tile, and coring through it poses no hazard to the installation crew",
       "Stop work in that area, notify the GC/client in writing — asbestos disturbance is regulated and hazardous; only licensed abatement handles it",
-      "Cover it and pretend you didn't see it",
-      "Asbestos is harmless"
+      "Cover it with the floor box and say nothing — material that looks undisturbed needs no documentation or written notification",
+      "Asbestos is harmless in small amounts — brief exposure during a quick cut stays well below any regulated legal limit"
     ],
     "correct": 1,
     "explanation": "Suspect materials stop work, period. Disturbing asbestos without abatement is illegal and dangerous. Document, notify in writing, and let the proper process run — no schedule is worth exposure."
@@ -3713,10 +3712,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "How should high-value AV equipment be handled between delivery and installation?",
     "options": [
-      "Leave it in the hallway — someone will watch it",
+      "Leave the equipment in an unlocked hallway or stairwell under casual crew observation, issued by word of mouth with no inventory log",
       "Secure, climate-appropriate storage with inventory control — gear is inventoried on receipt, stored locked, and issued to the workface as needed",
-      "Store it outdoors under a tarp",
-      "Open all boxes immediately and scatter components"
+      "Store the equipment outdoors under a waterproof tarp, exposed to humidity and temperature swings, with no lock or inventory record until install day",
+      "Unbox all equipment immediately on delivery and scatter components across the jobsite for visibility, discarding the packing and labels"
     ],
     "correct": 1,
     "explanation": "Jobsite theft and damage are project killers. Staged equipment lives in locked storage, inventoried against the BOM. A $10,000 projector growing legs delays the project and the insurance claim takes longer."
@@ -3726,10 +3725,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The design specifies plenum cable above the ceiling, but your survey finds the space is used as an air-handling plenum with no fire rating on the cable in the BOM. What do you do?",
     "options": [
-      "Install the non-plenum cable — it's what was ordered",
+      "Install the non-plenum cable anyway, since the BOM is authoritative and ordering corrections cost time",
       "Flag the code violation before rough-in: plenum spaces require plenum-rated (CMP) cable; correct the BOM via RFI/change process",
-      "Cable ratings don't matter",
-      "Run it in conduit instead of fixing the BOM"
+      "Cable jacket ratings are irrelevant to code compliance, so any jacket type may run in the air-handling space",
+      "Pull the non-plenum cable inside metallic conduit instead, and skip the BOM correction and RFI entirely"
     ],
     "correct": 1,
     "explanation": "Code compliance is verified before installation, not after the inspector fails it. CMP (plenum) rating is required in air-handling spaces. Catching it at staging means a corrected order; catching it at inspection means a re-pull."
@@ -3739,10 +3738,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the installer's responsibility regarding permits and inspections?",
     "options": [
-      "Permits are the client's problem",
+      "Permits are the client’s problem — the installer never verifies permits; if the inspector stops the job, that’s the client’s fault",
       "Verify what permits/inspections apply to the AV scope (low-voltage, structural for rigging) and confirm they're in place before the work that needs them",
-      "Work without permits to save time",
-      "Inspectors never check AV"
+      "Work without permits to save time — skipping the permit process accelerates the schedule, and inspectors rarely check AV work",
+      "Inspectors never check AV — low-voltage AV work is invisible to inspectors, so permits and inspections don’t apply"
     ],
     "correct": 1,
     "explanation": "Low-voltage permits, above-ceiling inspections, and structural inspections for rigging vary by jurisdiction. The lead installer confirms requirements with the GC/AHJ before the phase that triggers them."
@@ -3752,10 +3751,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A pre-installation labor plan should account for what?",
     "options": [
-      "Only the number of warm bodies",
+      "Only the total headcount matters — any warm body can pull cable, trim wall plates, and commission DSPs equally well",
       "Crew size by phase, skill mix (lead tech, installers, apprentice), lift/equipment needs, and coordination with other trades' schedules",
-      "Labor planning is the PM's job alone",
-      "Who brings coffee"
+      "Labor planning is solely the project manager's job — the lead installer never contributes to crew sizing or phase scheduling",
+      "Only the coffee and lunch logistics — crew skill mix, lift needs, and trade coordination sort themselves out once on site"
     ],
     "correct": 1,
     "explanation": "The lead installer plans the workface: rough-in needs pullers; trim needs finish-careful techs; commissioning needs the programmer. Wrong crew mix at the wrong phase burns budget."
@@ -3765,10 +3764,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why take pre-installation photos of the site?",
     "options": [
-      "For social media",
+      "For social media — jobsite photos build the integrator’s Instagram following, which is the primary business purpose of site documentation",
       "To document existing conditions — damage, existing infrastructure, as-found states — protecting against back-charges and proving what you started with",
-      "Photos are a waste of time",
-      "Only the GC takes photos"
+      "Photos are a waste of time — existing conditions are obvious to everyone on site, so photographic records add nothing to the project",
+      "Only the GC takes photos — site photography is exclusively the general contractor’s responsibility, and AV trades are prohibited from documenting conditions"
     ],
     "correct": 1,
     "explanation": "'That scratch was already there' needs proof. Dated photos of existing conditions, ceiling spaces, and equipment rooms before work starts are cheap dispute insurance."
@@ -3778,10 +3777,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The project requires work in an occupied hospital wing. What pre-installation coordination is essential?",
     "options": [
-      "None — work normally",
+      "No special coordination is needed — an occupied hospital wing works exactly like any office, so the crew works normal hours with standard tools",
       "Infection control (ICRA) procedures, quiet hours, escort/badging requirements, and shutdown coordination with facilities — arranged BEFORE mobilization",
-      "Hospitals have no special requirements",
-      "Work nights without telling anyone"
+      "Hospitals waive all requirements for AV contractors — badging, escorts, ICRA barriers, and quiet hours apply only to medical staff",
+      "Shift all work to unannounced night shifts — skipping ICRA procedures, permits, and facilities coordination keeps the project on schedule"
     ],
     "correct": 1,
     "explanation": "Healthcare, data centers, and occupied spaces have strict protocols — ICRA barriers, above-ceiling permits, escorted access. Arranging them at mobilization (not mid-project) keeps the crew working instead of waiting at security."
@@ -3791,10 +3790,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Your test equipment (cable certifier, SPL meter) hasn't been calibrated in three years. What is the risk?",
     "options": [
-      "None — test gear doesn't drift",
+      "None — test gear doesn’t drift — certifiers and SPL meters hold factory accuracy forever, so recalibration is a revenue scheme",
       "Uncalibrated instruments produce untrustworthy measurements — a 'passing' cable cert or SPL reading may be fiction, and warranty/verification claims collapse",
-      "Calibration is only for show",
-      "Old equipment works better"
+      "Calibration is only for show — the calibration sticker impresses clients, but it has no effect on measurement accuracy",
+      "Old equipment works better — meters improve with age as components settle, so a three-year-old certifier outperforms a new one"
     ],
     "correct": 1,
     "explanation": "Measurements are only as good as the instrument. Annual calibration (with certificates) is standard practice; verification reports backed by uncalibrated gear won't survive scrutiny."
@@ -3804,10 +3803,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The project requires removing existing ceiling speakers and cable before the new install. What is the proper deinstallation practice?",
     "options": [
-      "Rip it all out as fast as possible",
+      "Rip it all out as fast as possible to keep the schedule, since speed matters more than documentation during a deinstallation",
       "Label and document what serves what, disconnect safely (power off, verified), remove cleanly, and dispose/recycle per contract and regulations",
-      "Leave old cable in place — it's harmless",
-      "Cut everything with one snip"
+      "Leave old cable in place behind the ceiling — it's harmless, out of sight, and removing it only wastes billable labor hours",
+      "Cut everything with one snip and toss it in the dumpster, because abandoned cable and old speakers have no disposal regulations"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty B Task 1: deinstallation is surgical, not demolition. Label circuits before disconnecting (some may stay live), verify power is off, and handle disposal — including e-waste rules for old electronics."
@@ -3817,10 +3816,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "You are mounting unistrut substructure for a projector mount. What determines whether the attachment is acceptable?",
     "options": [
-      "It feels solid",
+      "It feels solid — grab the unistrut and shake it hard; if nothing moves under force, the attachment is acceptable regardless of substrate or fastener type",
       "Attachment to structure (not ceiling tile), proper fasteners for the substrate, load rating exceeding the equipment weight with safety factor, and firestop where penetrations occur",
-      "Any screw into drywall works",
-      "Substructure is optional"
+      "Any screw into drywall works — standard drywall screws into the ceiling tile grid provide plenty of holding power for projector substructure loads",
+      "Substructure is optional — projector mounts can hang directly from the ceiling tile grid, since the tiles distribute the equipment load evenly across the ceiling"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty B Task 2: substructure carries the load to the building. Fasteners must suit the substrate (concrete anchors, beam clamps — never drywall alone for heavy loads), and the assembly must handle the weight with margin."
@@ -3830,10 +3829,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "While pulling Cat6A, the cable kinks hard around a conduit elbow. What is the correct response?",
     "options": [
-      "Straighten it and keep pulling",
+      "Straighten it and keep pulling — a kinked section straightens out under tension and the run will certify normally afterward",
       "Stop — a hard kink can fracture pairs and ruin certification; cut back past the damage or replace the run, and fix the pathway (sweep elbow, pull box)",
-      "Kinks don't affect performance",
-      "Pull harder to work it out"
+      "Kinks don’t affect performance — Cat6A pairs are flexible enough that hard kinks never impact certification results",
+      "Pull harder to work it out — increased pulling force irons out the kink, restoring the cable’s original geometry"
     ],
     "correct": 1,
     "explanation": "Kinks, over-tension, and tight bends permanently damage twisted-pair geometry. The run is suspect until re-tested; often it's replaced. Prevention — proper bend radius, pull boxes, lubricant, tension monitoring — is the real lesson."
@@ -3843,10 +3842,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the maximum pulling tension generally recommended for Cat6 UTP cable?",
     "options": [
-      "As much as the puller can exert",
+      "As much tension as the puller can exert — copper conductors can handle any pulling force",
       "Around 25 lbs — exceeding it deforms the pairs and risks failing certification",
-      "100 lbs",
-      "Tension doesn't matter for data cable"
+      "100 lbs — roughly four times the rated limit for long straight conduit runs",
+      "Tension is irrelevant for data cable — only fiber optic cable has a pulling-tension limit"
     ],
     "correct": 1,
     "explanation": "Manufacturers typically rate Cat6 UTP for ~25 lbf (110 N) maximum pulling tension. Exceeding it stretches the copper and distorts pair geometry — the cable may 'work' but fail certification testing."
@@ -3856,10 +3855,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Cables pass through a 2-hour fire-rated wall. What is required at the penetration?",
     "options": [
-      "Nothing — low voltage is exempt",
+      "Nothing — low voltage is exempt — AV cable penetrations need no firestopping in any rated wall",
       "Approved firestopping restoring the wall's fire rating — intumescent pillows, putty, or rated devices, installed per the listing",
-      "Just caulk it",
-      "Fire ratings don't apply to AV"
+      "Just caulk it — a bead of silicone caulk around the cables satisfies the firestop requirement for rated walls",
+      "Fire ratings don’t apply to AV — fire-rated walls only restrict electrical and plumbing penetrations, never low-voltage AV"
     ],
     "correct": 1,
     "explanation": "Every penetration of a rated assembly must be firestopped to maintain the rating. Inspectors check this. Listed firestop systems (not random caulk) installed per their listing are the requirement."
@@ -3882,10 +3881,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A cable run exceeds the practical pull length with three 90-degree bends and no pull box. What is the correct fix?",
     "options": [
-      "Pull harder with a stronger tugger",
+      "Pull harder with a stronger tugger — maximum pulling force overcomes any number of bends, so pull boxes are optional",
       "Add a pull box to break the run into manageable segments — the NEC limits total bends to 360° between pull points for good reason",
-      "Use thinner cable",
-      "Bends don't affect pulls"
+      "Use thinner cable — switching to a smaller-diameter cable lets the run navigate unlimited bends without a pull box",
+      "Bends don’t affect pulls — 90-degree bends add zero pulling tension, so any number of bends is fine without pull boxes"
     ],
     "correct": 1,
     "explanation": "360° of bend between pull points is the practical (and code-recognized) limit. Beyond it, friction makes damage likely. The fix is pathway design: pull boxes segmenting the run."
@@ -3895,10 +3894,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why must cable ends be protected (capped/taped) during rough-in?",
     "options": [
-      "For looks",
+      "For looks — capped cable ends look professional in progress photos, which is the only reason to protect them",
       "To keep out drywall dust, paint, and moisture that contaminate connectors and degrade terminations later",
-      "It is not necessary",
-      "Only fiber needs protection"
+      "It is not necessary — drywall dust and paint have no effect on connectors, so capping ends wastes material and time",
+      "Only fiber needs protection — copper cable ends are immune to dust and moisture, so only fiber requires capping"
     ],
     "correct": 1,
     "explanation": "Construction debris in a connector is a future intermittent fault. Capped ends stay clean through drywall, paint, and flooring phases — a two-cent cap saves a two-hour troubleshooting call."
@@ -3908,10 +3907,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The electrician's conduit run for AV is full at 60% fill with their own wire. What is the issue?",
     "options": [
-      "None — share it",
+      "None — share it — conduit fill limits don’t apply when mixing trades, and AV signal cable runs fine alongside power conductors",
       "NEC fill limits (40% for 3+ cables) exist for heat and future pulls; plus AV signal cable shouldn't share conduit with power anyway (EMI, code)",
-      "More fill is fine",
-      "AV cable is immune to interference"
+      "More fill is fine — 60% fill is acceptable for AV work since signal cables generate no heat, and the NEC limit is only for power wiring",
+      "AV cable is immune to interference — shielded AV cable cannot pick up EMI from power conductors, so sharing conduit is always safe"
     ],
     "correct": 1,
     "explanation": "Overfilled conduit violates code and cooks cable; and mixing power with AV signal cable invites hum and violates separation practices. The AV rough-in needs its own properly-sized pathway."
@@ -3921,23 +3920,23 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is 'first fix' sequencing relative to drywall, and why does it matter?",
     "options": [
-      "First fix happens after paint",
+      "First fix happens after paint — substructure and cable go in once finishes are complete, so the AV work stays clean and protected",
       "First fix (mounting substructure, pulling cable, setting backboxes) happens BEFORE drywall close-up — after that, everything requires cutting and patching",
-      "Sequence doesn't matter",
-      "Drywall first is better"
+      "Sequence doesn’t matter — first fix, drywall, and paint can happen in any order with no cost or quality impact",
+      "Drywall first is better — closing up the walls before first fix protects the cable from drywall dust and damage"
     ],
     "correct": 1,
     "explanation": "The whole rough-in phase exists to get infrastructure in before concealment. Missing the window means destructive rework: cutting finished drywall, patching, repainting — at 10x the cost."
   },
-{
+  {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
     "q": "Where should the heaviest equipment (large amplifiers, UPS) be placed in an AV rack?",
     "options": [
-      "At the top for easy access",
+      "At the top for easy access — heavy amplifiers belong at the top where technicians can reach their controls without bending down",
       "At the bottom — low center of gravity prevents tip-over, and it keeps heat-rising paths clear for lighter gear above",
-      "In the middle",
-      "Outside the rack"
+      "In the middle — centering the heaviest gear balances the rack perfectly, which is the recommended weight-distribution practice",
+      "Outside the rack — amplifiers and UPS units should sit on the floor beside the rack to keep all heat out of the enclosure"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 1: heavy at the bottom is both safety (a top-heavy rack tips when rolled) and thermal sense. Follow the rack elevation drawing — it was engineered, not suggested."
@@ -3947,10 +3946,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Empty rack spaces between equipment should be filled with blanking panels primarily because:",
     "options": [
-      "They look professional",
+      "They look professional — blanking panels are purely cosmetic, filling gaps so the client doesn’t see empty rack space",
       "They prevent hot exhaust air from recirculating to equipment intakes — maintaining proper front-to-back airflow and preventing thermal runaway",
-      "They add weight",
-      "Panels are required by law"
+      "They add weight — blanking panels ballast the rack against tipping, which is their main engineering function",
+      "Panels are required by law — the NEC mandates blanking panels in every empty RU, with inspections failing racks that lack them"
     ],
     "correct": 1,
     "explanation": "Open RU gaps let hot exhaust loop back into intakes, cooking the gear above. Blanking panels enforce the designed airflow path. Thermal management is built, not hoped for."
@@ -3960,10 +3959,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "When wiring the rack, AC power cables and low-level analog audio cables should be:",
     "options": [
-      "Bundled tightly together for neatness",
+      "Bundled tightly together with the audio cables for the neatest, most serviceable rack dressing possible",
       "Routed separately with maximum practical separation and crossings at right angles — minimizing induced hum and interference",
-      "It doesn't matter",
-      "Power cables should wrap around audio cables"
+      "Cable routing doesn't matter in a properly grounded rack — induced hum is a myth with modern equipment",
+      "Wrapped in a tight spiral around the analog audio cables so the power runs stay organized right alongside them"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 2: signal separation is fundamental rack craft. Parallel power/audio runs couple 60 Hz hum inductively; separation plus right-angle crossings keeps the noise floor down."
@@ -3973,10 +3972,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is a service loop, and why does every rack cable need one?",
     "options": [
-      "Extra cable for decoration",
+      "Extra cable coiled for decoration behind the rack, since a full coil of spare wire makes the installation look professional",
       "Slack left at each termination so equipment can be pulled forward for service and re-terminated without replacing the run",
-      "A loop that improves signal quality",
-      "Service loops are wasteful"
+      "A loop that improves signal quality by conditioning the electrons, reducing jitter and extending the cable's rated distance",
+      "Service loops are wasteful and should be eliminated, because tight, exact-length cables are always easier to service and repair"
     ],
     "correct": 1,
     "explanation": "Equipment needs to slide out for service; connectors get re-terminated. Without a service loop, the first repair means re-pulling cable. Leave manageable slack, dressed neatly."
@@ -3986,10 +3985,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "For bundling Cat6A patch cables in a rack, what should you use instead of nylon zip ties pulled tight?",
     "options": [
-      "Nothing — let them hang",
+      "Nothing — let them hang — unsecured Cat6A patch cables hanging freely in the rack avoid all pressure points and certify reliably",
       "Velcro (hook-and-loop) straps, snug but not crushing — tight zip ties deform pair geometry and can fail Cat6A certification",
-      "Metal hose clamps",
-      "Tape"
+      "Metal hose clamps — stainless hose clamps torqued firmly around the bundle provide the most secure and professional cable management in the rack",
+      "Tape — wrap electrical tape tightly around the Cat6A bundle every few inches; it holds firmly and leaves pair geometry unaffected"
     ],
     "correct": 1,
     "explanation": "Crushed Cat6A fails certification. Velcro provides support without point-loading the pairs. This is one of the most common (and avoidable) rack wiring defects."
@@ -3999,10 +3998,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the purpose of a sequenced power controller in an AV rack?",
     "options": [
-      "It makes the rack turn on faster",
+      "It makes the rack turn on faster — sequenced controllers boot every device simultaneously for the quickest possible startup",
       "It powers equipment on/off in a defined order with delays — preventing inrush current trips and protecting speakers from turn-on thumps",
-      "It saves electricity",
-      "Sequencing is unnecessary"
+      "It saves electricity — the sequencer cuts standby power to zero, which is its primary purpose in the rack",
+      "Sequencing is unnecessary — flipping one master breaker powers the rack safely, and inrush current is a myth"
     ],
     "correct": 1,
     "explanation": "Everything slamming on at once can trip breakers (inrush), and amplifiers powering before source muting causes speaker-damaging thumps. Sequencing: sources first, amps last on; reverse on shutdown."
@@ -4012,10 +4011,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The rack elevation shows 1RU ventilation gaps above each amplifier. The installer wants to close them up to fit an extra device. What is the correct response?",
     "options": [
-      "Go ahead — space is tight",
+      "Go ahead — space is tight — rack space is expensive, and ventilation gaps are just empty air that could hold revenue-generating equipment",
       "No — ventilation gaps are part of the thermal design; removing them voids the thermal plan and risks overheating. Issue an RFI if space is truly insufficient",
-      "Amplifiers don't need ventilation",
-      "Just add a fan later"
+      "Amplifiers don’t need ventilation — modern amplifiers run cool enough that ventilation gaps are a legacy requirement from the tube era",
+      "Just add a fan later — close the gaps now to fit the gear, and bolt on a fan afterward if anything gets warm"
     ],
     "correct": 1,
     "explanation": "Thermal design is engineered: 1RU gaps, blanking panels, and fan placement work as a system. Improvising the layout improvises the cooling — usually discovered when gear starts thermal-shutting down in July."
@@ -4025,10 +4024,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why must the AV rack have a proper equipment grounding/bonding connection to the building ground?",
     "options": [
-      "Grounding is optional for low voltage",
+      "Grounding is optional for low-voltage racks — bonding adds no safety benefit and only complicates cable management inside the rack",
       "Safety (fault current path) and noise performance — a bonded rack prevents ground loops and ensures breakers trip on faults instead of energizing the chassis",
-      "It makes the rack heavier",
-      "Grounding is only for electricians"
+      "It adds ballast weight so the rack resists tipping — the extra copper mass anchors the rack better than any bolted structural connection",
+      "Rack grounding is strictly the electrician's concern — the AV installer should never bond equipment grounds to the building steel"
     ],
     "correct": 1,
     "explanation": "An ungrounded rack is a shock hazard and a hum generator. Bond the rack to the technical/building ground per the drawings — never daisy-chain grounds or lift them to 'fix' hum."
@@ -4038,10 +4037,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Patch panel ports in the rack should be labeled:",
     "options": [
-      "With a marker when you remember",
+      "With a marker when you remember — hand-labeling ports whenever it occurs to you is the standard field practice",
       "Per the labeling scheme at both the panel and the far end, matching the cable schedule — so any port is traceable without toning",
-      "Labels fall off anyway",
-      "Only the active ports"
+      "Labels fall off anyway — adhesive labels never survive, so labeling patch panels is wasted effort",
+      "Only the active ports — label just the ports in use today; future ports get labeled when they’re patched"
     ],
     "correct": 1,
     "explanation": "Every port labeled to the scheme, matching the far-end label and the cable schedule. Future moves/adds/changes and troubleshooting depend on it. Unlabeled panels are a tax on every future visit."
@@ -4051,10 +4050,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A rack with 3,000W of equipment is fed from a single 20A/120V circuit (2,400W max continuous at 80%). What is the problem?",
     "options": [
-      "No problem — breakers never trip",
+      "No problem — circuit breakers are conservative by design, so a 20A breaker will carry 3,000W continuously without ever tripping",
       "The load exceeds the circuit's continuous rating — the design needs additional circuits; the installer must flag this, not just plug everything in",
-      "20A circuits can handle anything",
-      "Turn down the volume to fix it"
+      "20A/120V circuits can safely carry any connected load, because the breaker's job is to adapt its rating to whatever is plugged in",
+      "Turn down the amplifier volume to reduce the rack's draw, since audio power draw is the only load that counts toward circuit capacity"
     ],
     "correct": 1,
     "explanation": "Continuous loads are limited to 80% of breaker rating: 20A × 120V × 0.8 = 1,920W continuous. A 3,000W rack needs multiple dedicated circuits. Overloading means nuisance trips — discovered during the client's first big event."
@@ -4064,10 +4063,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is 'wire dress' and why do clients judge it?",
     "options": [
-      "It is purely cosmetic",
+      "It is purely cosmetic — wire dress affects only appearance; tangled unlabeled cable performs and services identically to dressed cable",
       "Neat, routed, labeled, and secured cabling — it signals craftsmanship, makes service possible, and is often the client's only visible measure of quality",
-      "Wire dress slows down the job",
-      "Only the front of the rack matters"
+      "Wire dress slows down the job — neat cabling wastes billable hours, so the fastest installers leave cable as it falls",
+      "Only the front of the rack matters — the rear of the rack is never seen, so rear cable can be left tangled and unlabeled"
     ],
     "correct": 1,
     "explanation": "The client can't judge your DSP programming, but they CAN see the rack. Clean wire dress — bundled, routed, labeled, serviceable — is professionalism made visible, and it's what gets photographed."
@@ -4077,10 +4076,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Before the rack leaves the shop, what final staging check should be performed?",
     "options": [
-      "None — it was built carefully",
+      "None — it was built carefully — careful assembly eliminates all defects, so power-on testing in the shop wastes billable hours",
       "Power-on test: verify every device powers in sequence, check firmware versions, confirm basic signal flow, and document any issues while the bench is available",
-      "Just close the doors",
-      "Testing happens on site only"
+      "Just close the doors — the rack doors protect the gear in transit, which is the only staging check that matters",
+      "Testing happens on site only — shop testing is prohibited since the site power and signal conditions can’t be replicated on the bench"
     ],
     "correct": 1,
     "explanation": "The shop power-on test catches DOA gear, wrong firmware, and wiring errors where they're cheapest to fix. A rack that first powers up on the jobsite is a gamble."
@@ -4090,10 +4089,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Cable bend radius inside the rack for Cat6A patch cords should be respected because:",
     "options": [
-      "It looks tidy",
+      "It looks tidy — bend radius is an aesthetic guideline; tight bends at the patch panel look neat and perform identically",
       "Tight bends at the patch panel degrade return loss and can fail certification — maintain at least 4x the cable diameter",
-      "Bend radius is a myth",
-      "Only fiber has bend limits"
+      "Bend radius is a myth — copper cable can be bent at any angle with zero effect on return loss or certification",
+      "Only fiber has bend limits — copper twisted-pair has no minimum bend radius, so Cat6A can be folded sharply at the panel"
     ],
     "correct": 1,
     "explanation": "The 90-degree jam of patch cords into a panel is a classic cert failure point. Maintain bend radius with proper managers and routing — especially with Cat6A's thicker construction."
@@ -4103,10 +4102,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "You are mounting an 85-inch display (120 lbs) on a metal-stud wall. What is the correct approach?",
     "options": [
-      "Toggle bolts into the drywall",
+      "Toggle bolts directly into the drywall will hold 120 lbs safely, since modern toggle bolts are rated for any commercial display weight",
       "Open the wall and add plywood backing or span studs with a proper mount rated for the load — 120 lbs on drywall anchors alone will fail",
-      "Drywall anchors are fine for any weight",
-      "Lean it against the wall"
+      "Drywall anchors are fine for any display weight, because the mount distributes the load evenly across the entire wall surface",
+      "Lean the display against the wall on a credenza, since wall mounting always voids the manufacturer's warranty on 85-inch panels"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 4: mounts must attach to structure. Metal studs alone won't hold 120 lbs reliably; backing (plywood spanning studs) or structural attachment is required. Drywall anchors for a display this size are a collapse waiting to happen."
@@ -4116,10 +4115,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A projector mount installation requires a safety cable (tether) in addition to the primary mount because:",
     "options": [
-      "It looks professional",
+      "It looks professional — the safety cable is a cosmetic touch that signals quality workmanship to the client",
       "Secondary retention is standard safety practice — if the primary attachment fails, the tether prevents the projector from falling on occupants",
-      "Safety cables are optional",
-      "Projectors never fall"
+      "Safety cables are optional — modern projector mounts cannot fail, so a secondary tether adds nothing to the installation",
+      "Projectors never fall — properly torqued mounts have a zero failure rate, making safety tethers redundant"
     ],
     "correct": 1,
     "explanation": "Overhead equipment gets secondary retention, period. The tether is independently attached to structure and rated for the load. This is life-safety, not best practice decoration."
@@ -4129,10 +4128,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "When aiming installed loudspeakers, what should the installer verify?",
     "options": [
-      "That they look straight",
+      "That they look straight — visually aligning the cabinets so they appear level is the complete aiming procedure",
       "Aim per the design's coverage plan (splay angles, down-tilt), then verify coverage with measurement — not by eye alone",
-      "Louder is better",
-      "Aiming doesn't matter"
+      "Louder is better — aiming is irrelevant as long as the system plays loudly enough to reach every seat",
+      "Aiming doesn’t matter — modern loudspeakers disperse sound evenly in all directions, so aiming has no effect on coverage"
     ],
     "correct": 1,
     "explanation": "Coverage was calculated; aiming realizes it. Set splay and tilt per the design, then verify with SPL measurements across seats. 'Looks about right' is how the back rows get nothing."
@@ -4142,10 +4141,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Equipment installed inside millwork (credenza) requires what special attention?",
     "options": [
-      "None — it's hidden",
+      "None — it’s hidden — equipment inside millwork needs no special treatment since it’s out of sight and the wood insulates it",
       "Ventilation (active cooling if needed), service access (removable panels/rails), and cable management — hidden gear still needs air and access",
-      "Millwork is naturally cool",
-      "Access is never needed"
+      "Millwork is naturally cool — wooden credenzas dissipate heat passively, so enclosed AV gear never overheats and needs no ventilation",
+      "Access is never needed — once installed in millwork, AV equipment runs forever without service, so access panels waste cabinetry"
     ],
     "correct": 1,
     "explanation": "Credeza installs cook equipment without ventilation planning and become unserviceable without access panels. Coordinate cutouts, fans, and pull-out rails before the millwork is finished."
@@ -4155,10 +4154,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A floor box was roughed in 2 feet from where the conference table will sit. What is the least-bad option?",
     "options": [
-      "Leave it — 2 feet is fine",
+      "Leave it in place — 2 feet from the table is well within cable reach, and a low-profile floor box in the open floor is not a trip hazard worth relocating",
       "Coordinate immediately: options include moving the box (before flooring), adjusting the table layout, or a documented client decision — a floor box in the walking path is a trip hazard and a failure",
-      "Cover it with a rug",
-      "Rugs fix everything"
+      "Cover it with a rug — a rug over the floor box hides it from view and softens the edge, which resolves the trip hazard at zero cost and keeps the schedule intact",
+      "Rugs fix everything — rugs are the accepted industry remediation for misplaced floor boxes because they permanently eliminate both the visual defect and the trip hazard"
     ],
     "correct": 1,
     "explanation": "Mislocated floor boxes are caught at layout verification — before finishes. After flooring, every option is expensive. Escalate early with photos and measurements."
@@ -4168,10 +4167,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Outdoor-rated displays or projectors differ from indoor models in what key installation respects?",
     "options": [
-      "They are the same",
+      "They are identical products — indoor displays and projectors perform exactly the same when mounted outdoors, with no changes needed",
       "Environmental sealing (IP rating), operating temperature range, brightness for daylight, and proper drainage/ventilation of the enclosure",
-      "Outdoor models are just more expensive",
-      "Indoor models work fine outside"
+      "Outdoor models differ only in price — the higher cost covers marketing, while the internal components are exactly the same",
+      "Indoor models work fine outside — a standard display survives rain, heat, and direct sunlight without any protective enclosure"
     ],
     "correct": 1,
     "explanation": "Outdoor installs battle water, temperature extremes, and sunlight. The enclosure's IP rating, thermal management, and drainage determine whether it survives the first storm — verify ratings match the actual exposure."
@@ -4181,10 +4180,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the working load limit (WLL) and why must rigging hardware never exceed it?",
     "options": [
-      "WLL is a suggestion",
+      "WLL is a suggestion — the working load limit is a conservative guideline, and exceeding it by 50% is standard rigging practice",
       "WLL is the maximum load the manufacturer rates for the hardware in normal use — exceeding it risks failure; overhead rigging failures injure or kill",
-      "WLL only applies to chain motors",
-      "Stronger hardware is always available"
+      "WLL only applies to chain motors — shackles, slings, and clamps have no load limits, so only motors need WLL compliance",
+      "Stronger hardware is always available — if the load exceeds the WLL, just use the next hardware size up with no engineering review"
     ],
     "correct": 1,
     "explanation": "Rigging hardware is rated with safety factors (often 5:1 or 10:1). WLL is the legal and safe working maximum. Exceeding it — or using unrated hardware — is how rigging fails catastrophically."
@@ -4194,10 +4193,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "In seismic zones, AV equipment installations may require:",
     "options": [
-      "Nothing special",
+      "Nothing special — standard rack installation survives earthquakes undamaged, so seismic zones need no additional measures",
       "Seismic bracing/restraints for racks and suspended equipment per local code — earthquakes turn unsecured racks into hazards",
-      "Earthquakes don't affect AV",
-      "Only California needs this"
+      "Earthquakes don’t affect AV — AV equipment is too light to be damaged by seismic activity, so restraints are pointless",
+      "Only California needs this — seismic bracing is a California-only rule with no application in any other seismic zone"
     ],
     "correct": 1,
     "explanation": "Seismic codes require racks bolted down, overhead equipment with seismic-rated attachments, and sometimes bracing. Check the AHJ requirements — it's structural life-safety, not optional."
@@ -4207,10 +4206,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Wall penetrations for cable between rooms must be:",
     "options": [
-      "Just drilled and left open",
+      "Just drilled and left open — an open hole is fine for low-voltage cable, and firestopping doesn’t apply to AV penetrations",
       "Sleeved, bushed (to protect cable from sharp edges), and firestopped per the wall's rating — protecting both cable and fire separation",
-      "As large as possible",
-      "Penetrations don't matter"
+      "As large as possible — oversized holes make future pulls easy, and the wall’s fire rating is unaffected by penetration size",
+      "Penetrations don’t matter — low-voltage cable is exempt from all wall-penetration requirements in every jurisdiction"
     ],
     "correct": 1,
     "explanation": "Bushings protect cable from cut metal edges; firestop maintains the wall rating. An open, sharp-edged hole is both a cable-killer and a code violation."
@@ -4220,23 +4219,23 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Distributed ceiling equipment (speakers, mics, WAPs) across a large floor should be installed:",
     "options": [
-      "Wherever convenient per device",
+      "Wherever is most convenient for each device on install day, adjusting locations freely on the fly as the crew works",
       "Per the coordinated reflected ceiling plan — locations verified against lights, sprinklers, and HVAC before a single hole is cut",
-      "In a straight line regardless of the plan",
-      "Ceiling plans are optional"
+      "In a straight line at fixed, even spacing regardless of the reflected ceiling plan or other trades' devices",
+      "Reflected ceiling plans are optional reference drawings and do not govern where ceiling equipment is placed"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 3: distributed equipment follows the coordinated RCP. Verifying each location against other trades' devices before cutting prevents the speaker-in-the-sprinkler-head classic."
   },
-{
+  {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
     "q": "When terminating RJ45 connectors for AV-over-IP, which wiring standard matters most?",
     "options": [
-      "It doesn't matter as long as both ends match",
+      "The standard doesn't matter as long as both ends of a cable match — mixing T568A and T568B across the facility causes no issues",
       "Consistency — pick T568A or T568B and use it on EVERY termination; mixing standards within a facility creates confusion and faults",
-      "Always T568A for AV",
-      "Always T568B for AV"
+      "Always terminate to T568A for AV — T568B introduces crosstalk on AV-over-IP links and must never be used in the facility",
+      "Always terminate to T568B for AV — T568A fails HDCP handshakes on every AV-over-IP encoder in the system"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 5: electrically, A and B both work if both ends match. The standard that matters is consistency across the facility. Document which scheme the project uses and terminate everything to it."
@@ -4246,10 +4245,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "For Cat6 terminations, the pairs should be untwisted no more than:",
     "options": [
-      "2 inches",
+      "2 inches — untwisting 2 inches at the jack is standard and has no effect on NEXT or certification",
       "About 0.5 inches (13mm) — excessive untwist degrades NEXT performance and can fail certification",
-      "6 inches",
-      "Untwist doesn't matter"
+      "6 inches — untwist pairs a full 6 inches for easier termination; untwist length does not affect NEXT",
+      "Untwist doesn’t matter — pairs can be fully untwisted because NEXT depends on the jacket, not the twist"
     ],
     "correct": 1,
     "explanation": "Pair untwist at the termination is the #1 cause of Cat6 certification failures. Keep it under ~13mm, seat the pairs fully, and terminate with proper 110/RJ45 tooling. Neat terminations aren't vanity — they're performance."
@@ -4272,10 +4271,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Speaker wire polarity (positive to positive) matters because:",
     "options": [
-      "It doesn't — speakers work either way",
+      "It doesn’t matter — speakers work identically either way, and polarity has no audible effect",
       "Reversed polarity on one speaker of a pair causes phase cancellation — bass disappears and imaging collapses",
-      "It only matters for the left speaker",
-      "Polarity affects only the volume"
+      "Polarity only matters for the left speaker in a stereo pair; the right speaker is unaffected",
+      "Polarity affects only the overall volume level, so reversed wiring just makes the speaker quieter"
     ],
     "correct": 1,
     "explanation": "Two speakers moving in opposite directions cancel each other's low frequencies. Verify polarity with a battery pop, phase tester, or measurement — especially on distributed 70V systems where one reversed tap hides among dozens."
@@ -4285,10 +4284,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Before mating fiber optic connectors, what is the essential step?",
     "options": [
-      "Blow on them",
+      "Blow on them — a sharp breath across the end-face removes dust effectively, and it’s the fastest field-cleaning method",
       "Inspect and clean both the connector end-face and the adapter — a speck of dust causes massive insertion loss or permanent damage",
-      "Fiber doesn't need cleaning",
-      "Wipe them on your shirt"
+      "Fiber doesn’t need cleaning — factory-polished end-faces are permanently clean, so field cleaning is unnecessary",
+      "Wipe them on your shirt — a quick wipe on a cotton shirt polishes the end-face and is standard field practice"
     ],
     "correct": 1,
     "explanation": "Contamination is the #1 cause of fiber link failure. Inspect with a scope, clean with proper tools (click cleaners, lint-free wipes), and cap when unmated. A dirty connector can destroy the mating connector's polish."
@@ -4298,10 +4297,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A shielded twisted-pair (F/UTP) cable's drain wire should be terminated:",
     "options": [
-      "Left floating at both ends",
+      "Left floating at both ends — the drain wire should never contact ground anywhere, since any bond creates interference",
       "Per the system design — typically bonded at one end (often the rack/patch panel) to avoid ground loops, following the project grounding scheme",
-      "Cut off and discarded",
-      "Wrapped around the power cable"
+      "Cut off and discarded — the drain wire is packing material with no electrical function, so trim it flush at both ends",
+      "Wrapped around the power cable — coil the drain wire around the nearest power conductor to shunt interference to ground"
     ],
     "correct": 1,
     "explanation": "Shield grounding follows the design's grounding scheme — commonly bonded at the telecommunications grounding point, not at every device (which creates ground loops). Random shield grounding causes the hum the shield was meant to prevent."
@@ -4311,10 +4310,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the practical field limit for passive HDMI cable runs at 4K60?",
     "options": [
-      "100 meters",
+      "100 meters — passive HDMI cables carry 4K60 reliably to 100m, so no converters are needed for long runs",
       "Roughly 3–5 meters for reliable 18 Gbps 4K60 — beyond that, use active optical HDMI or convert to HDBaseT/fiber/AV-over-IP",
-      "50 meters",
-      "Passive HDMI has no limit"
+      "50 meters — a quality passive HDMI cable handles 4K60 to 50m, and only runs beyond that need active conversion",
+      "Passive HDMI has no limit — copper HDMI has no distance restriction at any resolution, so active cables are a marketing upsell"
     ],
     "correct": 1,
     "explanation": "Passive HDMI at full 18 Gbps is a very short-haul medium. Long runs need active optical cables or conversion to a proper long-haul transport. The '50-foot 4K HDMI cable' that 'mostly works' is a service call waiting to happen."
@@ -4324,10 +4323,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "BNC connectors for SDI video should be terminated with:",
     "options": [
-      "Pliers and hope",
+      "Pliers and hope — squeeze the BNC barrel with standard pliers; if it doesn’t fall off immediately, the termination is good for SDI",
       "Proper crimp or compression tooling with the correct die for the cable type — and a tug test; a loose BNC causes intermittent video",
-      "Any crimper",
-      "Twist-on connectors are fine for SDI"
+      "Any crimper — every crimp tool works on every BNC and cable type, so the specific die and tooling don’t affect SDI reliability",
+      "Twist-on connectors are fine for SDI — twist-on BNCs meet the same return-loss specs as crimped connectors for broadcast video"
     ],
     "correct": 1,
     "explanation": "SDI is unforgiving of bad connectors: impedance discontinuities cause reflections and dropouts. Use the right die, the right connector for the exact cable, and verify with a signal check — not just a visual."
@@ -4337,10 +4336,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "After terminating a Cat6A run, what proves the termination is good?",
     "options": [
-      "The link light comes on",
+      "The link light comes on — an active link LED proves the termination meets Category 6A performance, so no further testing is needed",
       "Certification testing with a calibrated certifier against the Category 6A standard — link lights only prove continuity, not performance",
-      "It looks neat",
-      "Pinging the device"
+      "It looks neat — a tidy, well-dressed termination is the accepted proof of quality; certification testing is redundant if the work looks professional",
+      "Pinging the device — a successful ping through the run proves the termination performs to Category 6A, replacing certification testing"
     ],
     "correct": 1,
     "explanation": "A link light means two wires connect; certification proves the run meets NEXT, return loss, and alien crosstalk limits. For AV-over-IP carrying 10G, certification is the only proof that matters — document every result."
@@ -4350,10 +4349,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Balanced audio lines (XLR/TRS) reject interference because:",
     "options": [
-      "They are magic",
+      "They are magic — balanced lines use proprietary noise-eating circuitry that no textbook explains; it simply works",
       "The receiving device subtracts the inverted cold leg from the hot leg — noise picked up equally on both legs cancels out (common-mode rejection)",
-      "They use thicker wire",
-      "Balanced lines don't reject interference"
+      "They use thicker wire — balanced cables reject interference purely because their conductors are a heavier gauge than unbalanced cable",
+      "Balanced lines don’t reject interference — balanced and unbalanced lines perform identically in noisy environments"
     ],
     "correct": 1,
     "explanation": "Common-mode rejection is why pro audio runs balanced: interference couples equally into both conductors and subtracts to (near) zero at the differential input. This only works if both legs are intact — a broken cold leg kills the rejection."
@@ -4363,10 +4362,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "When terminating 70V speaker lines, what must be verified at each tap?",
     "options": [
-      "Nothing — 70V is foolproof",
+      "Nothing — 70V is foolproof — constant-voltage taps cannot be miswired or shorted, so verification is pointless",
       "Correct tap setting per the design, solid connections, and no shorts — one shorted tap can take down the entire 70V run",
-      "Only the wire color",
-      "70V systems can't short"
+      "Only the wire color — matching jacket colors at each tap is the complete verification; electrical checks are unnecessary",
+      "70V systems can’t short — the transformer isolation makes short circuits physically impossible on 70V speaker lines"
     ],
     "correct": 1,
     "explanation": "A single shorted 70V tap silences every speaker on that run, and the fault hides among dozens of ceiling speakers. Verify tap settings against the design and test for shorts before closing ceilings."
@@ -4376,10 +4375,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Compression vs. crimp RJ45 connectors: what is the practical difference for the installer?",
     "options": [
-      "No difference",
+      "No difference — compression and crimp connectors are fully interchangeable, and any generic crimp tool works correctly on every RJ45 connector brand",
       "Both work when done with the correct tooling for that connector type — but mixing connector brands with the wrong die/tool causes failures; follow the manufacturer's specified tooling",
-      "Compression is always better",
-      "Crimp is always better"
+      "Compression is always better — compression connectors outperform crimp connectors so completely that crimp tooling has no place on a professional jobsite",
+      "Crimp is always better — crimp connectors outperform compression connectors so completely that compression tooling has no place on a professional jobsite"
     ],
     "correct": 1,
     "explanation": "The connector system (connector + specified tool) matters more than the style. Using Brand X connectors with Brand Y's crimper is the classic source of intermittent RJ45s. Match the tooling to the connector."
@@ -4389,10 +4388,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "AV devices on the corporate network should use static IP addresses (or DHCP reservations) rather than plain DHCP because:",
     "options": [
-      "DHCP doesn't work",
+      "DHCP doesn’t work — DHCP servers cannot assign addresses to AV devices at all, so static addressing is the only functional option",
       "Control systems, monitoring, and documentation reference devices by address — a changed address breaks control and remote management",
-      "Static IPs are faster",
-      "DHCP is insecure"
+      "Static IPs are faster — statically addressed devices process network traffic measurably faster than DHCP devices, improving AV performance",
+      "DHCP is insecure — DHCP leases expose AV devices to network attacks, while statically addressed devices are invisible to hackers"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 6: when the touch panel can't find the DSP because DHCP reassigned it, the room is down. Static IPs or documented reservations, recorded in the IP schedule, keep the system deterministic."
@@ -4402,10 +4401,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "IGMP snooping must be enabled on switches carrying Dante multicast flows because:",
     "options": [
-      "It makes audio sound better",
+      "It makes audio sound better — IGMP snooping applies audio enhancement to multicast streams, improving clarity and frequency response",
       "Without it, multicast traffic floods every switch port — saturating links and breaking audio; snooping constrains multicast to ports that requested it",
-      "Dante requires it by law",
-      "It is optional"
+      "Dante requires it by law — federal regulations mandate IGMP snooping on any network carrying Dante, with fines for non-compliance",
+      "It is optional — modern switches handle multicast flooding automatically, so IGMP snooping is a legacy setting with no effect on Dante"
     ],
     "correct": 1,
     "explanation": "Unmanaged multicast = every Dante flow sent to every port = network meltdown. IGMP snooping (plus a querier) prunes multicast to interested ports only. This is the most common network misconfiguration in AV-over-IP failures."
@@ -4415,10 +4414,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "QoS/DSCP markings for AV traffic (e.g., PTP clocking at the highest priority) are configured to:",
     "options": [
-      "Make the network faster",
+      "Make the whole network run faster by doubling the switch's clock speed — so every packet, including bulk file transfers, arrives noticeably sooner",
       "Ensure time-critical AV traffic (PTP, audio) is prioritized over bulk data during congestion — preventing clock dropouts and audio glitches",
-      "QoS is unnecessary on gigabit networks",
-      "It encrypts the traffic"
+      "Guarantee that QoS markings replace the need for gigabit cabling — since marked packets need no bandwidth, switches can run on 100 Mbps links",
+      "Encrypt all AV traffic at the switch port — so eavesdroppers cannot intercept PTP timestamps or audio packets traveling on the wire"
     ],
     "correct": 1,
     "explanation": "When the network congests, unmarked AV traffic waits behind file transfers. DSCP markings (PTP highest, then media) tell switches what can't wait. The installer verifies the markings survive end-to-end."
@@ -4428,10 +4427,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A Dante device shows a clocking fault (red clock icon). What is the first thing to check?",
     "options": [
-      "Replace the device",
+      "Replace the device — a red clock icon means the Dante hardware has failed permanently, so swap the unit before checking anything else",
       "Network QoS and PTP: is QoS configured for PTP priority, is there exactly one leader clock, and is multicast PTP reaching the device?",
-      "Turn it off and on forever",
-      "Clock faults fix themselves"
+      "Turn it off and on forever — repeatedly power-cycling the device eventually clears the clock fault without any network investigation",
+      "Clock faults fix themselves — Dante clocking faults are transient by design and always resolve without installer intervention"
     ],
     "correct": 1,
     "explanation": "Dante clock faults are almost always network issues: missing QoS, blocked multicast, or competing leaders. Check switch config and clock leader election in Dante Controller before touching hardware."
@@ -4441,10 +4440,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "When loading a control system program to the processor, what must be verified afterward?",
     "options": [
-      "Nothing — uploads always work",
+      "Nothing — uploads always work — a successful file transfer guarantees every button and preset operates exactly as programmed",
       "Every button, preset, and automated function operates as the sequence of operations describes — full functional test, not just 'the panel lights up'",
-      "That the file transferred",
-      "Only the power button"
+      "That the file transferred — confirming the upload completed is the full verification; the code itself needs no testing",
+      "Only the power button — testing the power on/off button proves the program loaded correctly, covering all other functions by implication"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 7: loading code is step one; verification is the job. Exercise every UI element against the sequence of operations. The untested preset is the one that fails during the board meeting."
@@ -4454,10 +4453,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "EDID issues manifest as wrong resolutions or no video. What is the installer's EDID management task?",
     "options": [
-      "Ignore EDID — it's automatic",
+      "Ignore EDID — it’s automatic — sources and displays always negotiate the perfect format, so EDID management is obsolete",
       "Verify the source sees a compatible EDID through the entire chain (switcher/extender settings), and set managed EDIDs where the design requires fixed formats",
-      "EDID only matters for old equipment",
-      "Replace all cables"
+      "EDID only matters for old equipment — modern 4K sources and displays need no EDID management of any kind",
+      "Replace all cables — EDID issues are always caused by defective cables, so wholesale cable replacement is the fix"
     ],
     "correct": 1,
     "explanation": "EDID is the display telling the source what it accepts. Through switchers and extenders, that conversation can break — the installer verifies negotiated resolutions end-to-end and applies managed EDIDs per the design."
@@ -4467,10 +4466,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Before connecting AV devices to the client's production network, what coordination is required?",
     "options": [
-      "Just plug in — it's easier to ask forgiveness",
+      "Just plug in — it’s easier to ask forgiveness than permission — corporate networks auto-configure unknown devices, so IT coordination just wastes time",
       "IT coordination: approved VLANs, IP scheme, 802.1X credentials if required, and a maintenance window — unauthorized devices on corporate networks trigger security incidents",
-      "Networks are plug-and-play",
-      "AV devices are invisible to IT"
+      "Networks are plug-and-play — every corporate network automatically provisions AV devices with the correct VLAN, QoS, and security policies",
+      "AV devices are invisible to IT — corporate network monitoring cannot detect AV endpoints, so unauthorized connections trigger no security response"
     ],
     "correct": 1,
     "explanation": "Rogue devices on enterprise networks get quarantined — or worse, trigger incident response. Coordinate with IT: which VLAN, which addresses, what authentication. Get it in writing."
@@ -4480,10 +4479,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A network cable tester shows 'split pair' on a newly terminated run. What does this mean?",
     "options": [
-      "The cable is fine",
+      "The cable is fine — ‘split pair’ is the tester’s term for a correctly wired run, so the cable will certify and perform at full rated speed",
       "Wires from different pairs were mixed at the termination (e.g., pin 3 from pair 2 with pin 6 from pair 3) — it may pass continuity but will fail certification and perform poorly",
-      "The tester is broken",
-      "Split pairs are normal"
+      "The tester is broken — certification testers cannot detect split pairs, so a split-pair reading is always a false alarm and the run should be certified as-is",
+      "Split pairs are normal — mixing conductors between pairs at the termination is acceptable practice and the run will still certify to Category 6"
     ],
     "correct": 1,
     "explanation": "Split pairs pass a simple wiremap but destroy crosstalk performance — the classic 'link light on, gigabit won't negotiate' fault. Re-terminate carefully, keeping pairs together."
@@ -4493,10 +4492,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "When configuring a DSP, what is 'gain structure' in practical commissioning terms?",
     "options": [
-      "Turning everything to maximum",
+      "Turning everything to maximum — push every input gain and fader to full scale; the DSP’s built-in limiters will sort out the levels automatically",
       "Setting input gains so nominal signals hit the DSP at healthy levels (e.g., −20 dBFS average with peaks below clipping), then staging outputs — verified with meters, not by ear",
-      "Gain structure is automatic",
-      "Only the amplifier matters"
+      "Gain structure is automatic — modern DSPs auto-calibrate every input and output level at power-up, so manual gain staging is obsolete",
+      "Only the amplifier matters — gain structure concerns only the power amplifier’s input knob; DSP input levels have no effect on noise or clipping"
     ],
     "correct": 1,
     "explanation": "Commissioning sets gain stage by stage with meters: mic preamps peaking around −12 dBFS, processing unity where possible, outputs driving amps to rated input sensitivity. Done right, the system is quiet and clip-free."
@@ -4506,10 +4505,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Multicast vs. unicast Dante flows: when does the installer need to care?",
     "options": [
-      "Never",
+      "Never — the Dante devices and the switch automatically negotiate the flow type, so multicast and unicast behave identically with zero configuration differences",
       "Multicast (one-to-many) needs IGMP snooping/querier on the network; unicast is simpler but consumes bandwidth per receiver — the choice affects switch config and bandwidth planning",
-      "They are identical",
-      "Dante only does unicast"
+      "They are identical in every way — multicast and unicast consume the same bandwidth per receiver and need the same IGMP settings, so no planning is required",
+      "Dante only does unicast — each receiver gets a dedicated point-to-point stream, so IGMP snooping and querier settings are never required on any Dante network"
     ],
     "correct": 1,
     "explanation": "A multicast flow to 20 receivers uses one stream's bandwidth; unicast uses 20. But multicast demands proper IGMP infrastructure. The installer verifies the network matches the flow design in Dante Controller."
@@ -4519,10 +4518,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the installer's role when the control system needs to integrate with the building's lighting or HVAC?",
     "options": [
-      "Guess the protocol",
+      "Guess the protocol — cycle through common baud rates and command strings until the lights respond; formal documentation can be written after handover if there’s time",
       "Verify the integration interface (API, BACnet, contact closure, RS-232 strings) with the other trade, test the actual commands, and document what works — during commissioning, not after handover",
-      "Integrations always work first try",
-      "Skip integration testing"
+      "Integrations always work first try — lighting and HVAC protocols are fully standardized across manufacturers, so the control system connects with no configuration or testing",
+      "Skip integration testing — the lighting contractor certifies their own system independently, so the AV installer has no responsibility to verify combined operation"
     ],
     "correct": 1,
     "explanation": "Third-party integration is where 'it should work' goes to die. Get the protocol documentation, test every command both directions, and confirm with the other trade's technician on site."
@@ -4532,23 +4531,23 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "After configuring all networked AV devices, what documentation must be left?",
     "options": [
-      "None — it's all in the devices",
+      "None — every device stores its own configuration internally, so future technicians can recover everything by logging into each unit",
       "Updated IP schedule, login credentials (secured handover), configuration backups, and firmware versions — the next technician's starting point",
-      "A sticky note with one password",
-      "Documentation is the designer's job"
+      "A sticky note with the admin password taped inside the rack door, since one shared credential covers all documentation needs",
+      "Documentation is the designer's job at bid time; the installer only configures, so no network records need to leave the jobsite"
     ],
     "correct": 1,
     "explanation": "Configuration without documentation is a trap for the next person. Back up every device config, record the IP scheme as-built, and hand over credentials securely. Future-you says thanks."
   },
-{
+  {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
     "q": "What is the correct order of operations when testing a newly installed AV system?",
     "options": [
-      "Test everything at once",
+      "Test everything at once — powering the whole system and pressing buttons immediately is the fastest valid test sequence",
       "Verify infrastructure first (cable certification, power), then device-by-device signal flow, then subsystem function, then full system operation",
-      "Start with the control system",
-      "Testing order doesn't matter"
+      "Start with the control system — program the touch panel first, since infrastructure testing can’t begin until control is online",
+      "Testing order doesn’t matter — infrastructure, devices, and subsystems can be verified in any sequence with identical results"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 8: test in layers. Certified cable and correct power first — then each device, then signal paths, then the whole system. Testing top-down wastes hours chasing symptoms of a bad cable."
@@ -4558,10 +4557,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A multimeter shows 0 ohms between the + and − of a 70V speaker run. What does this indicate?",
     "options": [
-      "Normal operation",
+      "Normal 70V operation — tapped transformers present nearly zero ohms when the run is wired correctly",
       "A short circuit somewhere on the run — do NOT connect the amplifier until it's found and cleared",
-      "The speakers are working",
-      "Meters can't test speaker lines"
+      "A healthy load — the 0-ohm reading confirms every speaker transformer on the run is wired properly",
+      "An open line past the first speaker — zero ohms means the signal cannot reach the remaining taps"
     ],
     "correct": 1,
     "explanation": "Zero ohms = dead short. Connecting an amplifier to a shorted line can destroy the amp. Isolate sections to find the fault (often a pinched wire or miswired tap) before powering up."
@@ -4571,10 +4570,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "How should loudspeaker polarity be verified across a distributed ceiling system?",
     "options": [
-      "By listening",
+      "By standing in the center of the room and listening carefully — a trained ear can reliably detect one reversed speaker among twelve in a zone",
       "With a polarity/phase tester or impulse measurement at each speaker — one reversed speaker in a zone audibly degrades that zone",
-      "Polarity doesn't matter for ceiling speakers",
-      "Trust the wire colors"
+      "No verification is needed for ceiling speakers — distributed 70V systems self-correct phase across every tap, so polarity cannot be wrong",
+      "By trusting the printed wire colors at the rack — if every conductor matches its color code there, polarity is guaranteed at each speaker"
     ],
     "correct": 1,
     "explanation": "Wire colors lie (mislabeled cable, swapped at the rack). A polarity tester or Smaart impulse check at each location proves it. One reversed speaker among twelve creates a dead-sounding zone."
@@ -4584,10 +4583,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What does calibrating a display (beyond 'looks good') actually involve?",
     "options": [
-      "Turning up the brightness",
+      "Turning up the brightness — pushing brightness and contrast to maximum is the complete calibration procedure, since a brighter image always looks better to viewers",
       "Setting brightness/contrast with test patterns (PLUGE), verifying color temperature, and confirming the signal chain delivers the intended resolution without scaling artifacts",
-      "Calibration is automatic",
-      "Vivid mode is best"
+      "Calibration is automatic — every modern display self-calibrates to reference standards at power-on, so test patterns and manual adjustments are obsolete",
+      "Vivid mode is best — the Vivid/Dynamic picture preset is the factory reference mode, so selecting it completes calibration with no further adjustment needed"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty C Task 9: calibration uses test patterns — PLUGE for black level, resolution patterns for scaling check, grayscale for color temp. 'Vivid' mode is the enemy; calibrated is the deliverable."
@@ -4597,10 +4596,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "An SPL meter is used during commissioning primarily to:",
     "options": [
-      "Impress the client",
+      "Impress the client — the SPL meter’s real purpose is demonstrating professional gear to the client during the walkthrough",
       "Verify the system meets the design's SPL and coverage criteria (±3 dB across seats) with calibrated, documented measurements",
-      "Find the loudest seat",
-      "SPL meters are obsolete"
+      "Find the loudest seat — the meter identifies the single loudest seat, which is the only measurement the design requires",
+      "SPL meters are obsolete — smartphone apps have replaced calibrated meters for all commissioning measurements"
     ],
     "correct": 1,
     "explanation": "The design specified coverage; the meter proves it. Calibrated SPL measurements across the seating area, documented against criteria, are the evidence the system performs as designed."
@@ -4610,10 +4609,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A video path shows sparkles intermittently. What is the most likely cause and test?",
     "options": [
-      "The display is broken",
+      "The display is broken — intermittent sparkles mean the panel’s video processor is failing, so replace the display before testing anything else",
       "Marginal digital signal integrity (cable/connector at its limit) — test by substituting a known-good path and checking cable certification; sparkles = bit errors",
-      "Sparkles are normal",
-      "Increase the brightness"
+      "Sparkles are normal — occasional sparkles are expected on every digital video path and indicate the system is operating within specification",
+      "Increase the brightness — raising the display’s brightness overcomes the sparkles by boosting the video signal above the noise floor"
     ],
     "correct": 1,
     "explanation": "Digital sparkles are bit errors from a marginal link — long copper HDMI, bad termination, or failing extender. Unlike analog (which degrades gracefully), digital fails in sparkles then dropout. Find the weak link."
@@ -4623,10 +4622,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the 'signal flow' troubleshooting method?",
     "options": [
-      "Randomly swapping parts",
+      "Randomly swapping parts — replace components in any order until the system works; the faulty part reveals itself eventually",
       "Tracing the signal path stage by stage from source to destination, verifying presence and quality at each point to isolate the fault",
-      "Calling tech support first",
-      "Rebooting everything"
+      "Calling tech support first — the manufacturer’s helpline diagnoses every fault, so field troubleshooting is unnecessary",
+      "Rebooting everything — power-cycling every device simultaneously resolves all signal faults, making tracing obsolete"
     ],
     "correct": 1,
     "explanation": "Half-splitting the signal path (check the middle: signal there? fault is downstream; not there? upstream) isolates faults methodically. Random part-swapping is expensive guessing."
@@ -4636,10 +4635,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Network testing for AV-over-IP should include what beyond 'it connects'?",
     "options": [
-      "Nothing else",
+      "Nothing else is required — a single successful ping and the link LED confirm the switch is fine, and AV-over-IP streams use so little bandwidth that load testing is pointless",
       "Ping for latency/loss, iperf for throughput, verification of VLAN/QoS/IGMP operation, and sustained load testing — the network must perform under show conditions, not just idle",
-      "Speedtest.net",
-      "Wi-Fi signal bars"
+      "Run Speedtest.net once and record the download number — the internet WAN speed is the standard benchmark for proving AV-over-IP will perform on the local network",
+      "Check the Wi-Fi signal bars on a laptop near the rack — full bars confirm the wired AV-over-IP network has enough throughput for sustained show-condition loads"
     ],
     "correct": 1,
     "explanation": "AV networks must be tested under load: multicast joins, PTP stability, throughput headroom. A network that 'connects' but drops PTP under load will glitch audio mid-event."
@@ -4649,10 +4648,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why test the control system with the actual user workflows (not just button-by-button)?",
     "options": [
-      "Button tests are sufficient",
+      "Button tests are sufficient — pressing each button once proves the program logic, since sequences are just buttons pressed in order",
       "Workflow testing catches logic errors — e.g., the room combines but the audio follow doesn't, or a preset works alone but not in sequence",
-      "Users never find bugs",
-      "Workflows don't matter"
+      "Users never find bugs — end users operate systems too simply to trigger logic errors, so workflow testing adds no value",
+      "Workflows don’t matter — control logic is either right or wrong at the button level, so sequence testing is redundant"
     ],
     "correct": 1,
     "explanation": "Individual buttons can pass while the system fails: mode changes, room combines, and multi-step sequences are where control logic breaks. Test the way the client will actually use it."
@@ -4662,10 +4661,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "All test results should be:",
     "options": [
-      "Kept in the installer's head",
+      "Kept in the installer’s head — experienced technicians memorize every measurement, which is more reliable than written records",
       "Documented — cable cert reports, SPL/coverage measurements, functional checklists — and included in the closeout package as proof of performance",
-      "Thrown away",
-      "Only failures need documentation"
+      "Thrown away — test results are working notes only; once the system passes, the records serve no purpose and should be discarded",
+      "Only failures need documentation — passing results are assumed and need no record; only failed tests require written reports"
     ],
     "correct": 1,
     "explanation": "Documented results are the evidence the system was verified: certifier reports per cable ID, measurement sheets, signed checklists. Undocumented testing didn't happen, as far as the warranty dispute is concerned."
@@ -4675,10 +4674,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is the purpose of the client demonstration at closeout?",
     "options": [
-      "To show off",
+      "To show off — the demonstration is a sales showcase for the integrator’s capabilities, with no connection to the contracted specifications",
       "To prove the system performs to the contracted specifications — walking the client through every specified function before they sign acceptance",
-      "Demonstrations are optional",
-      "To sell more equipment"
+      "Demonstrations are optional — client acceptance is based on the equipment list alone, so walking through functions is an unnecessary formality",
+      "To sell more equipment — the closeout demo exists to pitch upgrades and service contracts, not to verify the installed system"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty D Task 1: the demo is the acceptance test in front of the client. Every specified function demonstrated, every criterion shown met. Sign-off follows demonstrated performance — not promises."
@@ -4688,10 +4687,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Effective end-user training should be:",
     "options": [
-      "A 5-minute 'here's the remote, good luck'",
+      "A 5-minute ‘here’s the remote, good luck’ — brief handover is sufficient since modern systems are fully intuitive",
       "Role-based (operators vs. admins), hands-on with the actual system, covering normal operation AND common failures, with quick-reference guides left behind",
-      "A 200-page manual reading",
-      "Training is unnecessary"
+      "A 200-page manual reading — training is a cover-to-cover read of the full manual with no hands-on time",
+      "Training is unnecessary — well-designed systems need zero training; users figure everything out immediately"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty D Task 2: training matches roles — users get daily workflows, admins get deeper access. Hands-on practice plus a one-page quick guide beats a lecture. The best-designed system fails if users fear it."
@@ -4701,10 +4700,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What does project completion sign-off require from the installer?",
     "options": [
-      "Just a signature",
+      "Just a signature — the installer signs the acceptance form and the project is complete, regardless of documentation or training status",
       "A complete system: punch list cleared, documentation delivered (as-builts, manuals, passwords), training done, spares provided — sign-off certifies all of it",
-      "Sign-off happens before the work is done",
-      "The client's verbal approval"
+      "Sign-off happens before the work is done — the client signs acceptance at rough-in so the installer can bill the final invoice early",
+      "The client’s verbal approval — a spoken ‘looks good’ over the phone constitutes formal project completion sign-off"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty D Task 3: sign-off is the contractual finish line. Chasing signatures with open punch items or missing manuals poisons the relationship — and delays final payment."
@@ -4714,10 +4713,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "As-built documentation the installer provides should reflect:",
     "options": [
-      "The original design drawings unchanged",
+      "The original design drawings unchanged, since the engineer's design intent is the authoritative record regardless of field changes",
       "Reality: actual cable routes, final IP addresses, substituted equipment, and field changes — redlined during the project and finalized at closeout",
-      "Whatever is easiest to draw",
-      "As-builts are the designer's job"
+      "Whatever is easiest to draw from memory at closeout, because precise cable routes and IP addresses rarely matter after handover",
+      "As-builts are the designer's job alone; the installer only builds, so field documentation never needs to leave the design office"
     ],
     "correct": 1,
     "explanation": "Field redlines captured during installation become the as-builts. The next service tech works from these — accuracy here is a gift to the future (and often a contract requirement for final payment)."
@@ -4727,10 +4726,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why hand over admin passwords and configuration backups at closeout?",
     "options": [
-      "You shouldn't — keep them for job security",
+      "You shouldn't hand them over — keeping the admin passwords guarantees the client must call you back for every future service visit",
       "The client owns the system; complete handover (secured) of credentials, DSP files, and control code is part of delivering a complete project",
-      "Passwords don't matter",
-      "The client will never need them"
+      "Passwords don't matter at closeout, since the client will never touch the DSP or control system after the installer leaves",
+      "The client will never need the configuration files, because any future changes require a full system redesign by the original integrator"
     ],
     "correct": 1,
     "explanation": "Withholding credentials creates hostage situations, not recurring revenue. Professional closeout hands over everything needed to own and operate the system — that's what was purchased."
@@ -4740,10 +4739,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Warranty registration and documentation at closeout should include:",
     "options": [
-      "Nothing — warranties are automatic",
+      "Nothing — warranties are automatic — manufacturers track every serial number, so registration and documentation are unnecessary",
       "Equipment serial numbers, warranty terms and start dates, and the process for warranty claims — so the client knows what's covered and how to claim it",
-      "Only the installer's warranty",
-      "Warranties don't matter"
+      "Only the installer’s warranty — manufacturer warranties don’t exist for commercial AV, so only the integrator’s labor warranty matters",
+      "Warranties don’t matter — warranty claims are never honored, so documenting terms and serial numbers wastes closeout time"
     ],
     "correct": 1,
     "explanation": "A warranty the client can't invoke is worthless. Document what each manufacturer covers, for how long, from when — and who to call. This is part of the closeout package."
@@ -4753,10 +4752,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What is a punch list, and when is it truly complete?",
     "options": [
-      "A shopping list; complete when written",
+      "A shopping list of spare parts; the punch list is considered complete the moment it is written down and handed to the client",
       "The list of deficient/incomplete items identified before acceptance; complete when every item is corrected AND re-verified — not when it's merely attempted",
-      "Punch lists are informal",
-      "Complete when the installer says so"
+      "Punch lists are informal reminders; the list is complete when the installer has made a good-faith attempt at each listed item",
+      "Complete when the installer says so — the installer's own verbal assurance alone is the only verification a punch list ever needs"
     ],
     "correct": 1,
     "explanation": "'Fixed' isn't done — verified fixed is done. Each punch item needs correction plus re-test, tracked to zero. The final walkthrough confirms, not assumes."
@@ -4766,10 +4765,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Spare parts ('attic stock') left at closeout typically include:",
     "options": [
-      "A spare rack",
+      "A spare rack — a complete loaded spare rack is the standard attic stock, so the client can swap the entire system during any failure",
       "Consumables and high-failure items: projector lamps, wireless mic batteries, key cables, fuses — the parts that turn an outage into a swap",
-      "Nothing — spares are wasteful",
-      "A complete duplicate system"
+      "Nothing — spares are wasteful — attic stock ties up capital in parts that expire, so best practice is to leave zero spares at closeout",
+      "A complete duplicate system — attic stock means a full second copy of every device, installed in parallel and kept hot"
     ],
     "correct": 1,
     "explanation": "Attic stock is cheap insurance specified in the BOM: the parts most likely to fail or be consumed, on the shelf. The 9 PM wireless mic battery death is a non-event when spares are on site."
@@ -4779,10 +4778,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The final client walkthrough should cover what?",
     "options": [
-      "Just the main room",
+      "Just the main room — the largest space represents the whole project, so demonstrating it covers the walkthrough requirement for every other room",
       "Every space and function: demonstrate operation, confirm punch items, hand over documentation, and establish the support contact process",
-      "A quick hello",
-      "Walkthroughs are optional"
+      "A quick hello — a brief greeting at the front door satisfies the walkthrough; the client will discover the system functions on their own",
+      "Walkthroughs are optional — the signed contract is the only acceptance the project needs, so the final demonstration can be skipped entirely"
     ],
     "correct": 1,
     "explanation": "The walkthrough is the ceremonial and practical handover: the client sees everything work, receives everything promised, and knows exactly who to call. Rushing it guarantees the first support call is confusion."
@@ -4792,10 +4791,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What financial/administrative items typically gate final payment at closeout?",
     "options": [
-      "Nothing — payment is automatic",
+      "Nothing — payment is automatic — final payment releases on the contract date regardless of punch lists or documentation status",
       "Completed punch list, delivered closeout documentation, lien waivers, and final change-order reconciliation — the paperwork that releases retention",
-      "Just asking nicely",
-      "Threatening the client"
+      "Just asking nicely — a polite email to the client’s AP department is the industry-standard trigger for releasing final payment",
+      "Threatening the client — warning of legal action is the fastest way to release retention, and most integrators lead with it"
     ],
     "correct": 1,
     "explanation": "Retention releases when the contract's closeout requirements are met: documentation, waivers, reconciled change orders. Installers who treat paperwork as optional wait longer for their money."
@@ -4805,10 +4804,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Before working from a 12-foot ladder on a jobsite, what is required?",
     "options": [
-      "Nothing — ladders are simple",
+      "Nothing — ladders are simple — any ladder found on site is safe to climb immediately, and inspection is a waste of setup time",
       "Inspect the ladder (rails, rungs, feet, locks), set it on stable level ground at the correct 4:1 angle, maintain three points of contact, and never stand on the top cap",
-      "Ladders don't need inspection",
-      "The top cap is the best step"
+      "Ladders don’t need inspection — rental ladders are certified safe, so checking rails and locks before climbing is unnecessary",
+      "The top cap is the best step — standing on the top cap gives the best reach, and the 4:1 angle rule doesn’t apply to short tasks"
     ],
     "correct": 1,
     "explanation": "Falls are a leading jobsite injury cause. Ladder safety — inspection, angle, three points of contact, top-cap prohibition — is OSHA basics and CTS-I Duty E territory. Most ladder injuries are preventable."
@@ -4818,10 +4817,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "What PPE is typically required on an active construction site for AV installers?",
     "options": [
-      "None — AV is clean work",
+      "None — AV is clean work — pulling cable and hanging displays involves no hazards, so PPE is unnecessary for AV installers",
       "Hard hat, safety glasses, high-visibility vest, and task-appropriate gear (gloves, hearing protection, dust masks) per the site safety plan",
-      "Just a hard hat",
-      "PPE is optional"
+      "Just a hard hat — a hard hat alone satisfies every site safety plan, and glasses, vests, and gloves are optional extras for AV work",
+      "PPE is optional — safety gear is a personal choice on construction sites, and AV installers are exempt from the GC’s PPE requirements"
     ],
     "correct": 1,
     "explanation": "Active construction sites require PPE regardless of trade. The GC's site safety plan governs — comply fully. 'I'm just AV' doesn't stop falling objects."
@@ -4831,10 +4830,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Lockout/tagout (LOTO) applies to AV installers when:",
     "options": [
-      "Never — it's for electricians",
+      "Never — it’s for electricians — lockout/tagout applies exclusively to licensed electricians, so AV installers never use it on any jobsite",
       "Working on or near energized circuits/panels — the circuit is locked in the off position and tagged so no one re-energizes it while you work",
-      "Only in factories",
-      "LOTO is outdated"
+      "Only in factories — LOTO is an industrial manufacturing requirement that does not apply to commercial AV installation work",
+      "LOTO is outdated — modern breakers can’t be accidentally re-energized, so lockout/tagout has been retired from construction safety plans"
     ],
     "correct": 1,
     "explanation": "If you're in a panel landing AV circuits, LOTO protects you from someone flipping the breaker back on. It's your procedure too when you touch energized infrastructure."
@@ -4844,10 +4843,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Daily progress reports / field reports should capture:",
     "options": [
-      "Nothing — they're busywork",
+      "Nothing — they’re busywork — daily reports consume crew time without protecting against disputes, so skipping them saves money",
       "Crew on site, work completed, delays and their causes, visitors, safety issues, and photos — the contemporaneous record that resolves disputes",
-      "Only the weather",
-      "What the crew had for lunch"
+      "Only the weather — the daily report’s sole purpose is logging weather conditions for the GC’s schedule claims",
+      "What the crew had for lunch — meal logs are the key daily-report content, since lunch disputes are the most common jobsite conflict"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 1: daily reports are the project's memory. 'We were delayed three days waiting for the electrician' needs a dated record — written the day it happened, not reconstructed in a dispute."
@@ -4857,10 +4856,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "The electrician's work blocks your cable path. What is the professional response?",
     "options": [
-      "Move their work out of the way",
+      "Move the electrician's work out of the way yourself — physically repositioning another trade's installed work is standard jobsite practice",
       "Coordinate: notify the GC/PM, document the impact, and agree on a resolution — trade conflicts are solved through coordination, not confrontation",
-      "Work around it silently and eat the cost",
-      "Stop work permanently"
+      "Work around it silently and absorb the cost — documenting the impact or notifying the GC only creates unnecessary conflict",
+      "Stop all work permanently — one blocked cable path means the entire installation project must be abandoned immediately"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 2: trade coordination runs through the GC/PM with documentation. Silent workarounds become unbillable costs; confrontation becomes a jobsite war. Coordinate and document."
@@ -4870,10 +4869,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "You discover the field condition requires 200 extra feet of cable beyond the design. What is the correct process?",
     "options": [
-      "Install it and hope nobody notices the cost",
+      "Install the extra 200 feet immediately and bury the cost in the original bid, hoping nobody notices the overrun at closeout",
       "Document the field condition, notify the PM, and process it as a field modification/change order BEFORE doing the extra work",
-      "Eat the cost silently",
-      "Skip that section"
+      "Eat the cost silently and never mention the discrepancy, since raising change orders always damages the client relationship",
+      "Skip that cable section entirely and leave it undocumented, because the system will probably work fine without those runs"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 3: field modifications need approval before execution. Document the condition (photos, measurements), get authorization, then install. After-the-fact change orders are where margins die."
@@ -4883,10 +4882,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "A systematic approach to repairing a failed AV system on a service call starts with:",
     "options": [
-      "Replacing the most expensive component",
+      "Replacing the most expensive component in the rack first, since high-cost parts are the statistically most likely failure points",
       "Gathering symptoms, checking the simple/obvious (power, connections, settings), then half-splitting the signal path to isolate the fault",
-      "Rewiring everything",
-      "Blaming the previous installer"
+      "Rewiring every connection in the system from scratch, then reprogramming the DSP to guarantee a known-good baseline state",
+      "Blaming the previous installer's workmanship and re-quoting the client for a full system replacement before diagnosing anything"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 4: most 'dead system' calls are power, a muted channel, or a loose cable. Check the obvious first, then isolate methodically. The expensive part is guilty last, not first."
@@ -4896,10 +4895,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Preventive maintenance visits for installed AV systems typically include:",
     "options": [
-      "Nothing — AV doesn't need maintenance",
+      "Nothing — AV doesn’t need maintenance — installed systems run indefinitely with zero service, so PM visits are pure profit-taking",
       "Filter cleaning/replacement, firmware review, battery checks, connection inspection, and functional testing — catching degradation before it becomes failure",
-      "Just dusting",
-      "Maintenance is the client's job alone"
+      "Just dusting — a PM visit is a light dusting of the rack exterior; internal inspection and testing are unnecessary",
+      "Maintenance is the client’s job alone — the integrator’s responsibility ends at handover, and PM contracts are never offered"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 5: projectors clog, batteries die, firmware ages. Scheduled maintenance — with a checklist and report — is both a service revenue stream and the reason systems keep working."
@@ -4909,10 +4908,10 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Why must installers maintain their tools and test equipment?",
     "options": [
-      "They don't — tools are disposable",
+      "They don’t — tools are disposable — drill bits and meters are consumables, so maintenance is wasted effort; just buy new ones",
       "Dull bits, uncalibrated meters, and failing batteries cause bad work and false measurements — maintained tools are a quality and safety requirement",
-      "New tools are always better",
-      "Maintenance wastes time"
+      "New tools are always better — a brand-new meter is always more accurate than a maintained older one, so replace tools yearly",
+      "Maintenance wastes time — sharpening bits and calibrating meters consumes billable hours with no measurable quality benefit"
     ],
     "correct": 1,
     "explanation": "CTS-I Duty E Task 6: a drifting meter certifies bad cable as good; a dull hole saw tears up the ceiling. Tool maintenance — calibration, batteries, cutting edges — is part of professional practice."
@@ -4922,23 +4921,23 @@ const QUESTIONS = [
     "cert": "CTS-I",
     "q": "Lifting a heavy amplifier into a rack alone is:",
     "options": [
-      "Fine — technicians are strong",
+      "Fine — technicians are strong — AV techs lift heavy gear daily, so solo amplifier lifts are safe and expected",
       "Unsafe — use proper lifting technique, get help or a lift for heavy gear, and never compromise; back injuries end careers",
-      "Required to prove toughness",
-      "The only way"
+      "Required to prove toughness — solo heavy lifts are a jobsite rite of passage, and asking for help shows weakness",
+      "The only way — racks are too narrow for two people, so every amplifier must be lifted in alone"
     ],
     "correct": 1,
     "explanation": "Back injuries are career-enders and entirely preventable: team lifts, rack lifts, and mechanical aids for heavy amplifiers and displays. No deadline justifies a herniated disc."
   },
-{
+  {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
     "q": "During commissioning you find the installed projector's throw distance produces a 100-inch image but the client specified 120 inches. The mount is fixed. What is the correct action?",
     "options": [
-      "Leave it — close enough",
+      "Leave it — close enough — a 100-inch image from a 120-inch spec is within visual tolerance, so no documentation or client discussion is needed",
       "Document the variance, verify whether a different lens or mount position can achieve spec, and resolve with the client before sign-off — specifications are contractual",
-      "Digitally stretch the image",
-      "Blame the electrician"
+      "Digitally stretch the image — use the projector’s digital zoom to stretch 100 inches to 120; the slight softness is invisible to viewers",
+      "Blame the electrician — the throw shortfall is the electrical contractor’s fault for the mount position, so the AV installer bears no responsibility"
     ],
     "correct": 1,
     "explanation": "Commissioning verifies against the contracted specifications. An image size shortfall is a punch-list item: check lens options or repositioning, then get client direction. 'Close enough' is how disputes start."
@@ -4948,10 +4947,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "A site survey finds the only available circuit for the AV rack is shared with the break-room microwave and refrigerator. What should you do?",
     "options": [
-      "Use it — AV doesn't draw much",
+      "Use it — AV doesn’t draw much — amplifiers and racks sip power, so sharing a circuit with the break-room appliances causes no issues",
       "Specify a dedicated circuit for the AV system — shared circuits with motor/compressor loads cause voltage sags and nuisance trips that will be blamed on the AV",
-      "Unplug the refrigerator",
-      "Turn down the volume"
+      "Unplug the refrigerator — disconnect the break-room appliances permanently; AV performance takes priority over the staff kitchen",
+      "Turn down the volume — running the AV system quietly reduces its power draw enough to coexist safely with the microwave and refrigerator"
     ],
     "correct": 1,
     "explanation": "Dedicated circuits isolate AV from noisy loads. Compressor startups cause voltage dips that reboot processors and drop networked audio. The survey's job is finding this BEFORE installation."
@@ -4961,10 +4960,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Why should a site survey measure ambient noise levels (NC rating) in each AV space?",
     "options": [
-      "It isn't necessary",
+      "It isn’t necessary — modern DSP noise reduction eliminates all background noise electronically, so measuring the room’s NC rating wastes survey time",
       "Background noise determines the required signal-to-noise ratio — a system can't deliver intelligible speech in a space with 55 dBA of HVAC roar without addressing the noise first",
-      "To pick paint colors",
-      "Noise measurements are only for concerts"
+      "To pick paint colors — the NC rating guides the interior designer’s paint selection, since certain colors absorb HVAC noise better than others",
+      "Noise measurements are only for concerts — NC ratings apply exclusively to music venues, so conference and meeting rooms never need ambient noise data"
     ],
     "correct": 1,
     "explanation": "The quietest the room gets is the noise floor; speech needs 15-25 dB above it. If the HVAC delivers NC-50, no speaker upgrade fixes intelligibility — the survey flags it so the design (or the mechanical engineer) can respond."
@@ -4975,9 +4974,9 @@ const QUESTIONS = [
     "q": "Which AVIXA standard addresses cable labeling for AV systems?",
     "options": [
       "AVIXA F502.01:2018 — Cable Labeling for Audiovisual Systems",
-      "There is no labeling standard",
-      "NEC Article 640",
-      "ISO 9001"
+      "No AVIXA standard addresses cable labeling in AV systems",
+      "NEC Article 640 — Audio Systems and Amplification Equipment",
+      "ISO 9001 — Quality Management Systems for AV Installation Firms"
     ],
     "correct": 0,
     "explanation": "F502.01:2018 defines cable labeling requirements for AV — unique identifiers linking cables to documentation. Consistent labeling is what makes systems serviceable years later."
@@ -4987,10 +4986,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "AVIXA's standard for image system contrast ratio (V201.01) is primarily concerned with:",
     "options": [
-      "The projector's marketing specs",
+      "The projector’s marketing specs — V201.01 certifies that the manufacturer’s published contrast numbers are truthful",
       "The contrast the VIEWER actually perceives in the room — accounting for ambient light washing out the image, not just the projector's spec sheet",
-      "The color of the screen",
-      "Contrast doesn't matter"
+      "The color of the screen — the standard regulates the paint color of the projection screen to maximize reflectivity",
+      "Contrast doesn’t matter — V201.01 declares contrast ratio irrelevant to image quality, so it can be ignored in design"
     ],
     "correct": 1,
     "explanation": "A 10,000:1 projector in a bright room delivers poor perceived contrast because ambient light raises the black floor. V201.01 addresses system contrast in the viewing environment — the number that actually matters."
@@ -5000,10 +4999,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is the practical difference between RS-232 and IR control of a display?",
     "options": [
-      "No difference",
+      "No difference — RS-232 and IR carry identical control commands with the same reliability, and both interfaces provide two-way status feedback from the display",
       "RS-232 is two-way (the system can query power/input status) and reliable over distance; IR is one-way, line-of-sight, and can be blocked or interfered with",
-      "IR is always better",
-      "RS-232 is wireless"
+      "IR is always better — IR provides two-way status feedback and works through walls and around corners, making it more reliable than RS-232 over long distances",
+      "RS-232 is wireless — RS-232 commands travel through the air to the display like IR does, so the control processor needs no wired connection to the display"
     ],
     "correct": 1,
     "explanation": "Two-way RS-232/IP control gives feedback — the system KNOWS the display is on the right input. IR is fire-and-forget. For reliable rooms, feedback-capable control wins."
@@ -5013,10 +5012,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "A touch panel should be programmed so that:",
     "options": [
-      "Every function is on the first page",
+      "Every function is on the first page — cramming all controls onto one screen minimizes taps and is the professional standard",
       "Common tasks take one or two taps, advanced functions are layered deeper, and the interface matches the user's mental model — not the programmer's",
-      "It looks impressive",
-      "More buttons are always better"
+      "It looks impressive — the panel’s visual wow factor is the only programming requirement; usability follows automatically",
+      "More buttons are always better — maximum button density gives users the most control, so every function gets its own button"
     ],
     "correct": 1,
     "explanation": "UI design for control systems follows usability: the 90% tasks (on/off, source select, volume) front and center; admin functions tucked away. A panel nobody understands is a failed system."
@@ -5026,10 +5025,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "What is 'feedback' in a control system, and why does it matter?",
     "options": [
-      "Audio squealing",
+      "Audio squealing — feedback is the loud howl when a microphone hears itself, and the control system’s job is to eliminate it",
       "True status from devices (power state, input, volume level) displayed on the UI — so the panel shows reality, not what was last commanded",
-      "It doesn't matter",
-      "Feedback is only for engineers"
+      "It doesn’t matter — the panel only needs to show the last command sent, since devices always execute commands exactly as instructed",
+      "Feedback is only for engineers — status readouts are diagnostic tools for programmers, with no value on the end-user touch panel"
     ],
     "correct": 1,
     "explanation": "Without feedback, the panel says 'Display ON' because someone pressed ON — even if the display never responded. True feedback queries the device and shows actual state. It's the difference between control and wishful thinking."
@@ -5039,10 +5038,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "When a control processor loses network connectivity to its touch panels, the panels typically:",
     "options": [
-      "Keep working normally",
+      "Keep working normally — touch panels store the complete control program locally, so they keep operating the room with no dependence on the processor or network",
       "Show offline/disconnected status and can't control the room — which is why critical rooms need the control network designed for reliability (managed switches, proper VLANs)",
-      "Control the room via Bluetooth",
-      "Reboot the projector"
+      "Control the room via Bluetooth — panels automatically fail over to a Bluetooth mesh with the displays, so full room control continues through any network outage",
+      "Reboot the projector — when panels lose the processor, they send a reboot command to the projector, which re-establishes the control network connection"
     ],
     "correct": 1,
     "explanation": "Network-dependent control means network outages are room outages. Design the control network accordingly — and have a fallback plan (hard buttons for critical functions) in must-work spaces."
@@ -5052,10 +5051,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Dante's 'device latency' setting (e.g., 1ms vs 5ms) represents:",
     "options": [
-      "How fast the device boots",
+      "How fast the device boots — the latency setting controls the device’s startup time, with 1ms booting faster than 5ms",
       "The receive buffer size — higher latency tolerates more network jitter but adds delay; lower latency needs a cleaner, well-configured network",
-      "The cable length",
-      "It is fixed and can't change"
+      "The cable length — set device latency to match the longest cable run: 1ms for short runs, 5ms for runs approaching 100 meters",
+      "It is fixed and can’t change — device latency is burned into the Dante hardware at the factory and cannot be adjusted"
     ],
     "correct": 1,
     "explanation": "Latency setting = jitter buffer. 1ms needs a tight network (proper QoS, minimal hops); 5ms tolerates more. Set per the network's actual quality — and keep it consistent with the design's lip-sync budget."
@@ -5065,10 +5064,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "AES67 differs from Dante in that it is:",
     "options": [
-      "A proprietary protocol",
+      "A proprietary protocol — AES67 is owned by a single manufacturer and requires licensed hardware, so it cannot interoperate with Dante devices",
       "An open interoperability standard (AES67-2018) for audio-over-IP — Dante devices can interoperate with AES67 gear in AES67 mode, bridging ecosystems",
-      "Only for video",
-      "Faster than Dante"
+      "Only for video — AES67 carries compressed video streams and has no audio capability, so it never interoperates with Dante audio networks",
+      "Faster than Dante — AES67 moves audio with lower latency than Dante on the same network, which is why it replaces Dante in live sound"
     ],
     "correct": 1,
     "explanation": "AES67 is the standards-based interoperability layer: Dante, Ravenna, Q-LAN and others can exchange audio via AES67 mode. It trades some of Dante's ease (no automatic discovery) for cross-platform compatibility."
@@ -5078,10 +5077,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "A redundant Dante network uses primary and secondary ports. What is the key cabling rule?",
     "options": [
-      "Both can share one switch",
+      "Both primary and secondary ports can share one managed switch with VLANs, since VLANs provide full redundancy isolation",
       "Primary and secondary must be on COMPLETELY SEPARATE networks/switches — sharing infrastructure defeats the redundancy",
-      "Redundancy is automatic",
-      "Secondary is just a backup cable"
+      "Redundancy is automatic once both ports are plugged in, because Dante negotiates the backup path with no cabling requirements",
+      "Secondary is just a backup cable that carries no audio until the primary fails, so it can be run through the same conduit and switch"
     ],
     "correct": 1,
     "explanation": "Dante redundancy (like Isaac's own intentional Redundant mode setup) only works with fully independent networks — separate switches, separate cable paths. One shared switch = one point of failure for both."
@@ -5091,10 +5090,10 @@ const QUESTIONS = [
     "cert": "CTS",
     "q": "Dante Controller's 'Transmit' tab showing a flow as multicast (flower icon) means:",
     "options": [
-      "The flow is broken",
+      "The flow is broken — the flower icon is Dante Controller’s error symbol, indicating the multicast stream has failed and needs rebuilding",
       "One stream is feeding multiple receivers efficiently — but the network must have IGMP snooping configured to handle it properly",
-      "Multicast is always bad",
-      "It means unicast"
+      "Multicast is always bad — the flower icon warns that multicast is degrading the network, and every flow should be switched to unicast immediately",
+      "It means unicast — the flower icon indicates a dedicated unicast flow, so IGMP snooping is unnecessary for that stream"
     ],
     "correct": 1,
     "explanation": "Multicast flows are bandwidth-efficient for one-to-many, but they REQUIRE proper IGMP snooping/querier on the switches. The flower icon is your cue to verify the network config matches."
