@@ -29,7 +29,7 @@ const FORGE = (function () {
       if (!seen.has(d)) { seen.add(d); ds.push(d); }
       if (ds.length === 3) break;
     }
-    while (ds.length < 3) ds.push(correctStr + ' '); // unreachable in practice; guards shape
+    if (ds.length < 3) throw new Error('mkOptions: only ' + ds.length + ' unique distractors for "' + correctStr + '"');
     const options = shuf([correctStr, ...ds]);
     return { options, correct: options.indexOf(correctStr) };
   }
@@ -111,7 +111,10 @@ const FORGE = (function () {
   // Series resistance
   calc('series-r', 'CTS: Electrical & Site Survey', 'CTS', 2, () => {
     const n = pick([2, 2, 3]);
-    const rs = []; for (let k = 0; k < n; k++) rs.push(pick([10, 22, 33, 47, 68, 100]));
+    const vals = [10, 22, 33, 47, 68, 100];
+    const rs = []; for (let k = 0; k < n; k++) rs.push(pick(vals));
+    // Avoid all-identical values: they collapse distractors into duplicates
+    if (rs.every(v => v === rs[0])) rs[rs.length - 1] = pick(vals.filter(v => v !== rs[0]));
     const total = rs.reduce((a, b) => a + b, 0);
     const o = mkOptions(`${total} Ω`, [`${fmt(total / n, 1)} Ω`, `${fmt(total * 2)} Ω`, `${fmt(total - rs[0])} Ω`, `${rs[0]} Ω`]);
     return {
@@ -167,7 +170,8 @@ const FORGE = (function () {
     const n = pick([24, 25, 26, 27, 28, 30]);
     const hosts = Math.pow(2, 32 - n) - 2;
     const full = Math.pow(2, 32 - n);
-    const o = mkOptions(`${hosts}`, [`${full}`, `${full - 1}`, `${Math.pow(2, 31 - n)}`, `${hosts * 2}`]);
+    // Off-by-one traps; all guaranteed unique and != hosts
+    const o = mkOptions(`${hosts}`, [`${full}`, `${hosts + 1}`, `${Math.max(1, hosts - 1)}`, `${full + 1}`]);
     return {
       q: `How many usable host addresses does a /${n} subnet provide?`,
       ...o,
@@ -281,6 +285,382 @@ const FORGE = (function () {
         };
       }
     });
+  });
+
+  /* ================= trick question tables =================
+     Trick questions defeat pattern-matching: EXCEPT, NOT, TRUE/FALSE, and
+     does-not-belong stems with always/never absolute traps. Each item has
+     trueStmts (unambiguously true) and falseStmts (unambiguously false).
+     All statements are written to similar length so the longest-answer
+     heuristic fails. */
+
+  const TRICK_TABLES = [
+    {
+      domain: 'CTS: Sound & Physics', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: 'the inverse square law',
+          trueStmts: [
+            'In a free field, doubling the distance from a point source drops SPL by 6 dB.',
+            'Moving from 1 meter to 4 meters from a source reduces SPL by about 12 dB.',
+            'The law assumes a free field with no reflections adding energy back in.'
+          ],
+          falseStmts: [
+            'Doubling the distance from a source always drops SPL by exactly 3 dB.',
+            'The inverse square law applies unchanged inside small reverberant rooms.',
+            'Halving the distance to a source never changes the measured SPL.'
+          ]
+        },
+        {
+          topic: 'decibel changes with power',
+          trueStmts: [
+            'Doubling amplifier power yields roughly a 3 dB increase in SPL.',
+            'A 10 dB gain requires about ten times the amplifier power.',
+            'Halving the power to a loudspeaker drops output by about 3 dB.'
+          ],
+          falseStmts: [
+            'Doubling amplifier power always doubles the perceived loudness.',
+            'A 3 dB increase requires ten times the power, never less.',
+            'Tripling the power invariably adds exactly 10 dB of output.'
+          ]
+        },
+        {
+          topic: 'phantom power',
+          trueStmts: [
+            'Phantom power is 48 V DC carried on a balanced microphone cable.',
+            'It is intended for condenser microphones and active DI boxes.',
+            'Dynamic microphones generally ignore phantom power when wired correctly.'
+          ],
+          falseStmts: [
+            'Phantom power is always 12 V AC on an unbalanced instrument cable.',
+            'Every microphone ever made requires phantom power to produce signal.',
+            'Phantom power is an RF signal sent to power wireless transmitters.'
+          ]
+        },
+        {
+          topic: 'comb filtering',
+          trueStmts: [
+            'It is the hollow coloration from mixing a signal with a delayed copy of itself.',
+            'It commonly results from two microphones picking up one source at different distances.',
+            'The 3:1 microphone placement rule helps avoid it.'
+          ],
+          falseStmts: [
+            'Comb filtering only ever occurs in digital systems, never with analog mics.',
+            'It is always desirable because it doubles the perceived loudness.',
+            'Comb filtering is caused by mismatched speaker impedance alone.'
+          ]
+        },
+        {
+          topic: 'RT60',
+          trueStmts: [
+            'RT60 is the time for reverberant sound to decay 60 dB after the source stops.',
+            'Longer RT60 values make speech intelligibility worse in most rooms.',
+            'It is measured with the sound source turned off, capturing the room decay.'
+          ],
+          falseStmts: [
+            'RT60 measures the time for sound to travel 60 feet, never decay.',
+            'A longer RT60 always improves speech clarity in every room.',
+            'RT60 is only defined for outdoor free-field measurements.'
+          ]
+        }
+      ]
+    },
+    {
+      domain: 'CTS: Video & Signal', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: 'EDID',
+          trueStmts: [
+            'EDID is the data block a display sends describing its supported resolutions.',
+            'A missing or corrupt EDID can leave a source with no image at all.',
+            'EDID emulators hold a fixed resolution so sources stay locked when displays change.'
+          ],
+          falseStmts: [
+            'EDID is an audio encryption scheme that always blocks unlicensed sources.',
+            'Displays never send EDID; sources simply guess the resolution instead.',
+            'EDID exclusively carries HDCP keys and never mentions resolutions.'
+          ]
+        },
+        {
+          topic: 'HDCP',
+          trueStmts: [
+            'HDCP is content-protection encryption on HDMI and DisplayPort links.',
+            'A failed HDCP handshake typically produces a black screen, not a dim image.',
+            'Too many devices in series can exceed the HDCP repeater limit.'
+          ],
+          falseStmts: [
+            'HDCP failures always show a clear image with a small warning icon.',
+            'HDCP is an audio-only protocol that never affects the video signal.',
+            'Every display manufactured supports all HDCP versions simultaneously.'
+          ]
+        },
+        {
+          topic: 'HDBaseT',
+          trueStmts: [
+            'HDBaseT carries video, audio, Ethernet, control, and power over one Cat cable.',
+            'Its rated distance is up to 100 meters on Cat6 for most feature sets.',
+            'It uses standard RJ45 terminations rather than proprietary connectors.'
+          ],
+          falseStmts: [
+            'HDBaseT runs exclusively on fiber and never on copper cable.',
+            'It is limited to 5 meters and cannot carry control signals at all.',
+            'HDBaseT always requires a separate power cable for every endpoint.'
+          ]
+        },
+        {
+          topic: 'chroma subsampling',
+          trueStmts: [
+            '4:2:0 stores color at quarter resolution while keeping full luminance detail.',
+            'It roughly halves bandwidth because human vision is less sensitive to color detail.',
+            'Most streamed video uses 4:2:0 rather than full 4:4:4 color.'
+          ],
+          falseStmts: [
+            '4:2:0 always doubles the bandwidth compared to uncompressed RGB video.',
+            'Chroma subsampling exclusively affects audio and never touches the image.',
+            '4:4:4 is never used anywhere because it contains no color information.'
+          ]
+        }
+      ]
+    },
+    {
+      domain: 'CTS: AV Networking', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: 'multicast',
+          trueStmts: [
+            'Multicast delivers one stream to many subscribed receivers via IGMP.',
+            'It uses far less bandwidth than sending a separate unicast to each receiver.',
+            'IGMP snooping keeps multicast from flooding ports with no subscribers.'
+          ],
+          falseStmts: [
+            'Multicast always sends every packet to every device on the network.',
+            'Multicast and broadcast are identical and never differ in behavior.',
+            'IGMP is a video codec and has nothing to do with network traffic.'
+          ]
+        },
+        {
+          topic: 'DHCP',
+          trueStmts: [
+            'DHCP automatically assigns IP addresses, masks, gateways, and DNS servers.',
+            'A failed DHCP request can leave a device with a 169.254.x.x link-local address.',
+            'Reservations tie a specific IP to a device MAC address.'
+          ],
+          falseStmts: [
+            'DHCP manually requires typing every address and never automates anything.',
+            'A 169.254.x.x address always proves the DHCP server is working perfectly.',
+            'DHCP exclusively assigns printer names and never handles IP addresses.'
+          ]
+        },
+        {
+          topic: 'VLANs',
+          trueStmts: [
+            'A VLAN logically segments one physical switch into isolated broadcast domains.',
+            'AV traffic is often placed on its own VLAN to isolate it from data traffic.',
+            'Devices on different VLANs need a router to communicate with each other.'
+          ],
+          falseStmts: [
+            'VLANs physically divide a switch with internal walls and separate power.',
+            'Every device on any VLAN can always see all traffic on all other VLANs.',
+            'A VLAN is a type of audio cable and never relates to networking.'
+          ]
+        },
+        {
+          topic: 'Power over Ethernet',
+          trueStmts: [
+            '802.3af delivers up to about 15 W and 802.3at (PoE+) about 30 W.',
+            '802.3bt extends PoE to 60 W or 90 W for demanding endpoints.',
+            'The powered device negotiates its power class with the switch.'
+          ],
+          falseStmts: [
+            'All PoE standards always deliver exactly 90 W regardless of the class.',
+            'PoE sends high-voltage AC mains power down the Ethernet cable.',
+            'A PoE switch can never power a device; injectors are always mandatory.'
+          ]
+        }
+      ]
+    },
+    {
+      domain: 'CTS: Electrical & Site Survey', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: "Ohm's law",
+          trueStmts: [
+            "Ohm's law states that voltage equals current times resistance: V = I x R.",
+            'Doubling the voltage across a fixed resistor doubles the current through it.',
+            'It applies to the resistive portion of AC and DC circuits alike.'
+          ],
+          falseStmts: [
+            "Ohm's law states that power always equals voltage divided by current.",
+            'Current through a resistor never changes when the voltage changes.',
+            "Ohm's law only applies to capacitors and never to resistors."
+          ]
+        },
+        {
+          topic: 'ground loops',
+          trueStmts: [
+            'A ground loop causes hum when two grounded devices sit at different ground potentials.',
+            'Current flowing on cable shields is the classic symptom of a ground loop.',
+            'Lifting the shield at one end of a balanced line can break the loop.'
+          ],
+          falseStmts: [
+            'Ground loops only occur in fiber-optic systems and never with copper.',
+            'A ground loop always improves audio quality by adding shielding current.',
+            'Ground loops are exclusively a video-sync issue unrelated to audio hum.'
+          ]
+        },
+        {
+          topic: 'the 80% breaker rule',
+          trueStmts: [
+            'Continuous loads should not exceed 80% of a breaker rating.',
+            'On a 20 A breaker, the continuous load limit is 16 A.',
+            'The rule prevents nuisance tripping from heat buildup over long shows.'
+          ],
+          falseStmts: [
+            'Breakers should always be loaded to 100% continuously for efficiency.',
+            'The 80% rule applies only to lighting and never to AV equipment.',
+            'A 20 A breaker safely carries 25 A forever without any derating.'
+          ]
+        }
+      ]
+    },
+    {
+      domain: 'CTS: Control Systems', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: 'RS-232 control',
+          trueStmts: [
+            'RS-232 is a short-distance serial protocol, typically reliable under 15 meters.',
+            'It uses transmit, receive, and ground conductors between devices.',
+            'Baud rate, data bits, and parity must match on both ends of the link.'
+          ],
+          falseStmts: [
+            'RS-232 reliably spans 500 meters and always carries 4K video.',
+            'RS-232 uses only a single conductor with no ground reference at all.',
+            'Baud rate mismatches never matter because RS-232 auto-negotiates.'
+          ]
+        },
+        {
+          topic: 'two-way feedback',
+          trueStmts: [
+            'Two-way feedback reports true device status back to the control system.',
+            'It lets touch panels display actual volume levels instead of assumed ones.',
+            'Feedback requires the controlled device to expose a status-reporting protocol.'
+          ],
+          falseStmts: [
+            'Two-way feedback means the user must press every button twice always.',
+            'It is impossible over IP networks and only works on infrared.',
+            'Feedback lets the control system ignore device state entirely forever.'
+          ]
+        }
+      ]
+    },
+    {
+      domain: 'CTS: Troubleshooting & Verification', cert: 'CTS', diff: 3,
+      items: [
+        {
+          topic: 'divide-and-conquer troubleshooting',
+          trueStmts: [
+            'It isolates a fault by testing the midpoint of the signal chain first.',
+            'Each test halves the suspect portion of the chain until the fault is found.',
+            'It is faster than swapping components one at a time from one end.'
+          ],
+          falseStmts: [
+            'It always starts at the display end and never tests the middle.',
+            'The method requires replacing every cable before any testing begins.',
+            'Divide-and-conquer only works on networks and never on signal chains.'
+          ]
+        },
+        {
+          topic: 'cable certification vs. verification',
+          trueStmts: [
+            'Certification proves a run meets Cat6 performance across the full spec.',
+            'A basic wire-map tester only checks for opens, shorts, and miswires.',
+            'Certification results are the documented proof a cable plant performs.'
+          ],
+          falseStmts: [
+            'A $30 continuity tester always certifies Cat6A to the full standard.',
+            'Certification and verification are identical and never differ.',
+            'Certification exclusively tests fiber and never applies to copper.'
+          ]
+        }
+      ]
+    }
+  ];
+
+  // EXCEPT: all true except one — correct answer is the false statement
+  generators.push({
+    id: 'trick-except', domain: '', cert: 'CTS', diff: 3, kind: 'trick',
+    make() {
+      const table = pick(TRICK_TABLES);
+      const item = pick(table.items);
+      const falses = shuf(item.falseStmts);
+      const trues = shuf(item.trueStmts).slice(0, 3);
+      const answer = falses[0];
+      const o = mkOptions(answer, trues);
+      const stem = pick([
+        `All of the following statements about ${item.topic} are true EXCEPT:`,
+        `Which of the following statements about ${item.topic} is NOT true?`
+      ]);
+      return {
+        q: stem, ...o, domain: table.domain,
+        explanation: `The false statement is the answer: ${answer} The others are all correct.`
+      };
+    }
+  });
+
+  // Which is FALSE?
+  generators.push({
+    id: 'trick-false', domain: '', cert: 'CTS', diff: 3, kind: 'trick',
+    make() {
+      const table = pick(TRICK_TABLES);
+      const item = pick(table.items);
+      const falses = shuf(item.falseStmts);
+      const trues = shuf(item.trueStmts).slice(0, 3);
+      const answer = falses[0];
+      const o = mkOptions(answer, trues);
+      return {
+        q: `Which of the following statements about ${item.topic} is FALSE?`,
+        ...o, domain: table.domain,
+        explanation: `False: ${answer}`
+      };
+    }
+  });
+
+  // It is TRUE that...
+  generators.push({
+    id: 'trick-true', domain: '', cert: 'CTS', diff: 3, kind: 'trick',
+    make() {
+      const table = pick(TRICK_TABLES);
+      const item = pick(table.items);
+      const trues = shuf(item.trueStmts);
+      const falses = shuf(item.falseStmts).slice(0, 3);
+      const answer = trues[0];
+      const o = mkOptions(answer, falses);
+      return {
+        q: `It is TRUE that, regarding ${item.topic}:`,
+        ...o, domain: table.domain,
+        explanation: `True: ${answer}`
+      };
+    }
+  });
+
+  // Does NOT belong: 3 terms from one domain table + 1 outsider
+  generators.push({
+    id: 'trick-belong', domain: '', cert: 'CTS', diff: 2, kind: 'trick',
+    make() {
+      const homeIdx = (Math.random() * CONCEPT_TABLES.length) | 0;
+      const home = CONCEPT_TABLES[homeIdx];
+      const others = CONCEPT_TABLES.filter((_, i) => i !== homeIdx);
+      const outsiderTable = pick(others);
+      const homeTerms = shuf(home.facts.map(f => f.t)).slice(0, 3);
+      const outsider = pick(outsiderTable.facts).t;
+      const o = mkOptions(outsider, homeTerms);
+      return {
+        q: `Three of these terms belong to ${home.domain.replace('CTS: ', '')}. Which one does NOT belong?`,
+        ...o, domain: home.domain,
+        explanation: `${outsider[0].toUpperCase() + outsider.slice(1)} belongs to ${outsiderTable.domain}, not ${home.domain}.`
+      };
+    }
   });
 
   /* ================= public API ================= */
