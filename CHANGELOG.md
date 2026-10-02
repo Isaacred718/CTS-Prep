@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## [6.1] – 2026-10-02
+
+### Added
+
+**Forge generators for CTS-D and CTS-I**
+
+- 21 CTS-D generators: 5 calculation (throw distance, 16:9 screen width, DISCAS viewing distance, rack units, contrast ratio), 5 concept tables, 2 trick tables
+- 27 CTS-I generators: 3 calculation (rack power, cable service loops, dB loss budgeting), 9 concept tables, 2 trick tables
+- Endless mode "Generated" and "Mixed" sources now work for all three certifications (previously CTS-only)
+- 88 total generators, all clean over 300 draws each in strict validation
+
 ## [6.0] – 2026-10-02
 
 ### Added
