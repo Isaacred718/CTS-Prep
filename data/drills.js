@@ -9,7 +9,7 @@ const DRILLS = [
     "scenario": "A hotel ballroom runs all of its audio over Dante on the house network. Every day the system drops audio for two to three seconds at the top of every hour, then recovers on its own. The switch logs show no errors, and the Dante devices are set to get their addresses from the building's DHCP server, which hands out one-hour leases.",
     "question": "What is the most likely cause, and the right fix?",
     "options": [
-      "The clock leader is failing over every hour — set one preferred leader so the clock election stops changing",
+      "The clock leader is failing over every hour as devices re-elect it — set one preferred leader so the clock election stops changing",
       "Devices re-acquire addresses at each one-hour DHCP renewal — give Dante devices static IPs or DHCP reservations",
       "Multicast flooding is saturating the switch — enable QoS so the Dante audio packets always take priority",
       "The device latency is too low for the house network — raise it to 5 ms on every Dante receiver in the room"
@@ -79,7 +79,7 @@ const DRILLS = [
     "scenario": "A 4K60 signal from a media player to a display 40 feet away over a passive HDMI cable drops out intermittently — worse with high-motion content.",
     "question": "What is the right fix?",
     "options": [
-      "Lower the display's brightness and refresh rate so the panel stops dropping the high-motion frames",
+      "Lower the display's brightness and refresh rate so the panel stops dropping the frames it cannot decode during high-motion content",
       "Replace the passive cable with an active optical HDMI cable or an HDBaseT extender rated for 18 Gbps",
       "Add an HDMI splitter mid-run as a booster, since its powered output regenerates the 18 Gbps signal",
       "Switch the player to 4K30 4:2:0 so the signal fits the passive cable for the full forty-foot run"
@@ -94,7 +94,7 @@ const DRILLS = [
     "question": "What should you configure?",
     "options": [
       "Genlock the system so source, processor, and wall share sync",
-      "Use a heavier-gauge HDMI cable to the video wall processor",
+      "Use a heavier-gauge, higher-grade HDMI cable between the player and the video wall processor so the signal stays clean",
       "Enable HDR on the processor to smooth fast-moving content",
       "Set the wall to a lower resolution so it redraws faster"
     ],
@@ -166,7 +166,7 @@ const DRILLS = [
       "Increase the access point's transmit power",
       "Move the camera to a wired gigabit connection",
       "Lower the camera's resolution and frame rate",
-      "Enable multicast on the access point for NDI"
+      "Enable multicast on the access point so the NDI stream is delivered efficiently to the receiving device"
     ],
     "correct": 1,
     "explanation": "NDI needs sustained high bandwidth with low jitter; Wi-Fi contention during a full event cannot guarantee that. A wired gigabit connection is the fix."
@@ -221,7 +221,7 @@ const DRILLS = [
     "options": [
       "The system has 4 dB of headroom to spare, so it will reach the required level without ever feeding back at all",
       "It will feed back before reaching the needed gain — move mics closer, reduce open mics, or add acoustic treatment",
-      "Install a more powerful amplifier so the system has the extra 4 dB of gain it needs before feedback",
+      "Install a more powerful amplifier so the system has the extra 4 dB of gain it needs before it reaches the feedback point",
       "PAG and NAG only apply outdoors, so in a room the reverberant field makes the extra gain available"
     ],
     "correct": 1,
@@ -317,7 +317,7 @@ const DRILLS = [
     "scenario": "Five minutes to showtime: the presenter's laptop shows video on the room display but there is no audio in the PA. The DSP meters show no input signal at all.",
     "question": "What do you check first?",
     "options": [
-      "Reload the DSP program, since the show file may have lost the laptop input's routing and gain settings",
+      "Reload the DSP program, since the show file may have lost the laptop input's routing and gain settings after the last power cycle",
       "Check the laptop's audio output and routing: it must send audio to the room interface, not its own speakers",
       "Replace the HDMI cable, because a damaged cable can pass video while the embedded audio channel fails",
       "Reboot the control processor, since a hung audio preset can mute the PA input without showing any warning"
