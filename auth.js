@@ -1,6 +1,7 @@
-/* CTS Prep — Google sign-in + Firestore progress sync.
-   Firebase project: lift-tracker-fade7 (shared with the fitlog-tracker app).
-   Google Auth provider is enabled and isaacred718.github.io is an authorized domain.
+/* auth.js — Google sign-in + Firestore progress sync.
+   Topic-agnostic engine file: the Firebase project and the Firestore
+   collection come from topic.js (TOPIC.sync). With TOPIC.sync set to null
+   the app runs purely on this device and the sign-in button is hidden.
 
    Offline-first: every Firebase/Firestore call is guarded. If the SDK can't load,
    the user is offline, or a write fails, the app keeps working fully on
@@ -20,16 +21,13 @@
 (function () {
 'use strict';
 
-var FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAw2BlvU4QhIC-TaH-hP-ELHOpjhoEe0UE",
-  authDomain: "lift-tracker-fade7.firebaseapp.com",
-  projectId: "lift-tracker-fade7",
-  storageBucket: "lift-tracker-fade7.firebasestorage.app",
-  messagingSenderId: "1045140412331",
-  appId: "1:1045140412331:web:9668f12422e5d6a48d64ee"
-};
-var COLLECTION = 'cts_users';   // kept separate from the fitlog users/{uid} docs
+var TOPIC = window.TOPIC || {};
+var SYNC = TOPIC.sync && TOPIC.sync.firebase ? TOPIC.sync : null;
+var FIREBASE_CONFIG = SYNC ? SYNC.firebase : {};
+var COLLECTION = (SYNC && SYNC.collection) || ((TOPIC.id || 'study') + '_users'); // one doc per user
+var KEY_PREFIX = (TOPIC.id || 'study') + '_';
 var PUSH_DEBOUNCE_MS = 2000;
+var HIST_MAX = 40;
 
 function $(id) { return document.getElementById(id); }
 
@@ -91,7 +89,7 @@ function isStandalone() {
    an instant splash, completes the sign-in, then shows a "go back" banner.
    When the user returns to the home-screen app it waits for the session
    Safari created (polling shared storage) and reloads to pick it up. */
-var HANDOFF_KEY = 'cts_auth_handoff';
+var HANDOFF_KEY = KEY_PREFIX + 'auth_handoff';
 var HANDOFF_TTL_MS = 2 * 3600 * 1000;
 function markHandoff() { try { localStorage.setItem(HANDOFF_KEY, String(Date.now())); } catch (e) {} }
 function readHandoff() {
@@ -103,7 +101,7 @@ function readHandoff() {
 }
 function clearHandoff() { try { localStorage.removeItem(HANDOFF_KEY); } catch (e) {} }
 // Reload guard so the waiting-mode reload can never loop: value is "<handoffTs>:<count>".
-var HANDOFF_RELOAD_KEY = 'cts_auth_handoff_reloaded';
+var HANDOFF_RELOAD_KEY = KEY_PREFIX + 'auth_handoff_reloaded';
 var MAX_HANDOFF_RELOADS = 2;
 function handoffReloads(t) {
   try {
@@ -282,8 +280,10 @@ function decideSync(local, cloud) {
 }
 
 /* ---------- local state (via the app.js bridge) ---------- */
+function bridge() { return window.Study || window.CTS || null; } // CTS = pre-v6 name
 function readLocal() {
-  return window.CTS ? window.CTS.getState() : { boxes: {}, hist: [], updatedAt: 0 };
+  var b = bridge();
+  return b ? b.getState() : { boxes: {}, hist: [], updatedAt: 0 };
 }
 
 /* ---------- cloud ops (all guarded, never throw into the app) ---------- */
@@ -293,27 +293,34 @@ function cloudDoc() {
   catch (e) { return null; }
 }
 function toCloudPayload(state) {
-  return {
+  var out = {
     displayName: user.displayName || '',
     email: user.email || '',
     photoURL: user.photoURL || '',
     updatedAt: (state && state.updatedAt) || Date.now(),
     leitnerBoxes: (state && state.boxes) || {},
-    testHistory: ((state && state.hist) || []).slice(0, 20)
+    testHistory: ((state && state.hist) || []).slice(0, HIST_MAX)
   };
+  if (state && state.best) out.endlessBest = state.best;       // v6+
+  if (state && state.settings) out.settings = state.settings;   // v6+: study preferences only
+  return out;
 }
 function fromCloudPayload(doc) {
-  return {
+  var out = {
     boxes: (doc && doc.leitnerBoxes) || {},
     hist: (doc && doc.testHistory) || [],
     updatedAt: (doc && doc.updatedAt) || 0
   };
+  // docs written before v6 have neither field; leave local values alone then
+  if (doc && doc.endlessBest) out.best = doc.endlessBest;
+  if (doc && doc.settings) out.settings = doc.settings;
+  return out;
 }
 
 function pushNow() {
   pushTimer = null;
   var ref = cloudDoc();
-  if (!ref) return;
+  if (!ref || !bridge()) return; // never push from an app that has not loaded
   var state = readLocal();
   setStatus('busy', 'Syncing…');
   var done = false;
@@ -332,9 +339,28 @@ function schedulePush() {
   pushTimer = setTimeout(pushNow, PUSH_DEBOUNCE_MS);
 }
 // app.js loads deferred (after this script); wire the push hookup whenever it appears.
-function wirePush() { if (window.CTS) window.CTS.onChange = schedulePush; }
+function wirePush() { var b = bridge(); if (b) b.onChange = schedulePush; }
 
+// Deferred scripts (app.js) run after readyState turns 'interactive' but
+// before DOMContentLoaded, so DOMContentLoaded is the reliable "app loaded" mark.
+var domReady = document.readyState === 'complete';
+document.addEventListener('DOMContentLoaded', function () { domReady = true; });
+var syncDeferred = false;
 function syncOnSignIn(u) {
+  if (!bridge() && !domReady) {
+    // app.js loads deferred: until it runs, local state reads as empty, so a
+    // newer cloud copy would be dropped (and later overwritten) or an empty
+    // state pushed. Wait for it; the latest signed-in user syncs once.
+    if (!syncDeferred) {
+      syncDeferred = true;
+      document.addEventListener('DOMContentLoaded', function () {
+        syncDeferred = false;
+        if (user) syncOnSignIn(user);
+      });
+    }
+    return;
+  }
+  if (!bridge()) return; // the app failed to load; never sync from an empty state
   var ref = cloudDoc();
   if (!ref) return;
   // Sign-in state is already shown by renderAuth(); the cloud sync is
@@ -349,9 +375,10 @@ function syncOnSignIn(u) {
     var local = readLocal();
     var decision = decideSync(local, snap.exists ? snap.data() : null);
     if (decision === 'adopt') {
-      if (window.CTS) {
-        window.CTS.applyState(fromCloudPayload(snap.data())); // adopts cloud updatedAt too
-        window.CTS.refreshUI(); // reload Leitner boxes + test history UI
+      var b = bridge();
+      if (b) {
+        b.applyState(fromCloudPayload(snap.data())); // adopts cloud updatedAt too
+        b.refreshUI(); // reload Leitner boxes, history, readiness, settings
       }
       setStatus('ok', 'Synced');
     } else {
@@ -433,6 +460,7 @@ function signOut() {
    needed) so Safari completes the redirect in seconds; initDom() wires the
    buttons once the DOM is ready. */
 function initAuth() {
+  if (!SYNC) return; // this topic runs on-device only
   if (!window.firebase) return; // CDN blocked / file:// without network; initDom shows Offline
   installFirebaseSessionStorageMirror(); // before getRedirectResult: restores the redirect state after the Safari hop
   try {
@@ -488,6 +516,16 @@ function initAuth() {
 }
 
 function initDom() {
+  if (!SYNC) {
+    // no cloud sync configured: hide the sign-in UI, keep the offline badge
+    ['auth-out', 'auth-in', 'sync-dot', 'sync-label'].forEach(function (id) { var el = $(id); if (el) el.style.display = 'none'; });
+    var off = $('offline-badge');
+    var paint = function () { if (off) off.style.display = navigator.onLine ? 'none' : ''; };
+    window.addEventListener('online', paint);
+    window.addEventListener('offline', paint);
+    paint();
+    return;
+  }
   var btnIn = $('btn-signin'), btnOut = $('btn-signout');
   if (btnIn) btnIn.addEventListener('click', signIn);
   if (btnOut) btnOut.addEventListener('click', signOut);
@@ -501,8 +539,10 @@ initAuth(); // immediate: Safari must complete the redirect ASAP
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initDom);
 else initDom();
 
-// exposed for unit-testing the merge logic without a browser
-window.CTSAuth = { decideSync: decideSync, isStandalone: isStandalone, collection: COLLECTION,
+// exposed for unit-testing the merge logic without a browser, and for
+// settings.js (signedIn) to word its confirmations
+window.StudyAuth = { decideSync: decideSync, isStandalone: isStandalone, collection: COLLECTION,
+  signedIn: function () { return !!user; }, toCloudPayload: toCloudPayload, fromCloudPayload: fromCloudPayload,
   markHandoff: markHandoff, readHandoff: readHandoff, clearHandoff: clearHandoff,
   handoffReloads: handoffReloads, noteHandoffReload: noteHandoffReload,
   clearHandoffReloaded: clearHandoffReloaded,

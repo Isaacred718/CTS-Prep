@@ -1,10 +1,26 @@
-/* CTS Prep merged study app — all logic. Data comes from data/questions.js, data/cards.js, data/guides.js */
+/* app.js — study app engine: tabs, overview, readiness, guides, flashcards,
+   quiz, practice tests, scenario drills and endless adaptive mode.
+
+   Topic-agnostic engine file. Topic specifics come from topic.js (TOPIC),
+   content from data/*.js (QUESTIONS, CARDS, GUIDES, DRILLS + forge content),
+   and preferences from settings.js (Settings). */
 (function () {
 'use strict';
 
+const T = window.TOPIC || {};
+const S = window.Settings;
+const BANK = typeof QUESTIONS !== 'undefined' ? QUESTIONS : [];
+const DECK = typeof CARDS !== 'undefined' ? CARDS : [];
+const GUIDE_LIST = typeof GUIDES !== 'undefined' ? GUIDES : [];
+const DRILL_LIST = typeof DRILLS !== 'undefined' ? DRILLS : [];
+const HAS_FORGE = typeof FORGE !== 'undefined' && FORGE.generators && FORGE.generators.length > 0;
+
 /* ---------- helpers ---------- */
 const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+// Lowercase a leading capital for mid-sentence use, leaving acronyms alone.
+const lcfirst = s => /^[A-Z](?![A-Z0-9])/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s;
 function shuffle(a) {
   a = a.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -14,47 +30,84 @@ function shuffle(a) {
   return a;
 }
 function sampleNoRepeat(arr, n) { return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+const indexOrder = q => shuffle(q.options.map((_, k) => k)); // display order of a question's options
 function md(src) {
-  // minimal markdown: ##, ###, bullets, **bold**, *italic*, `code`
+  // minimal markdown: ## / ###, - bullets, 1. numbered lists, **bold**, *italic*, `code`
   const lines = String(src).split('\n');
-  let html = '', inList = false;
+  let html = '', list = null;
+  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  const open = kind => { if (list !== kind) { close(); html += `<${kind}>`; list = kind; } };
   const inline = t => esc(t)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
     .replace(/`([^`]+)`/g, '<code>$1</code>');
   for (const line of lines) {
-    const h2 = line.match(/^##\s+(.*)/), h3 = line.match(/^###\s+(.*)/), li = line.match(/^\s*-\s+(.*)/);
-    if (h2 || h3) {
-      if (inList) { html += '</ul>'; inList = false; }
-      html += h2 ? `<h2>${inline(h2[1])}</h2>` : `<h3>${inline(h3[1])}</h3>`;
-    } else if (li) {
-      if (!inList) { html += '<ul>'; inList = true; }
-      html += `<li>${inline(li[1])}</li>`;
-    } else if (line.trim() === '') {
-      if (inList) { html += '</ul>'; inList = false; }
-    } else {
-      if (inList) { html += '</ul>'; inList = false; }
-      html += `<p>${inline(line)}</p>`;
-    }
+    const h = line.match(/^(#{1,3})\s+(.*)/), li = line.match(/^\s*-\s+(.*)/), ol = line.match(/^\s*\d+[.)]\s+(.*)/);
+    if (h) { close(); html += h[1].length === 3 ? `<h3>${inline(h[2])}</h3>` : `<h2>${inline(h[2])}</h2>`; }
+    else if (li) { open('ul'); html += `<li>${inline(li[1])}</li>`; }
+    else if (ol) { open('ol'); html += `<li>${inline(ol[1])}</li>`; }
+    else if (line.trim() === '') close();
+    else { close(); html += `<p>${inline(line)}</p>`; }
   }
-  if (inList) html += '</ul>';
+  close();
   return html;
 }
-const isAdv = d => d.indexOf('Advanced:') === 0;
+function domainsOf(list) {
+  const m = new Map();
+  list.forEach(q => m.set(q.domain, (m.get(q.domain) || 0) + 1));
+  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+}
+const ADV = T.advancedPrefix === undefined ? 'Advanced:' : T.advancedPrefix;
+const isAdv = d => !!ADV && String(d).indexOf(ADV) === 0;
 const tagCls = d => 'tag' + (isAdv(d) ? ' adv' : '');
-/* ---------- certification helpers ----------
-   Every question carries q.cert ('CTS' | 'CTS-D' | 'CTS-I'). certOf() defaults
-   to 'CTS' so banks written before the cert field existed keep working. */
-const CERTS = ['CTS', 'CTS-D', 'CTS-I'];
-const certOf = q => (q && q.cert) || 'CTS';
-function domainsForCert(cert) {
-  return domainsOf(QUESTIONS.filter(q => cert === '__all' || certOf(q) === cert)).map(([d]) => d);
+const fmtSecs = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+const today = () => new Date().toLocaleDateString();
+function setSeg(segId, attr, value) {
+  $(segId).querySelectorAll('button').forEach(b => {
+    const on = String(b.dataset[attr]) === String(value);
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on);
+  });
 }
-function countForCert(cert) {
-  return QUESTIONS.filter(q => certOf(q) === cert).length;
+function bindSeg(segId, attr, onPick) {
+  $(segId).querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    setSeg(segId, attr, b.dataset[attr]);
+    onPick(b.dataset[attr]);
+  }));
 }
+const shown = el => !!el && el.style.display !== 'none' && el.offsetParent !== null;
+// A clicked Start/Next button that has just been hidden keeps focus, and Enter
+// would re-click it (restarting a quiz). Drop focus from hidden controls.
+function releaseFocus() {
+  const a = document.activeElement;
+  if (a && a !== document.body && a.blur && !shown(a)) a.blur();
+}
+
+/* ---------- tracks (certifications / exams / levels) ----------
+   Every question carries q.cert (a track id). certOf() falls back to the
+   default track so a single-track bank can omit the field entirely. */
+const TRACKS = T.tracks && T.tracks.length ? T.tracks : [{ id: 'main', label: T.name || 'All' }];
+const MULTI = TRACKS.length > 1;
+const DEFAULT_TRACK = T.defaultTrack || TRACKS[0].id;
+const TRACK_WORD = T.trackLabel || 'Track';
+const TRACK_PLURAL = T.trackLabelPlural || (TRACK_WORD.toLowerCase() + 's');
+const certOf = q => (q && (q.cert || q.track)) || DEFAULT_TRACK;
+const inTrack = (q, tr) => !tr || tr === '__all' || certOf(q) === tr;
+const trackName = id => id === '__all' ? 'All ' + TRACK_PLURAL : ((TRACKS.find(t => t.id === id) || {}).label || id);
+const countForTrack = id => BANK.filter(q => certOf(q) === id).length;
+function domainsForTrack(tr) { return domainsOf(BANK.filter(q => inTrack(q, tr))).map(([d]) => d); }
+function fillTrackSelect(sel, value) {
+  sel.innerHTML = TRACKS.map(t => `<option value="${esc(t.id)}">${esc(t.label)}</option>`).join('') +
+    `<option value="__all">${esc(trackName('__all'))}</option>`;
+  sel.value = value;
+  if (sel.value !== value) sel.value = DEFAULT_TRACK;
+}
+// Single-track topics hide every track picker; labels follow topic.trackLabel.
+document.querySelectorAll('.track-pick').forEach(w => { w.hidden = !MULTI; });
+document.querySelectorAll('[data-track-label]').forEach(l => { l.textContent = TRACK_WORD; });
+
 /* Pure question selection for the practice-test generator (DOM-free, so it can
-   be unit-tested). pool = cert-filtered candidates, selected = domain names. */
+   be unit-tested). pool = track-filtered candidates, selected = domain names. */
 function selectQuestions(pool, selected, tLen, tMix) {
   const byDom = {};
   selected.forEach(d => { byDom[d] = pool.filter(q => q.domain === d); });
@@ -76,152 +129,280 @@ function selectQuestions(pool, selected, tLen, tMix) {
   }
   return { picked: shuffle(picked), capped: picked.length < tLen };
 }
+
+/* ---------- storage ----------
+   Keys are namespaced by topic id ("cts_leitner_v1", ...) so several study
+   apps can share one site (e.g. username.github.io) without colliding. */
+const P = (T.id || 'study') + '_';
+const LS = { boxes: P + 'leitner_v1', hist: P + 'test_history', meta: P + 'sync_meta_v1', best: P + 'endless_best' };
+const HIST_MAX = 40;
+function readJSON(key, fallback) {
+  try { const v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; } catch (e) { return fallback; }
+}
+function writeJSON(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
 function pushHistory(entry) {
-  try {
-    const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
-    hist.unshift(entry);
-    localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
-  } catch (e) {}
-}
-function domainsOf(list) {
-  const m = new Map();
-  list.forEach(q => m.set(q.domain, (m.get(q.domain) || 0) + 1));
-  return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-}
-function domainBar(domain, correct, total) {
-  const pct = total ? Math.round(100 * correct / total) : 0;
-  const color = pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--red)';
-  return `<div class="dbar"><div class="dlbl"><span>${esc(domain)}</span><span>${correct}/${total} · ${pct}%</span></div>` +
-    `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:${color}"></div></div></div>`;
+  const hist = readJSON(LS.hist, []);
+  hist.unshift(entry);
+  writeJSON(LS.hist, hist.slice(0, HIST_MAX));
 }
 
-/* ---------- progress bridge (used by auth.js for Google sign-in / cloud sync) ---------- */
-const LS_BOXES = 'cts_leitner_v1';
-const LS_HIST = 'cts_test_history';
-const LS_META = 'cts_sync_meta_v1';
-function setMetaTs(ts) { try { localStorage.setItem(LS_META, JSON.stringify({ updatedAt: ts || Date.now() })); } catch (e) {} }
-function readMetaTs() { try { return JSON.parse(localStorage.getItem(LS_META) || '{}').updatedAt || 0; } catch (e) { return 0; } }
+/* ---------- score thresholds ----------
+   Everything keys off the pass mark (Settings, default 70):
+   hi = halfway from pass to 100 (85), good = a third of the way (80),
+   low = pass − 10 (60), floor = pass − 20 (50). */
+function TH() {
+  const m = S.get('passMark');
+  return { pass: m, hi: m + (100 - m) / 2, good: m + (100 - m) / 3, low: m - 10, floor: m - 20 };
+}
+function bandClass(pct) { const t = TH(); return pct >= t.good ? 'pass' : pct >= t.low ? 'warn' : 'fail'; }
+function barColor(pct) { const t = TH(); return pct >= t.good ? 'var(--green)' : pct >= t.low ? 'var(--amber)' : 'var(--red)'; }
+function domainBar(domain, correct, total) {
+  const pct = total ? Math.round(100 * correct / total) : 0;
+  return `<div class="dbar"><div class="dlbl"><span>${esc(domain)}</span><span>${correct}/${total} · ${pct}%</span></div>` +
+    `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:${barColor(pct)}"></div></div></div>`;
+}
+const byWorst = (a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t);
+const EXAM = T.exam || {};
+const DISCLAIMER = EXAM.disclaimer || 'Treat this as a practice benchmark, not a prediction.';
+
+/* ---------- copy ----------
+   {questions} {cards} {guides} {drills} {track:ID} expand to live counts. */
+const COPY = Object.assign({
+  blurb: 'Every question comes with a full explanation. Build a fresh practice test any time, drill flashcards ' +
+    'with spaced repetition, and watch your readiness climb domain by domain.',
+  careersIntro: 'Ranked by your readiness in the domains each role leans on.',
+  drillsIntro: 'Short scenarios that end in a decision, not isolated facts.'
+}, T.copy || {});
+function fill(s) {
+  const n = { questions: BANK.length, cards: DECK.length, guides: GUIDE_LIST.length, drills: DRILL_LIST.length };
+  return String(s || '')
+    .replace(/\{(questions|cards|guides|drills)\}/g, (m, k) => n[k])
+    .replace(/\{track:([^}]+)\}/g, (m, id) => countForTrack(id));
+}
+
+/* ---------- toast ---------- */
+let toastTimer = null;
+function toast(msg, action) {
+  const el = $('toast');
+  if (!el) return;
+  const hide = () => el.classList.remove('show');
+  el.innerHTML = `<span>${esc(msg)}</span>` + (action ? `<button type="button" class="toast-btn">${esc(action.label)}</button>` : '');
+  if (action) el.querySelector('button').addEventListener('click', () => { hide(); action.fn(); });
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hide, action ? 8000 : 3200);
+}
+
+/* ---------- sound effects (Web Audio, no files) ---------- */
+const Sound = (function () {
+  let ctx = null;
+  function tone(freq, start, dur, type, gain) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(gain, start + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(start); o.stop(start + dur + 0.03);
+  }
+  function play(kind) {
+    if (!S.get('sounds')) return;
+    try {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+      const t = ctx.currentTime + 0.01;
+      if (kind === 'ok') { tone(660, t, 0.12, 'sine', 0.13); tone(880, t + 0.09, 0.18, 'sine', 0.13); }
+      else if (kind === 'no') tone(196, t, 0.26, 'triangle', 0.16);
+      else if (kind === 'up') [523, 659, 784, 1047].forEach((f, i) => tone(f, t + i * 0.07, 0.16, 'sine', 0.1));
+    } catch (e) {}
+  }
+  return { play };
+})();
+
+/* ---------- progress bridge (used by auth.js for Google sign-in / cloud sync,
+   and by settings.js for export / import / reset) ---------- */
+function setMetaTs(ts) { writeJSON(LS.meta, { updatedAt: ts || Date.now() }); }
+function readMetaTs() { return (readJSON(LS.meta, {}) || {}).updatedAt || 0; }
 function notifyProgress() {
   setMetaTs(Date.now());
   try { renderReadiness(); } catch (e) {}
-  if (window.CTS && typeof window.CTS.onChange === 'function') { try { window.CTS.onChange(); } catch (e) {} }
+  const B = window.Study;
+  if (B && typeof B.onChange === 'function') { try { B.onChange(); } catch (e) {} }
 }
-window.CTS = {
+let adoptingCloud = false;
+const Study = {
   onChange: null, // auth.js assigns a debounced cloud-push callback
   getState() {
-    let boxes = {}, hist = [];
-    try { boxes = JSON.parse(localStorage.getItem(LS_BOXES) || '{}'); } catch (e) {}
-    try { hist = JSON.parse(localStorage.getItem(LS_HIST) || '[]'); } catch (e) {}
-    return { boxes, hist, updatedAt: readMetaTs() };
+    return {
+      boxes: readJSON(LS.boxes, {}), hist: readJSON(LS.hist, []), best: readJSON(LS.best, {}),
+      settings: S.synced(), updatedAt: readMetaTs()
+    };
   },
   applyState(s) {
-    if (s && s.boxes) { try { localStorage.setItem(LS_BOXES, JSON.stringify(s.boxes)); } catch (e) {} }
-    if (s && s.hist) { try { localStorage.setItem(LS_HIST, JSON.stringify(s.hist.slice(0, 20))); } catch (e) {} }
-    setMetaTs(s && s.updatedAt); // adopt the cloud timestamp so we don't push straight back
+    if (!s) return;
+    if (s.boxes) writeJSON(LS.boxes, s.boxes);
+    if (s.hist) writeJSON(LS.hist, s.hist.slice(0, HIST_MAX));
+    if (s.best) writeJSON(LS.best, s.best);
+    if (s.settings) { adoptingCloud = true; try { S.adopt(s.settings); } finally { adoptingCloud = false; } }
+    setMetaTs(s.updatedAt); // adopt the cloud timestamp so we don't push straight back
   },
-  refreshUI() { try { FC.reload(); } catch (e) {} renderHistory(); try { renderReadiness(); } catch (e) {} }
+  refreshUI() {
+    try { FC.reload(); } catch (e) {}
+    renderHistory();
+    try { renderReadiness(); } catch (e) {}
+    try { Endless.renderBest(); } catch (e) {}
+  },
+  toast,
+  exportData() {
+    const st = Study.getState();
+    const data = {
+      app: T.id, name: T.name, version: T.version, exportedAt: new Date().toISOString(),
+      progress: { boxes: st.boxes, hist: st.hist, best: st.best, updatedAt: st.updatedAt },
+      settings: S.all()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${T.id || 'study'}-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    toast('Backup downloaded.');
+  },
+  importData(data) {
+    const p = data && data.progress;
+    if (!p || typeof p !== 'object') return false;
+    writeJSON(LS.boxes, p.boxes && typeof p.boxes === 'object' ? p.boxes : {});
+    writeJSON(LS.hist, Array.isArray(p.hist) ? p.hist.slice(0, HIST_MAX) : []);
+    writeJSON(LS.best, p.best && typeof p.best === 'object' ? p.best : {});
+    if (data.settings && typeof data.settings === 'object') S.replaceAll(data.settings);
+    notifyProgress(); // the restore is the newest change, so it syncs up when signed in
+    Study.refreshUI();
+    return true;
+  },
+  reset(kind) {
+    if (kind === 'cards' || kind === 'all') writeJSON(LS.boxes, {});
+    if (kind === 'history' || kind === 'all') writeJSON(LS.hist, []);
+    if (kind === 'best' || kind === 'all') writeJSON(LS.best, {});
+    notifyProgress();
+    Study.refreshUI();
+  }
 };
+window.Study = Study;
+window.CTS = Study; // pre-v6 name, kept so a cached older auth.js still finds the bridge
 
 /* ---------- tabs ---------- */
-document.querySelectorAll('nav.tabs button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('nav.tabs button').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    document.querySelectorAll('.tabpane').forEach(p => p.classList.remove('active'));
-    $('pane-' + b.dataset.tab).classList.add('active');
-    if (b.dataset.tab === 'overview') { try { renderReadiness(); } catch (e) {} }
-    window.scrollTo(0, 0);
+const HAS = {
+  guides: GUIDE_LIST.length > 0, cards: DECK.length > 0, drills: DRILL_LIST.length > 0,
+  quiz: BANK.length > 0, test: BANK.length > 0, endless: BANK.length > 0 || HAS_FORGE
+};
+let currentTab = 'overview';
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('nav.tabs button').forEach(x => {
+    const on = x.dataset.tab === tab;
+    x.classList.toggle('active', on);
+    if (on) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
   });
+  document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + tab));
+  if (tab === 'overview') { try { renderReadiness(); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('nav.tabs button').forEach(b => {
+  const tab = b.dataset.tab;
+  if (HAS[tab] === false) b.hidden = true;
+  const custom = T.labels && T.labels[tab];
+  if (custom) b.querySelector('.lbl').textContent = custom;
+  b.addEventListener('click', () => showTab(tab));
 });
 
 /* ---------- career targets ----------
-   Each title maps to the 1–3 CTS domains the role leans on. Titles are ranked by
-   the average readiness of their mapped domains; titles with no signal yet are
-   never given a fake score. */
-const CAREERS = [
-  { title: 'AV Engineer',
-    domains: ['CTS: AV Design', 'CTS: Video & Signal', 'CTS: Sound & Physics'],
-    why: 'Designs, installs and commissions integrated AV systems end to end.' },
-  { title: 'AV Design Engineer',
-    domains: ['CTS: Needs Analysis', 'CTS: AV Design', 'CTS: AVIXA Standards'],
-    why: 'Turns client needs into standards-based system designs and documentation.' },
-  { title: 'AV Project Manager',
-    domains: ['CTS: Project Management', 'CTS: Customer Relations', 'CTS: Commissioning & Closeout'],
-    why: 'Owns scope, schedule and budget from kickoff to client sign-off.' },
-  { title: 'Field Service Engineer',
-    domains: ['CTS: Troubleshooting & Verification', 'CTS: AV Networking', 'CTS: Electrical & Site Survey'],
-    why: 'Diagnoses and repairs deployed AV systems on site.' },
-  { title: 'Lead AV Technician',
-    domains: ['CTS: Sound & Physics', 'CTS: Video & Signal', 'CTS: Customer Relations'],
-    why: 'Runs event and install crews and owns the room on show day.' },
-  { title: 'Control Systems Programmer',
-    domains: ['CTS: Control Systems', 'CTS: AV Networking'],
-    why: 'Programs touch panels, DSP and room automation logic.' },
-  { title: 'UC / Collaboration Engineer',
-    domains: ['CTS: AV Networking', 'CTS: Video & Signal', 'CTS: Control Systems'],
-    why: 'Deploys and supports Teams/Zoom rooms and UC estates.' },
-  { title: 'Broadcast Systems Engineer',
-    domains: ['Advanced: ST 2110 Suite', 'CTS: Video & Signal', 'Advanced: Dante & AES67'],
-    why: 'Builds IP-based broadcast and live-production workflows.' },
-  { title: 'AV Design Engineer',
-    domains: ['CTS-D: Needs Assessment', 'CTS-D: AV System Design', 'CTS-D: Design Calculations'],
-    why: 'Develops AV designs from needs assessment through calculations and documentation. (CTS-D track)' },
-  { title: 'Lead AV Installer',
-    domains: ['CTS-I: Rack Build & Wiring', 'CTS-I: Configuration & Networking', 'CTS-I: Testing & Calibration'],
-    why: 'Leads installation crews: racks, termination, configuration and system verification. (CTS-I track)' },
-];
+   Each role maps to the 1–3 domains it leans on (topic.js). Roles are ranked
+   by the average readiness of their mapped domains; roles with no signal
+   yet are never given a fake score. */
+const CAREERS = Array.isArray(T.careers) ? T.careers : [];
 
 /* ---------- overview ---------- */
+const MODE_NAMES = { balanced: 'practice', random: 'practice · random', quiz: 'quiz', drill: 'drills', endless: 'endless' };
 (function overview() {
-  $('hdr-stats').textContent =
-    `${countForCert('CTS')} CTS · ${countForCert('CTS-D')} CTS-D · ${countForCert('CTS-I')} CTS-I · ` +
-    `${CARDS.length} cards · ${typeof DRILLS !== 'undefined' ? DRILLS.length : 0} drills`;
-  $('ov-stats').innerHTML =
-    statBox(QUESTIONS.length, 'questions') + statBox(CARDS.length, 'flashcards') + statBox(GUIDES.length, 'guides') + statBox(typeof DRILLS !== 'undefined' ? DRILLS.length : 0, 'drills');
-  function statBox(v, l) { return `<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`; }
-  $('ov-blurb').textContent =
-    'Merged from the CTS-Prep and cts-study banks, with full explanations on every question, ' +
-    'plus 104 CTS-D design questions and 103 CTS-I installation questions grounded in the official AVIXA ' +
-    'content outlines. The practice-test generator filters by certification and builds a fresh randomized exam every time.';
-  $('ov-domains').innerHTML = domainsOf(QUESTIONS).map(([d, n]) => {
-    const pct = Math.round(100 * n / QUESTIONS.length);
+  const parts = MULTI ? TRACKS.map(t => `${countForTrack(t.id)} ${t.label}`) : [`${BANK.length} questions`];
+  if (DECK.length) parts.push(`${DECK.length} cards`);
+  if (DRILL_LIST.length) parts.push(`${DRILL_LIST.length} drills`);
+  $('hdr-stats').textContent = parts.join(' · ');
+  const statBox = (v, l) => `<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div></div>`;
+  $('ov-stats').innerHTML = [[BANK.length, 'questions'], [DECK.length, 'flashcards'], [GUIDE_LIST.length, 'guides'],
+    [DRILL_LIST.length, 'drills']].filter(([v]) => v > 0).map(([v, l]) => statBox(v, l)).join('');
+  $('ov-blurb').textContent = fill(COPY.blurb);
+  if (COPY.readinessTitle) $('readiness-title').textContent = COPY.readinessTitle;
+  $('ov-domains').innerHTML = domainsOf(BANK).map(([d, n]) => {
+    const pct = Math.round(100 * n / BANK.length);
     return `<div class="dbar"><div class="dlbl"><span>${esc(d)}</span><span>${n}</span></div>` +
-      `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:var(--blue)"></div></div></div>`;
+      `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:var(--accent)"></div></div></div>`;
   }).join('');
-  renderHistory();
-  renderReadiness();
+  if (CAREERS.length) {
+    $('careers-intro').textContent = fill(COPY.careersIntro);
+    if (COPY.careersTitle) $('careers-title').textContent = COPY.careersTitle;
+  } else {
+    $('careers-card').hidden = true;
+  }
   const rc = $('r-cert');
-  if (rc) rc.addEventListener('change', () => { try { renderReadiness(); } catch (e) {} });
+  fillTrackSelect(rc, S.get('track'));
+  rc.addEventListener('change', () => { try { renderReadiness(); } catch (e) {} });
+  renderHistory();
+  renderStudyLoop();
+  renderReadiness();
 })();
+function renderStudyLoop() {
+  const el = $('ov-loop');
+  if (!el) return;
+  if (Array.isArray(COPY.studyLoop)) {
+    el.innerHTML = COPY.studyLoop.map((s, i) => `${i + 1}. ${md(s).replace(/^<p>|<\/p>$/g, '')}`).join('<br>');
+    return;
+  }
+  const steps = [];
+  if (GUIDE_LIST.length) steps.push('Read a <b>Study Guide</b> for your weakest domain.');
+  if (DECK.length) steps.push('Drill its <b>Flashcards</b> until most reach Box 4+.');
+  steps.push('Take a <b>Quiz</b> filtered to that domain.');
+  const lens = EXAM.lengths || [];
+  const sim = lens.length ? lens[lens.length - 1].label : '';
+  steps.push(`When every domain feels solid, run <b>${sim ? esc(sim) + 's' : 'full-length practice tests'}</b> ` +
+    `until you consistently beat ${Math.round(TH().good)}%.`);
+  el.innerHTML = steps.map((s, i) => `${i + 1}. ${s}`).join('<br>');
+}
 function renderHistory() {
-  let hist = [];
-  try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) {}
-  if (!hist.length) return;
-  $('ov-history').innerHTML = hist.slice(0, 5).map(h =>
-    `<div class="hist-row"><span>${esc(h.date)} · ${h.n}Q ${esc(h.mode)}${h.cert ? ' · ' + esc(h.cert) : ''}</span>` +
-    `<strong class="${h.score >= 70 ? 'pass' : 'fail'}">${h.score}%</strong></div>`
+  const el = $('ov-history');
+  const hist = readJSON(LS.hist, []);
+  if (!hist.length) {
+    el.innerHTML = '<p class="muted">No sessions yet — generate one in the Practice tab.</p>';
+    return;
+  }
+  const m = S.get('passMark');
+  el.innerHTML = hist.slice(0, 5).map(h =>
+    `<div class="hist-row"><span>${esc(h.date)} · ${+h.n || 0}Q ${esc(MODE_NAMES[h.mode] || h.mode || '')}` +
+    `${h.cert && MULTI ? ' · ' + esc(trackName(h.cert)) : ''}</span>` +
+    `<strong class="${h.score >= m ? 'pass' : 'fail'}">${+h.score || 0}%</strong></div>`
   ).join('');
 }
 
 /* ---------- exam readiness ----------
-   Per-domain score = 60% practice-test performance (pooled correct/answered across
-   history entries that carry a per-domain breakdown) + 40% flashcard mastery
-   (% of the domain's cards in Leitner box 4 or 5). With only one signal available,
-   that signal carries full weight; with none, the domain reports "No data yet".
-   Overall = mean of domains with data. Bands echo the 70% pass heuristic. */
-function computeReadiness(cert) {
-  let hist = [];
-  try { hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]'); } catch (e) { hist = []; }
-  let boxes = {};
-  try { boxes = JSON.parse(localStorage.getItem('cts_leitner_v1') || '{}'); } catch (e) { boxes = {}; }
-  const per = domainsOf(QUESTIONS.filter(q => !cert || cert === '__all' || certOf(q) === cert)).map(([d]) => {
-    let c = 0, t = 0; // pooled test performance for this domain
+   Per-domain score = practice performance (pooled correct/answered across
+   history entries that carry a per-domain breakdown) weighted against
+   flashcard mastery (% of the domain's cards in Leitner box 4 or 5). The
+   weighting is a setting (default 60/40). With only one signal available,
+   that signal carries full weight; with none, the domain reports "No data
+   yet". Overall = mean of domains with data. Bands key off the pass mark. */
+function computeReadiness(track) {
+  const hist = readJSON(LS.hist, []);
+  const boxes = readJSON(LS.boxes, {});
+  const wT = S.get('testWeight') / 100;
+  const per = domainsOf(BANK.filter(q => inTrack(q, track))).map(([d]) => {
+    let c = 0, t = 0; // pooled practice performance for this domain
     hist.forEach(h => {
       const hd = h && h.domains && h.domains[d];
       if (hd) { c += (+hd.c || 0); t += (+hd.t || 0); }
     });
     const test = t > 0 ? 100 * c / t : null;
-    const cards = CARDS.filter(x => x.domain === d);
+    const cards = DECK.filter(x => x.domain === d);
     let mastered = 0, touched = 0; // touched = cards with any recorded box (seen at least once)
     cards.forEach(x => {
       const b = +boxes[x.domain + '|' + x.front] || 0;
@@ -229,7 +410,7 @@ function computeReadiness(cert) {
     });
     const mastery = touched ? 100 * mastered / cards.length : null;
     let score = null;
-    if (test !== null && mastery !== null) score = 0.6 * test + 0.4 * mastery;
+    if (test !== null && mastery !== null) score = wT * test + (1 - wT) * mastery;
     else if (test !== null) score = test;
     else if (mastery !== null) score = mastery;
     return { domain: d, test, mastery, score: score === null ? null : Math.round(score) };
@@ -240,32 +421,35 @@ function computeReadiness(cert) {
   return { per, overall };
 }
 function readyBand(score) {
+  const t = TH();
   if (score === null) return { label: 'No data yet', cls: 'muted' };
-  if (score >= 85) return { label: 'Exam ready', cls: 'pass' };
-  if (score >= 70) return { label: 'Almost there', cls: 'info' };
-  if (score >= 50) return { label: 'Building momentum', cls: 'warn' };
+  if (score >= t.hi) return { label: 'Exam ready', cls: 'pass' };
+  if (score >= t.pass) return { label: 'Almost there', cls: 'info' };
+  if (score >= t.floor) return { label: 'Building momentum', cls: 'warn' };
   return { label: 'Early stages', cls: 'fail' };
 }
 function readyColor(score) {
-  if (score >= 85) return 'var(--green)';
-  if (score >= 70) return 'var(--blue)';
-  if (score >= 50) return 'var(--amber)';
+  const t = TH();
+  if (score >= t.hi) return 'var(--green)';
+  if (score >= t.pass) return 'var(--blue)';
+  if (score >= t.floor) return 'var(--amber)';
   return 'var(--red)';
 }
 function renderReadiness() {
   const el = $('ov-readiness');
   if (!el) return;
   const rc = $('r-cert');
-  const cert = rc ? rc.value : '__all';
-  const { per, overall } = computeReadiness(cert);
+  const track = rc && rc.value ? rc.value : '__all';
+  const { per, overall } = computeReadiness(track);
   const b = readyBand(overall);
+  const w = S.get('testWeight');
   const rows = per.slice().sort((a, c) =>
     (a.score === null ? 9999 : a.score) - (c.score === null ? 9999 : c.score));
+  const basis = DECK.length ? `Practice ${w}% · flashcards ${100 - w}%. ` : '';
   el.innerHTML =
     `<div class="ready-head"><div class="ready-score ${b.cls}">${overall === null ? '—' : overall + '%'}</div>` +
     `<div><div class="ready-band ${b.cls}">${b.label}</div>` +
-    `<p class="muted small" style="margin:4px 0 0">Practice tests 60% · flashcards 40%. ` +
-    `Pass heuristic: 70% — the real exam uses scaled scoring, so treat this as a study signal, not a prediction.</p></div></div>` +
+    `<p class="muted small" style="margin:4px 0 0">${basis}Pass heuristic: ${S.get('passMark')}% — ${esc(lcfirst(DISCLAIMER))}</p></div></div>` +
     rows.map(p => {
       if (p.score === null)
         return `<div class="dbar"><div class="dlbl"><span>${esc(p.domain)}</span>` +
@@ -279,14 +463,15 @@ function renderReadiness() {
 }
 
 function matchLabel(avg) {
+  const t = TH();
   if (avg === null) return { label: 'Study to unlock signal', cls: 'muted' };
-  if (avg >= 80) return { label: 'Strong match', cls: 'pass' };
-  if (avg >= 60) return { label: 'Developing', cls: 'info' };
+  if (avg >= t.good) return { label: 'Strong match', cls: 'pass' };
+  if (avg >= t.low) return { label: 'Developing', cls: 'info' };
   return { label: 'Early', cls: 'warn' };
 }
 function renderCareers(per) {
   const box = $('ov-careers');
-  if (!box) return;
+  if (!box || !CAREERS.length) return;
   const byDom = {};
   per.forEach(p => { byDom[p.domain] = p.score; });
   const ranked = CAREERS.map(c => {
@@ -299,7 +484,7 @@ function renderCareers(per) {
     return `<div class="career"><div class="career-top"><h3>${esc(c.title)}</h3>` +
       `<span class="match ${m.cls}">${m.label}${c.avg !== null ? ' · ' + c.avg + '%' : ''}</span></div>` +
       `<div class="career-domains">${c.domains.map(esc).join(' · ')}</div>` +
-      `<p class="muted small career-why">${esc(c.why)}</p></div>`;
+      `<p class="muted small career-why">${esc(c.why || '')}</p></div>`;
   }).join('');
 }
 
@@ -307,11 +492,11 @@ function renderCareers(per) {
 (function guides() {
   const list = $('guide-list');
   list.innerHTML = '';
-  GUIDES.forEach((g, i) => {
+  GUIDE_LIST.forEach(g => {
     const b = document.createElement('button');
-    b.innerHTML = `<div class="gt">${esc(g.title)}</div><div class="gd">${esc(g.domain)}</div>`;
+    b.innerHTML = `<div class="gt">${esc(g.title)}</div><div class="gd">${esc(g.domain || '')}</div>`;
     b.addEventListener('click', () => {
-      $('guide-list').parentElement.style.display = 'none';
+      list.parentElement.style.display = 'none';
       $('guide-view').style.display = '';
       $('guide-body').innerHTML = md(g.body);
       window.scrollTo(0, 0);
@@ -320,73 +505,81 @@ function renderCareers(per) {
   });
   $('guide-back').addEventListener('click', () => {
     $('guide-view').style.display = 'none';
-    $('guide-list').parentElement.style.display = '';
+    list.parentElement.style.display = '';
+    window.scrollTo(0, 0);
   });
 })();
 
 /* ---------- flashcards (Leitner) ---------- */
 const FC = (function () {
-  const LS = 'cts_leitner_v1';
-  let boxes = {};
-  try { boxes = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { boxes = {}; }
-  const save = () => { localStorage.setItem(LS, JSON.stringify(boxes)); notifyProgress(); };
+  if (!DECK.length) return { reload() {}, rebuild() {}, show() {}, flip() { return false; } };
+  let boxes = readJSON(LS.boxes, {});
+  const save = () => { writeJSON(LS.boxes, boxes); notifyProgress(); };
   const key = c => c.domain + '|' + c.front;
   const boxOf = c => boxes[key(c)] || 1;
+  const card = $('fc-card');
 
-  const cats = [...new Set(CARDS.map(c => c.domain))].sort();
+  const cats = [...new Set(DECK.map(c => c.domain))].sort();
   const sel = $('fc-filter');
-  cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `${c} (${CARDS.filter(x => x.domain === c).length})`; sel.appendChild(o); });
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = `${c} (${DECK.filter(x => x.domain === c).length})`;
+    sel.appendChild(o);
+  });
 
   let deck = [], idx = 0, flipped = false;
+  const inFilter = c => sel.value === '__all' || c.domain === sel.value;
 
   function buildDeck() {
-    const f = sel.value;
-    deck = shuffle(CARDS.filter(c => f === '__all' || c.domain === f)
-      .sort((a, b) => boxOf(a) - boxOf(b)));
+    deck = shuffle(DECK.filter(inFilter).sort((a, b) => boxOf(a) - boxOf(b)));
     idx = 0;
   }
   function renderBoxes() {
-    const f = sel.value;
-    const list = CARDS.filter(c => f === '__all' || c.domain === f);
+    const list = DECK.filter(inFilter);
     const counts = [0, 0, 0, 0, 0, 0];
     list.forEach(c => counts[boxOf(c)]++);
+    const cur = deck.length && idx < deck.length ? boxOf(deck[idx]) : 0;
     $('fc-boxes').innerHTML = [1, 2, 3, 4, 5].map(b =>
-      `<div class="box${deck.length && boxOf(deck[idx]) === b ? 'cur' : ''}"><b>${counts[b]}</b>Box ${b}</div>`).join('');
-    const learned = counts[5];
+      `<div class="box${cur === b ? ' cur' : ''}"><b>${counts[b]}</b>Box ${b}</div>`).join('');
     $('fc-progress').textContent = list.length
-      ? `${learned}/${list.length} mastered · ${deck.length - idx} left in deck`
+      ? `${counts[4] + counts[5]}/${list.length} mastered (Box 4+) · ${deck.length - idx} left in deck`
       : 'No cards in this category yet.';
     $('fc-count').textContent = `· ${list.length} cards`;
   }
   function show() {
     flipped = false;
-    $('fc-card').classList.remove('flipped');
-    if (!deck.length) { $('fc-front').textContent = 'Deck complete — nice work!'; $('fc-back').textContent = 'Shuffle to run it again.'; }
-    else {
+    card.classList.remove('flipped');
+    if (!deck.length) {
+      $('fc-front').textContent = 'Deck complete — nice work!';
+      $('fc-back').textContent = 'Shuffle to run it again.';
+    } else {
       const c = deck[idx];
-      $('fc-front').textContent = c.front;
-      $('fc-back').textContent = c.back;
+      const rev = S.get('cardFront') === 'definition';
+      $('fc-front').textContent = rev ? c.back : c.front;
+      $('fc-back').textContent = rev ? c.front : c.back;
     }
     renderBoxes();
   }
+  function flip() {
+    flipped = !flipped;
+    card.classList.toggle('flipped', flipped);
+    return true;
+  }
   function grade(ok) {
     if (!deck.length) return;
-    const c = deck[idx], k = key(c);
-    boxes[k] = ok ? Math.min(5, boxOf(c) + 1) : 1;
+    const c = deck[idx];
+    boxes[key(c)] = ok ? Math.min(5, boxOf(c) + 1) : 1;
+    Sound.play(ok ? 'ok' : 'no');
     save();
     idx++;
     if (idx >= deck.length) {
       // rebuild with remaining weak cards first for continuous drilling
-      const weak = CARDS.filter(x => boxOf(x) < 3 && (sel.value === '__all' || x.domain === sel.value));
-      deck = shuffle(weak); idx = 0;
-      if (!deck.length) { show(); return; }
+      deck = shuffle(DECK.filter(x => boxOf(x) < 3 && inFilter(x)));
+      idx = 0;
     }
     show();
   }
-  $('fc-card').addEventListener('click', () => {
-    flipped = !flipped;
-    $('fc-card').classList.toggle('flipped', flipped);
-  });
+  card.addEventListener('click', flip);
   $('fc-got').addEventListener('click', () => grade(true));
   $('fc-miss').addEventListener('click', () => grade(false));
   $('fc-shuffle').addEventListener('click', () => { buildDeck(); show(); });
@@ -397,9 +590,10 @@ const FC = (function () {
   sel.addEventListener('change', () => { buildDeck(); show(); });
   buildDeck(); show();
   return {
+    show, flip,
     rebuild: () => { buildDeck(); show(); },
-    reload() { // re-read boxes from localStorage (e.g. after adopting cloud state), then redraw
-      try { boxes = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { boxes = {}; }
+    reload() { // re-read boxes from storage (e.g. after adopting cloud state), then redraw
+      boxes = readJSON(LS.boxes, {});
       buildDeck(); show();
     }
   };
@@ -407,128 +601,42 @@ const FC = (function () {
 
 /* ---------- shared test/quiz engine ---------- */
 function makeTimer(displayEl, minutes, onExpire) {
-  if (!minutes || minutes <= 0) return { stop() {}, el: null };
+  if (!minutes || minutes <= 0) { displayEl.style.display = 'none'; return { stop() {} }; }
   let left = Math.round(minutes * 60);
-  const el = displayEl;
-  el.style.display = '';
+  displayEl.style.display = '';
   const tick = () => {
-    const m = Math.floor(left / 60), s = left % 60;
-    el.textContent = `${m}:${String(s).padStart(2, '0')}`;
-    el.classList.toggle('danger', left <= 300);
+    displayEl.textContent = fmtSecs(left);
+    displayEl.classList.toggle('danger', left <= 300);
     if (left <= 0) { clearInterval(iv); onExpire(); return; }
     left--;
   };
-  tick();
   const iv = setInterval(tick, 1000);
-  return { stop() { clearInterval(iv); }, el };
+  tick();
+  return { stop() { clearInterval(iv); } };
 }
-
-/* ---------- quiz ---------- */
-const Quiz = (function () {
-  let qs = [], i = 0, results = [], timer = null, total = 0;
-
-  // setup controls
-  const domSel = $('q-domain');
-  domainsOf(QUESTIONS).forEach(([d, n]) => {
-    const o = document.createElement('option');
-    o.value = d; o.textContent = `${d} (${n})`; domSel.appendChild(o);
+// Render a question's options in a fixed display order (shuffled once per
+// question), so the bank's answer position never gives the answer away.
+function renderOptions(box, q, order, onPick) {
+  box.innerHTML = '';
+  order.forEach(oi => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'option';
+    b.textContent = q.options[oi];
+    b.dataset.oi = oi;
+    b.addEventListener('click', () => onPick(oi, b));
+    box.appendChild(b);
   });
-  let qCount = 25;
-  $('q-count-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-    $('q-count-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); qCount = +b.dataset.n;
-  }));
-
-  $('q-start').addEventListener('click', () => {
-    const d = domSel.value;
-    let pool = QUESTIONS.filter(q => d === '__all' || q.domain === d);
-    if ($('q-shuffle').checked) pool = shuffle(pool);
-    qs = qCount === 0 ? pool : sampleNoRepeat(pool, qCount);
-    if (!qs.length) { alert('No questions for this selection.'); return; }
-    i = 0; results = []; total = qs.length;
-    $('quiz-setup').style.display = 'none';
-    $('quiz-results').style.display = 'none';
-    $('quiz-run').style.display = '';
-    const mins = +$('q-timer').value || 0;
-    timer = makeTimer($('quiz-timer'), mins, () => finish());
-    show();
+}
+function markAnswered(box, correct, picked) {
+  [...box.children].forEach(b => {
+    b.disabled = true;
+    const oi = +b.dataset.oi;
+    if (oi === correct) b.classList.add('correct');
+    else if (oi === picked) b.classList.add('wrong');
+    else b.classList.add('dim');
   });
-
-  function show() {
-    const q = qs[i];
-    $('quiz-pos').textContent = `Question ${i + 1} of ${total}`;
-    $('quiz-bar').style.width = (100 * i / total) + '%';
-    $('quiz-tag').className = tagCls(q.domain);
-    $('quiz-tag').textContent = q.domain;
-    $('quiz-q').textContent = q.q;
-    $('quiz-explain').style.display = 'none';
-    $('quiz-next').style.display = 'none';
-    const box = $('quiz-opts'); box.innerHTML = '';
-    const order = shuffle(q.options.map((t, oi) => oi));
-    order.forEach(oi => {
-      const b = document.createElement('button');
-      b.className = 'option'; b.textContent = q.options[oi];
-      b.dataset.oi = oi;
-      b.addEventListener('click', () => answer(oi, b));
-      box.appendChild(b);
-    });
-  }
-  function answer(oi, btn) {
-    const q = qs[i];
-    const ok = oi === q.correct;
-    results.push({ q, picked: oi, ok });
-    [...$('quiz-opts').children].forEach(b => {
-      b.disabled = true;
-      const idxOpt = +b.dataset.oi;
-      if (idxOpt === q.correct) b.classList.add('correct');
-      else if (b === btn) b.classList.add('wrong');
-      else b.classList.add('dim');
-    });
-    const ex = $('quiz-explain');
-    ex.innerHTML = `<div class="explain"><strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(q.explanation)}</div>`;
-    ex.style.display = '';
-    $('quiz-next').style.display = '';
-    $('quiz-next').textContent = i + 1 === total ? 'See results →' : 'Next →';
-  }
-  $('quiz-next').addEventListener('click', () => { i++; i < total ? show() : finish(); });
-  $('quiz-quit').addEventListener('click', () => { if (timer) timer.stop(); backToSetup(); });
-
-  function backToSetup() {
-    $('quiz-run').style.display = 'none';
-    $('quiz-results').style.display = 'none';
-    $('quiz-setup').style.display = '';
-  }
-  function finish() {
-    if (timer) timer.stop();
-    const correct = results.filter(r => r.ok).length;
-    const pct = total ? Math.round(100 * correct / total) : 0;
-    $('quiz-run').style.display = 'none';
-    $('quiz-results').style.display = '';
-    const sc = $('qr-score');
-    sc.textContent = pct + '%';
-    sc.className = 'big-score ' + (pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : 'fail');
-    $('qr-verdict').textContent = pct >= 80 ? 'Strong — exam ready on this material.' : pct >= 60 ? 'Getting there — review the weak domains.' : 'Keep studying — hit the guides and cards first.';
-    $('qr-verdict').className = 'verdict ' + (pct >= 80 ? 'pass' : pct >= 60 ? 'warn' : 'fail');
-    const byDom = {};
-    results.forEach(r => {
-      const d = r.q.domain;
-      byDom[d] = byDom[d] || { c: 0, t: 0 };
-      byDom[d].t++; if (r.ok) byDom[d].c++;
-    });
-    $('qr-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
-      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
-    $('qr-review-list').style.display = 'none';
-    $('qr-review-list').innerHTML = results.map(r => reviewItem(r.q, r.picked)).join('');
-    window.scrollTo(0, 0);
-  }
-  $('qr-retry').addEventListener('click', backToSetup);
-  $('qr-review').addEventListener('click', () => {
-    const l = $('qr-review-list');
-    l.style.display = l.style.display === 'none' ? '' : 'none';
-  });
-  return {};
-})();
-
+}
 function reviewItem(q, picked) {
   const ok = picked === q.correct;
   const mark = ok ? '<span class="pass">✓ Correct</span>' : '<span class="fail">✗ Missed</span>';
@@ -537,85 +645,229 @@ function reviewItem(q, picked) {
     `<div class="ra">Your answer: <strong>${your}</strong><br>Correct answer: <strong class="pass">${esc(q.options[q.correct])}</strong></div>` +
     `<div class="re">${esc(q.explanation)}</div></div>`;
 }
+function tally(items, okAt, keyOf) {
+  const by = {};
+  items.forEach((it, i) => {
+    const k = keyOf(it);
+    by[k] = by[k] || { c: 0, t: 0 };
+    by[k].t++;
+    if (okAt(i)) by[k].c++;
+  });
+  return by;
+}
+const AUTO_ADVANCE_MS = 1300;
+
+/* ---------- quiz ---------- */
+const Quiz = (function () {
+  if (!BANK.length) return {};
+  let qs = [], orders = [], i = 0, results = [], timer = null, total = 0, advanceT = null, expired = false;
+  const trackSel = $('q-cert'), domSel = $('q-domain');
+  fillTrackSelect(trackSel, S.get('track'));
+  function rebuildDomains() {
+    const keep = domSel.value;
+    domSel.innerHTML = '<option value="__all">All domains</option>' +
+      domainsOf(BANK.filter(q => inTrack(q, trackSel.value)))
+        .map(([d, n]) => `<option value="${esc(d)}">${esc(d)} (${n})</option>`).join('');
+    domSel.value = keep;
+    if (domSel.value !== keep) domSel.value = '__all';
+  }
+  rebuildDomains();
+  trackSel.addEventListener('change', rebuildDomains);
+
+  let qCount = S.get('quizLength');
+  setSeg('q-count-seg', 'n', qCount);
+  bindSeg('q-count-seg', 'n', v => { qCount = +v; });
+
+  $('q-start').addEventListener('click', () => {
+    const d = domSel.value;
+    const pool = BANK.filter(q => inTrack(q, trackSel.value) && (d === '__all' || q.domain === d));
+    const n = qCount === 0 ? pool.length : qCount;
+    // unchecked "Shuffle questions" keeps bank order
+    qs = $('q-shuffle').checked ? sampleNoRepeat(pool, n) : pool.slice(0, n);
+    if (!qs.length) { alert('No questions for this selection.'); return; }
+    orders = qs.map(indexOrder);
+    i = 0; results = []; total = qs.length; expired = false;
+    $('quiz-setup').style.display = 'none';
+    $('quiz-results').style.display = 'none';
+    $('quiz-run').style.display = '';
+    if (timer) timer.stop();
+    timer = makeTimer($('quiz-timer'), +$('q-timer').value || 0, () => { expired = true; finish(); });
+    show();
+  });
+
+  function show() {
+    clearTimeout(advanceT);
+    const q = qs[i];
+    $('quiz-pos').textContent = `Question ${i + 1} of ${total}`;
+    $('quiz-bar').style.width = (100 * i / total) + '%';
+    $('quiz-tag').className = tagCls(q.domain);
+    $('quiz-tag').textContent = q.domain;
+    $('quiz-q').textContent = q.q;
+    $('quiz-explain').style.display = 'none';
+    $('quiz-next').style.display = 'none';
+    renderOptions($('quiz-opts'), q, orders[i], answer);
+    releaseFocus();
+    window.scrollTo(0, 0);
+  }
+  function answer(oi) {
+    const q = qs[i];
+    if (results.length > i) return; // already answered
+    const ok = oi === q.correct;
+    results.push({ q, picked: oi, ok });
+    markAnswered($('quiz-opts'), q.correct, oi);
+    Sound.play(ok ? 'ok' : 'no');
+    const ex = $('quiz-explain');
+    ex.innerHTML = `<div class="explain"><strong>${ok ? 'Correct.' : 'Not quite.'}</strong> ${esc(q.explanation)}</div>`;
+    ex.style.display = '';
+    $('quiz-next').style.display = '';
+    $('quiz-next').textContent = i + 1 === total ? 'See results →' : 'Next →';
+    if (ok && S.get('autoAdvance')) {
+      const at = i;
+      advanceT = setTimeout(() => { if (i === at && shown($('quiz-run'))) next(); }, AUTO_ADVANCE_MS);
+    }
+  }
+  function next() { clearTimeout(advanceT); i++; i < total ? show() : finish(); }
+  $('quiz-next').addEventListener('click', next);
+  $('quiz-quit').addEventListener('click', () => {
+    clearTimeout(advanceT);
+    if (timer) timer.stop();
+    if (results.length) finish(); else backToSetup();
+  });
+
+  function backToSetup() {
+    $('quiz-run').style.display = 'none';
+    $('quiz-results').style.display = 'none';
+    $('quiz-setup').style.display = '';
+    releaseFocus();
+  }
+  function finish() {
+    clearTimeout(advanceT);
+    if (timer) timer.stop();
+    const answered = results.length;
+    const correct = results.filter(r => r.ok).length;
+    const pct = answered ? Math.round(100 * correct / answered) : 0;
+    $('quiz-run').style.display = 'none';
+    $('quiz-results').style.display = '';
+    const t = TH(), cls = bandClass(pct);
+    const sc = $('qr-score');
+    sc.textContent = pct + '%';
+    sc.className = 'big-score ' + cls;
+    $('qr-verdict').textContent = pct >= t.good ? 'Strong — exam ready on this material.'
+      : pct >= t.low ? 'Getting there — review the weak domains.' : 'Keep studying — hit the guides and cards first.';
+    $('qr-verdict').className = 'verdict ' + cls;
+    $('qr-note').textContent = (expired ? 'Time expired. ' : '') +
+      (answered < total ? `Scored on the ${answered} of ${total} questions you answered.` : '');
+    const byDom = tally(results, k => results[k].ok, r => r.q.domain);
+    $('qr-domains').innerHTML = Object.entries(byDom).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('qr-review-list').style.display = 'none';
+    $('qr-review-list').innerHTML = results.map(r => reviewItem(r.q, r.picked)).join('');
+    releaseFocus();
+    if (answered) {
+      const certs = [...new Set(results.map(r => certOf(r.q)))];
+      pushHistory({ date: today(), n: answered, score: pct, mode: 'quiz', cert: certs.length === 1 ? certs[0] : '__all', domains: byDom });
+      notifyProgress();
+      renderHistory();
+    }
+    window.scrollTo(0, 0);
+  }
+  $('qr-retry').addEventListener('click', backToSetup);
+  $('qr-review').addEventListener('click', () => {
+    const l = $('qr-review-list');
+    l.style.display = l.style.display === 'none' ? '' : 'none';
+  });
+  return {
+    setCount(n) { qCount = n; setSeg('q-count-seg', 'n', n); },
+    setTrack(tr) { fillTrackSelect(trackSel, tr); rebuildDomains(); } // a running quiz captured its pool at start
+  };
+})();
 
 /* ---------- practice test generator ---------- */
 const PTest = (function () {
-  let qs = [], i = 0, answers = [], timer = null, meta = {};
-
-  let tCert = 'CTS'; // default preserves the pre-expansion behavior (CTS bank only)
+  if (!BANK.length) return {};
+  let qs = [], orders = [], i = 0, answers = [], timer = null, meta = {};
+  const trackSel = $('t-cert');
+  fillTrackSelect(trackSel, S.get('track'));
   const domGrid = $('t-domain-grid');
   function rebuildDomainGrid() {
     domGrid.innerHTML = '';
-    domainsForCert(tCert).forEach(d => {
+    domainsForTrack(trackSel.value).forEach(d => {
       const lab = document.createElement('label');
       lab.innerHTML = `<input type="checkbox" value="${esc(d)}" checked> ${esc(d)}`;
       domGrid.appendChild(lab);
     });
   }
   rebuildDomainGrid();
-  $('t-cert').addEventListener('change', e => { tCert = e.target.value; rebuildDomainGrid(); });
-  $('t-dom-all').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => c.checked = true));
-  $('t-dom-none').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => c.checked = false));
+  trackSel.addEventListener('change', rebuildDomainGrid);
+  $('t-dom-all').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => { c.checked = true; }));
+  $('t-dom-none').addEventListener('click', () => domGrid.querySelectorAll('input').forEach(c => { c.checked = false; }));
 
-  let tLen = 50, tMix = 'balanced';
-  const perQ = 150 / 110; // minutes per question, from the full-sim default
-  $('t-len-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-    $('t-len-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); tLen = +b.dataset.n;
-    $('t-timer').value = Math.round(tLen * perQ);
-  }));
-  $('t-mix-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-    $('t-mix-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); tMix = b.dataset.m;
-  }));
-  $('t-timer').value = Math.round(50 * perQ);
+  // lengths and exam pace come from topic.js; pace multiplier from Settings
+  const LENGTHS = EXAM.lengths && EXAM.lengths.length ? EXAM.lengths : [{ n: 25, label: 'Quick' }, { n: 50, label: 'Standard' }];
+  const perQ = (EXAM.simMinutes || 150) / (EXAM.simQuestions || 110); // minutes per question at exam pace
+  const PACE = { off: 0, exam: 1, relaxed: 1.5, extended: 2 };
+  $('t-len-seg').innerHTML = LENGTHS.map(l => `<button type="button" data-n="${l.n}">${esc(l.label)} · ${l.n}</button>`).join('');
+  let tLen = S.get('testLength'), tMix = 'balanced';
+  const minutesFor = n => Math.round(n * perQ * (PACE[S.get('testPace')] || 0));
+  function applyDefaults() { // a running test captured its questions and timer at start
+    tLen = S.get('testLength');
+    setSeg('t-len-seg', 'n', tLen);
+    $('t-timer').value = minutesFor(tLen);
+    const pace = S.get('testPace');
+    $('t-timer-hint').textContent = pace === 'off' ? 'Untimed by default — set the pace in Settings.'
+      : `Exam pace: ${EXAM.simMinutes || 150} min for ${EXAM.simQuestions || 110} questions` +
+        (pace === 'exam' ? '.' : ` · ${pace === 'relaxed' ? '1.5×' : '2×'} pace from Settings.`);
+  }
+  bindSeg('t-len-seg', 'n', v => { tLen = +v; $('t-timer').value = minutesFor(tLen); });
+  bindSeg('t-mix-seg', 'm', v => { tMix = v; });
+  applyDefaults();
 
   function buildTest() {
-    // selected domains drive both mix modes; nothing checked = all domains of the selected cert
+    // selected domains drive both mix modes; nothing checked = every domain of the track
     const checked = [...domGrid.querySelectorAll('input:checked')].map(c => c.value);
-    const allDoms = domainsForCert(tCert);
-    const selected = checked.length ? checked : allDoms;
-    const pool = QUESTIONS.filter(q => tCert === '__all' || certOf(q) === tCert);
-    const { picked, capped } = selectQuestions(pool, selected, tLen, tMix);
-    return { picked, selected, capped };
+    const selected = checked.length ? checked : domainsForTrack(trackSel.value);
+    const pool = BANK.filter(q => inTrack(q, trackSel.value));
+    return selectQuestions(pool, selected, tLen, tMix);
   }
 
   $('t-start').addEventListener('click', () => {
-    const { picked, selected, capped } = buildTest();
+    const { picked, capped } = buildTest();
     if (!picked.length) { alert('No questions available for this selection.'); return; }
     qs = picked; i = 0; answers = new Array(qs.length).fill(null);
-    meta = { n: qs.length, mode: tMix === 'balanced' ? 'balanced' : 'random', capped };
+    orders = qs.map(indexOrder); // stable per question for the whole run
+    meta = { n: qs.length, mode: tMix === 'balanced' ? 'balanced' : 'random', capped, cert: trackSel.value };
     $('test-setup').style.display = 'none';
     $('test-results').style.display = 'none';
     $('test-run').style.display = '';
-    const mins = +$('t-timer').value || 0;
     if (timer) timer.stop();
-    timer = makeTimer($('test-timer'), mins, () => grade(true));
-    if (!mins) $('test-timer').style.display = 'none';
+    timer = makeTimer($('test-timer'), +$('t-timer').value || 0, () => grade(true));
     show();
   });
 
+  function drawOptions() {
+    const box = $('test-opts');
+    renderOptions(box, qs[i], orders[i], oi => { answers[i] = oi; drawOptions(); drawProgress(); });
+    [...box.children].forEach(b => {
+      const on = +b.dataset.oi === answers[i];
+      b.classList.toggle('selected', on);
+      b.setAttribute('aria-pressed', on);
+    });
+  }
+  function drawProgress() {
+    const answered = answers.filter(a => a !== null).length;
+    $('test-bar').style.width = (100 * answered / qs.length) + '%';
+  }
   function show() {
     const q = qs[i];
     $('test-pos').textContent = `Question ${i + 1} of ${qs.length}${meta.capped ? ' (capped: bank exhausted)' : ''}`;
-    const answered = answers.filter(a => a !== null).length;
-    $('test-bar').style.width = (100 * answered / qs.length) + '%';
     $('test-tag').className = tagCls(q.domain);
     $('test-tag').textContent = q.domain;
     $('test-q').textContent = q.q;
-    const box = $('test-opts'); box.innerHTML = '';
-    // stable option order per question within a test run
-    q.options.forEach((t, oi) => {
-      const b = document.createElement('button');
-      b.className = 'option' + (answers[i] === oi ? ' correct' : '');
-      if (answers[i] === oi) b.style.borderColor = 'var(--blue)';
-      b.textContent = t;
-      b.addEventListener('click', () => { answers[i] = oi; show(); });
-      box.appendChild(b);
-    });
+    drawOptions();
+    drawProgress();
     $('test-prev').disabled = i === 0;
     $('test-next').style.display = i === qs.length - 1 ? 'none' : '';
     $('test-finish').style.display = i === qs.length - 1 ? '' : 'none';
+    releaseFocus();
     window.scrollTo(0, 0);
   }
   $('test-prev').addEventListener('click', () => { if (i > 0) { i--; show(); } });
@@ -630,37 +882,33 @@ const PTest = (function () {
     if (timer) timer.stop();
     $('test-run').style.display = 'none';
     $('test-setup').style.display = '';
+    releaseFocus();
   });
 
   function grade(expired) {
     if (timer) timer.stop();
-    let correct = 0;
-    const byDom = {};
-    qs.forEach((q, idx) => {
-      const ok = answers[idx] === q.correct;
-      if (ok) correct++;
-      const d = q.domain;
-      byDom[d] = byDom[d] || { c: 0, t: 0 };
-      byDom[d].t++; if (ok) byDom[d].c++;
-    });
+    const okAt = idx => answers[idx] === qs[idx].correct;
+    const correct = qs.filter((q, idx) => okAt(idx)).length;
+    const byDom = tally(qs, okAt, q => q.domain);
     const pct = Math.round(100 * correct / qs.length);
+    const t = TH();
     $('test-run').style.display = 'none';
     $('test-results').style.display = '';
     const sc = $('tr-score');
     sc.textContent = pct + '%';
-    sc.className = 'big-score ' + (pct >= 70 ? 'pass' : 'fail');
+    sc.className = 'big-score ' + (pct >= t.pass ? 'pass' : 'fail');
     const verdict = $('tr-verdict');
-    if (pct >= 85) { verdict.textContent = 'Excellent — exam ready.'; verdict.className = 'verdict pass'; }
-    else if (pct >= 70) { verdict.textContent = 'Likely pass — keep polishing weak domains.'; verdict.className = 'verdict pass'; }
+    if (pct >= t.hi) { verdict.textContent = 'Excellent — exam ready.'; verdict.className = 'verdict pass'; }
+    else if (pct >= t.pass) { verdict.textContent = 'Likely pass — keep polishing weak domains.'; verdict.className = 'verdict pass'; }
     else { verdict.textContent = 'Below the pass heuristic — more study needed.'; verdict.className = 'verdict fail'; }
     $('tr-note').textContent = (expired ? 'Time expired — test auto-graded. ' : '') +
-      'Pass heuristic: 70%. The real CTS exam uses scaled scoring; treat this as a practice benchmark, not a prediction.';
-    $('tr-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
-      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+      `Pass heuristic: ${t.pass}%. ${DISCLAIMER}`;
+    $('tr-domains').innerHTML = Object.entries(byDom).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
     $('tr-review-list').style.display = 'none';
     $('tr-review-list').innerHTML = qs.map((q, idx) => reviewItem(q, answers[idx])).join('');
-    // history — new entries carry the certification; old entries without `cert` keep working
-    pushHistory({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: meta.mode, cert: tCert, domains: byDom });
+    releaseFocus();
+    // history — entries carry the track; old entries without `cert` keep working
+    pushHistory({ date: today(), n: qs.length, score: pct, mode: meta.mode, cert: meta.cert, domains: byDom });
     notifyProgress();
     renderHistory();
     window.scrollTo(0, 0);
@@ -668,54 +916,53 @@ const PTest = (function () {
   $('tr-new').addEventListener('click', () => {
     $('test-results').style.display = 'none';
     $('test-setup').style.display = '';
+    releaseFocus();
   });
   $('tr-review').addEventListener('click', () => {
     const l = $('tr-review-list');
     l.style.display = l.style.display === 'none' ? '' : 'none';
   });
-  return {};
+  return {
+    applyDefaults,
+    setTrack(tr) { fillTrackSelect(trackSel, tr); rebuildDomainGrid(); }
+  };
 })();
 
 /* ---------- scenario drills ----------
-   Exam-style scenario drills weighted to the current CTS Job Task Analysis,
-   with troubleshooting and AV-over-IP decisions carrying the most weight.
-   Results are recorded into cts_test_history (mode 'drill') so they ride the
-   same local + Firestore sync channel as quizzes and practice tests. */
+   Exam-style scenario drills. Results are recorded into session history
+   (mode 'drill') so they ride the same local + cloud sync channel as
+   quizzes and practice tests. */
 const Drills = (function () {
-  let qs = [], i = 0, answers = [];
-  if (typeof DRILLS === 'undefined' || !DRILLS.length) return {};
-  $('drill-count').textContent = DRILLS.length;
+  let qs = [], orders = [], i = 0, answers = [];
+  if (!DRILL_LIST.length) return {};
+  $('drill-count').textContent = DRILL_LIST.length;
+  $('drills-intro').textContent = fill(COPY.drillsIntro);
 
   function backToSetup() {
     $('drill-run').style.display = 'none';
     $('drill-results').style.display = 'none';
     $('drill-setup').style.display = '';
   }
-  function show() {
+  function show(scroll) {
     const d = qs[i], picked = answers[i];
     $('drill-pos').textContent = `Drill ${i + 1} of ${qs.length}`;
     $('drill-bar').style.width = (100 * answers.filter(a => a !== null).length / qs.length) + '%';
     $('drill-tag').className = 'tag';
-    $('drill-tag').textContent = d.duty;
-    $('drill-task').textContent = d.task;
+    $('drill-tag').textContent = d.duty || '';
+    $('drill-task').textContent = d.task || '';
+    $('drill-task').style.display = d.task ? '' : 'none';
     $('drill-scenario').textContent = d.scenario;
     $('drill-q').textContent = d.question;
-    const box = $('drill-opts'); box.innerHTML = '';
-    const ex = $('drill-explain');
-    d.options.forEach((t, oi) => {
-      const b = document.createElement('button');
-      let cls = 'option';
-      if (picked !== null) {
-        if (oi === d.correct) cls += ' correct';
-        else if (oi === picked) cls += ' wrong';
-      }
-      b.className = cls;
-      b.textContent = t;
-      b.disabled = picked !== null;
-      b.addEventListener('click', () => { answers[i] = oi; show(); });
-      box.appendChild(b);
+    const box = $('drill-opts');
+    renderOptions(box, d, orders[i], oi => {
+      if (answers[i] !== null) return;
+      answers[i] = oi;
+      Sound.play(oi === d.correct ? 'ok' : 'no');
+      show(false);
     });
+    const ex = $('drill-explain');
     if (picked !== null) {
+      markAnswered(box, d.correct, picked);
       const ok = picked === d.correct;
       ex.style.display = '';
       ex.innerHTML = `<div class="${ok ? 'pass' : 'fail'}" style="font-weight:700;margin-bottom:6px">${ok ? '✓ Correct' : '✗ Not quite — correct answer: ' + esc(d.options[d.correct])}</div><div>${esc(d.explanation)}</div>`;
@@ -726,50 +973,44 @@ const Drills = (function () {
       ex.style.display = 'none';
       $('drill-next').style.display = 'none';
     }
-    window.scrollTo(0, 0);
+    releaseFocus();
+    if (scroll !== false) window.scrollTo(0, 0);
   }
   function finish() {
-    let correct = 0;
-    const byDuty = {};
-    qs.forEach((d, idx) => {
-      const ok = answers[idx] === d.correct;
-      if (ok) correct++;
-      byDuty[d.duty] = byDuty[d.duty] || { c: 0, t: 0 };
-      byDuty[d.duty].t++; if (ok) byDuty[d.duty].c++;
-    });
+    const okAt = idx => answers[idx] === qs[idx].correct;
+    const correct = qs.filter((d, idx) => okAt(idx)).length;
+    const byDuty = tally(qs, okAt, d => d.duty || 'Drills');
     const pct = Math.round(100 * correct / qs.length);
+    const t = TH();
     $('drill-run').style.display = 'none';
     $('drill-results').style.display = '';
     const sc = $('dr-score');
     sc.textContent = pct + '%';
-    sc.className = 'big-score ' + (pct >= 70 ? 'pass' : 'fail');
+    sc.className = 'big-score ' + (pct >= t.pass ? 'pass' : 'fail');
     const verdict = $('dr-verdict');
-    if (pct >= 85) { verdict.textContent = 'Excellent — strong decision instincts.'; verdict.className = 'verdict pass'; }
-    else if (pct >= 70) { verdict.textContent = 'Solid — keep polishing the weak duties.'; verdict.className = 'verdict pass'; }
+    if (pct >= t.hi) { verdict.textContent = 'Excellent — strong decision instincts.'; verdict.className = 'verdict pass'; }
+    else if (pct >= t.pass) { verdict.textContent = 'Solid — keep polishing the weak duties.'; verdict.className = 'verdict pass'; }
     else { verdict.textContent = 'Below the pass heuristic — run them again.'; verdict.className = 'verdict fail'; }
-    $('dr-duties').innerHTML = Object.entries(byDuty).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
-      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('dr-duties').innerHTML = Object.entries(byDuty).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
     $('dr-review-list').style.display = 'none';
     $('dr-review-list').innerHTML = qs.map((d, idx) => {
       const picked = answers[idx], ok = picked === d.correct;
       const your = picked == null ? '<em>unanswered</em>' : esc(d.options[picked]);
-      return `<div class="review-item"><div class="rq">${ok ? '<span class="pass">✓ Correct</span>' : '<span class="fail">✗ Missed</span>'} · ${esc(d.duty)}</div>` +
+      return `<div class="review-item"><div class="rq">${ok ? '<span class="pass">✓ Correct</span>' : '<span class="fail">✗ Missed</span>'} · ${esc(d.duty || '')}</div>` +
         `<div class="drill-scenario" style="margin:8px 0">${esc(d.scenario)}</div>` +
         `<div class="ra">Your answer: <strong>${your}</strong><br>Correct answer: <strong class="pass">${esc(d.options[d.correct])}</strong></div>` +
         `<div class="re">${esc(d.explanation)}</div></div>`;
     }).join('');
+    releaseFocus();
     // history — same shape as quizzes/tests, so overview + cloud sync pick it up
-    try {
-      const hist = JSON.parse(localStorage.getItem('cts_test_history') || '[]');
-      hist.unshift({ date: new Date().toLocaleDateString(), n: qs.length, score: pct, mode: 'drill', domains: byDuty });
-      localStorage.setItem('cts_test_history', JSON.stringify(hist.slice(0, 20)));
-    } catch (e) {}
+    pushHistory({ date: today(), n: qs.length, score: pct, mode: 'drill', domains: byDuty });
     notifyProgress();
     renderHistory();
     window.scrollTo(0, 0);
   }
   $('drill-start').addEventListener('click', () => {
-    qs = shuffle(DRILLS); i = 0; answers = new Array(qs.length).fill(null);
+    qs = shuffle(DRILL_LIST); i = 0; answers = new Array(qs.length).fill(null);
+    orders = qs.map(indexOrder);
     $('drill-setup').style.display = 'none';
     $('drill-results').style.display = 'none';
     $('drill-run').style.display = '';
@@ -795,18 +1036,21 @@ const Drills = (function () {
 })();
 
 /* ---------- endless adaptive mode ----------
-   Difficulty 1-5 is auto-tagged per question at load (length + signal words).
-   The player's level floats 1.0-5.0: correct answers push it up, misses pull
-   it down, and the next question is drawn from the bucket nearest the level.
-   Questions seen before in a run come back rephrased (stem rewrite + shuffled
-   options). The HUD tracks level, streak and rolling accuracy in real time.
-   Quitting pushes a history entry so the run feeds exam readiness like any
-   other practice. */
+   Difficulty 1-5 is auto-tagged per question at load (length + signal words
+   from topic.js), unless the question sets `diff` itself. The player's level
+   floats 1.0-5.0: correct answers push it up, misses pull it down (the ramp
+   is a setting), and the next question is drawn from the bucket nearest the
+   level. Questions seen before in a run come back rephrased (stem rewrite +
+   reshuffled options). The HUD tracks level, streak and rolling accuracy in
+   real time. Ending a run pushes a history entry so it feeds readiness like
+   any other practice. */
 (function tagDifficulty() {
-  QUESTIONS.forEach((q, i) => { q._qi = i; });
-  const HARD = /calculat|scenario|troubleshoot|commission|best practice|most likely|except|difference between|compare|sequence|how many|how much|how long|how far/i;
-  const EASY = /^(what is|what are|what does|which (cable|connector)|what do the letters)/i;
-  QUESTIONS.forEach(q => {
+  const D = T.difficulty || {};
+  const HARD = new RegExp(D.hard || 'calculat|scenario|troubleshoot|best practice|most likely|except|difference between|compare|sequence|how many|how much|how long|how far', 'i');
+  const EASY = new RegExp(D.easy || '^(what is|what are|what does|what do the letters)', 'i');
+  BANK.forEach((q, i) => {
+    q._qi = i;
+    if (q.diff >= 1 && q.diff <= 5) { q._diff = Math.round(q.diff); return; }
     let d = 2;
     if (q.q.length > 90) d++;
     if (q.q.length > 140) d++;
@@ -818,52 +1062,68 @@ const Drills = (function () {
   });
 })();
 
-const LEVEL_NAMES = ['Foundations', 'Core Knowledge', 'Proficient', 'Advanced', 'Expert'];
+const LEVEL_NAMES = Array.isArray(T.levels) && T.levels.length === 5
+  ? T.levels : ['Foundations', 'Core Knowledge', 'Proficient', 'Advanced', 'Expert'];
+const RAMPS = {
+  gentle: { up: 0.25, bonus: 0.1, down: 0.35 },
+  normal: { up: 0.35, bonus: 0.15, down: 0.5 },
+  steep: { up: 0.5, bonus: 0.2, down: 0.7 }
+};
 
 const Endless = (function () {
   const seen = {}; // _qi -> times answered this run
   let pool = [], recent = [];
-  let eCert = 'CTS';
+  const trackSel = $('e-cert');
+  fillTrackSelect(trackSel, S.get('track'));
   let eSource = 'bank'; // bank | mixed | forge
-  $('e-src-seg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-    $('e-src-seg').querySelectorAll('button').forEach(x => x.classList.remove('on'));
-    b.classList.add('on'); eSource = b.dataset.s;
-  }));
+  const forgeTracks = HAS_FORGE ? FORGE.tracks() : [];
+  if (!HAS_FORGE) $('e-src-wrap').hidden = true;
+  if (!BANK.length) eSource = 'forge'; // generated-only topic
+  setSeg('e-src-seg', 's', eSource);
+  bindSeg('e-src-seg', 's', v => { eSource = v; renderSetup(); });
   let level = 1, peak = 1, streak = 0, bestStreak = 0;
   let correct = 0, total = 0, win = [], cur = null, byDom = {};
   // timer + lightning-round state
   let eTimerOn = false, eLightning = false, locked = false, past = [];
-  const TIMER_SECS = 150; // 2:30 per question
-  let timeLeft = TIMER_SECS, timerId = null;
+  let timerSecs = 150, timeLeft = 150, timerId = null, runTrack = DEFAULT_TRACK, ramp = RAMPS.normal;
+  let runId = 0, pendingT = null; // runId invalidates timeouts from an earlier run
 
-  const BEST_KEY = 'cts_endless_best';
-  function getBest() { try { return JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch (e) { return {}; } }
+  const getBest = () => readJSON(LS.best, {});
   function renderBest() {
-    const b = getBest()[eCert];
-    $('e-best').textContent = b ? `Personal best on this cert: Lv ${b} · ${LEVEL_NAMES[b - 1]}` : 'No runs yet on this cert — set the bar.';
+    const b = getBest()[trackSel.value];
+    const where = MULTI ? ` on ${trackSel.value === '__all' ? 'all ' + TRACK_PLURAL : 'this ' + TRACK_WORD.toLowerCase()}` : '';
+    $('e-best').textContent = b ? `Personal best${where}: Lv ${b} · ${LEVEL_NAMES[b - 1]}` : `No runs yet${where} — set the bar.`;
   }
-  $('e-cert').addEventListener('change', e => { eCert = e.target.value; renderBest(); });
+  function renderSetup() {
+    $('e-timer-label').textContent = `⏱ Per-question timer (${fmtSecs(S.get('endlessSecs'))})`;
+    if (HAS_FORGE) {
+      const tr = trackSel.value;
+      const covers = forgeTracks.map(trackName).join(', ');
+      const has = tr === '__all' || forgeTracks.indexOf(tr) !== -1;
+      $('e-forge-note').textContent = 'Generated questions are built fresh every draw — calculations with new numbers, ' +
+        'concepts with rotated distractors.' + (MULTI ? ` Currently covers ${covers}.` : '') +
+        (!has && eSource !== 'bank' ? ` Nothing is generated for ${trackName(tr)} yet, so this run uses the bank.` : '');
+    }
+  }
+  trackSel.addEventListener('change', () => { renderBest(); renderSetup(); });
   renderBest();
+  renderSetup();
 
   const diffPips = d => '●'.repeat(d) + '○'.repeat(5 - d);
   const levelName = () => LEVEL_NAMES[Math.min(4, Math.max(0, Math.round(level) - 1))];
 
   /* --- rephrase engine: meaning-preserving rewrites, rotated by repeat count --- */
-  const lcfirst = s => s.charAt(0).toLowerCase() + s.slice(1);
   const REWRITES = [
     [/^What is ([^?]+)\?$/i, 'Which of the following best describes $1?'],
     [/^What are ([^?]+)\?$/i, 'Which of the following best describes $1?'],
     [/^Which of the following is NOT ([^?]+)\?$/i, 'All of the following are $1 EXCEPT:']
   ];
-  const FALLBACKS = [
-    s => 'Quick check: ' + lcfirst(s),
-    s => 'On a real project, ' + lcfirst(s),
-    s => 'Think it through: ' + lcfirst(s),
-    s => 'You are on site and ' + lcfirst(s)
-  ];
+  const PREFIXES = Array.isArray(T.rephrasePrefixes) && T.rephrasePrefixes.length
+    ? T.rephrasePrefixes : ['Quick check: ', 'Think it through: ', 'Once more: '];
+  const FALLBACKS = PREFIXES.map(p => s => p + lcfirst(s));
   function rephrase(q, n) {
     // odd repeats use a pattern-matching rewrite when one fits; even repeats
-    // use a cosmetic fallback, so back-to-back repeats never read identically
+    // use a lead-in, so back-to-back repeats never read identically
     const matches = REWRITES.filter(rw => rw[0].test(q.q));
     if (matches.length && n % 2 === 1) {
       const rw = matches[Math.floor((n - 1) / 2) % matches.length];
@@ -873,6 +1133,7 @@ const Endless = (function () {
   }
 
   function pick() {
+    if (!pool.length) return null;
     const target = Math.round(level);
     const cands = pool.length > recent.length ? pool.filter(q => recent.indexOf(q) === -1) : pool.slice();
     let best = null, bestScore = 1e9;
@@ -890,7 +1151,9 @@ const Endless = (function () {
     el.textContent = 'Lv ' + lv;
     if (bump) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
     $('e-level-name').textContent = levelName();
-    $('e-lvbar').style.width = (level >= 5 ? 100 : Math.round(100 * (level - Math.floor(level)))) + '%';
+    // progress toward the next displayed level: Lv n spans [n − 0.5, n + 0.5)
+    const lower = Math.max(1, lv - 0.5), upper = Math.min(5, lv + 0.5);
+    $('e-lvbar').style.width = (level >= 5 ? 100 : Math.round(100 * (level - lower) / (upper - lower))) + '%';
     $('e-streak').textContent = streak > 1 ? '🔥 ' + streak : '';
     $('e-acc').textContent = win.length ? Math.round(100 * win.filter(Boolean).length / win.length) + '% last ' + win.length : '—';
     $('e-score').textContent = correct + '/' + total;
@@ -898,29 +1161,28 @@ const Endless = (function () {
 
   function nextQ() {
     // forged questions are generated fresh per draw, targeted at the current level
-    if (typeof FORGE !== 'undefined' && (eSource === 'forge' || (eSource === 'mixed' && Math.random() < 0.45))) {
-      const gs = FORGE.draw(1, { cert: eCert, diff: Math.round(level) });
+    const useForge = HAS_FORGE && (eSource === 'forge' || (eSource === 'mixed' && Math.random() < S.get('mixedShare') / 100));
+    if (useForge) {
+      const gs = FORGE.draw(1, { cert: runTrack, diff: Math.round(level) });
       if (gs.length) return gs[0];
     }
-    return pick();
+    return pick() || (HAS_FORGE ? FORGE.draw(1, { cert: runTrack, diff: Math.round(level) })[0] : null);
   }
 
-  function fmtTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
   function drawTimer() {
     const el = $('e-timer');
     el.style.display = eTimerOn ? '' : 'none';
     if (eTimerOn) {
-      el.textContent = '⏱ ' + fmtTime(Math.max(0, timeLeft));
-      el.classList.toggle('low', timeLeft <= 30);
+      el.textContent = '⏱ ' + fmtSecs(Math.max(0, timeLeft));
+      el.classList.toggle('low', timeLeft <= Math.min(30, Math.round(timerSecs / 5)));
     }
   }
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function startTimer() {
     stopTimer();
+    timeLeft = timerSecs;
     drawTimer();
     if (!eTimerOn) return;
-    timeLeft = TIMER_SECS;
-    drawTimer();
     timerId = setInterval(() => {
       if (locked) return;
       timeLeft--;
@@ -935,35 +1197,34 @@ const Endless = (function () {
     c.innerHTML = past.slice(-30).map(ok => `<span class="e-chip ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'}</span>`).join('');
     c.scrollLeft = c.scrollWidth;
   }
+  function later(fn, ms) {
+    clearTimeout(pendingT);
+    const rid = runId;
+    pendingT = setTimeout(() => { if (rid === runId && $('endless-run').style.display !== 'none') fn(); }, ms);
+  }
 
   function show() {
+    clearTimeout(pendingT);
     cur = nextQ();
     if (!cur) { finish(); return; }
     locked = false;
     recent.push(cur); if (recent.length > 30) recent.shift();
     const n = seen[cur._qi] || 0;
     const text = n ? rephrase(cur, n) : cur.q;
-    const order = shuffle(cur.options.map((_, oi) => oi));
+    const order = indexOrder(cur);
     cur._shown = { text, order, rephrased: n > 0 };
     $('e-pos').textContent = 'Question ' + (total + 1) + ' · endless';
     $('e-diff').textContent = diffPips(cur._diff);
     $('e-tag').className = tagCls(cur.domain);
     $('e-tag').textContent = cur.domain;
-    const rp = $('e-reph');
-    rp.style.display = cur._shown.rephrased ? '' : 'none';
+    $('e-reph').style.display = cur._shown.rephrased ? '' : 'none';
     $('e-q').textContent = text;
     $('e-explain').style.display = 'none';
     $('e-next').style.display = 'none';
-    const box = $('e-opts'); box.innerHTML = '';
-    order.forEach(oi => {
-      const b = document.createElement('button');
-      b.className = 'option'; b.textContent = cur.options[oi];
-      b.dataset.oi = oi;
-      b.addEventListener('click', () => answer(oi, b));
-      box.appendChild(b);
-    });
+    renderOptions($('e-opts'), cur, order, (oi, b) => answer(oi, b));
     hud(false);
     startTimer();
+    releaseFocus();
     window.scrollTo(0, 0);
   }
 
@@ -972,6 +1233,7 @@ const Endless = (function () {
     locked = true;
     stopTimer();
     const okFinal = !!ok;
+    const before = Math.round(level);
     seen[cur._qi] = (seen[cur._qi] || 0) + 1;
     total++; win.push(okFinal); if (win.length > 10) win.shift();
     past.push(okFinal); if (past.length > 30) past.shift();
@@ -981,32 +1243,31 @@ const Endless = (function () {
     let moved;
     if (okFinal) {
       correct++; streak++; bestStreak = Math.max(bestStreak, streak);
-      level = Math.min(5, level + 0.35 + (streak >= 3 ? 0.15 : 0));
+      level = Math.min(5, level + ramp.up + (streak >= 3 ? ramp.bonus : 0));
       moved = 'up';
     } else {
       streak = 0;
-      level = Math.max(1, level - 0.5);
+      level = Math.max(1, level - ramp.down);
       moved = 'down';
     }
     peak = Math.max(peak, Math.round(level));
-    [...$('e-opts').children].forEach(b => {
-      b.disabled = true;
-      const idxOpt = +b.dataset.oi;
-      if (idxOpt === cur.correct) b.classList.add('correct');
-      else if (b === btn) b.classList.add('wrong');
-      else b.classList.add('dim');
-    });
+    Sound.play(okFinal ? (Math.round(level) > before ? 'up' : 'ok') : 'no');
+    markAnswered($('e-opts'), cur.correct, btn ? +btn.dataset.oi : -1);
     renderPast();
     if (eLightning) {
       // lightning round: no explanation, auto-advance
       $('e-explain').style.display = 'none';
-      setTimeout(() => { if ($('endless-run').style.display !== 'none') show(); }, 700);
+      later(show, S.get('lightningMs'));
     } else {
-      const ex = $('e-explain');
+      const ex = $('e-explain'), after = Math.round(level);
+      // only say "Level up/down" when the displayed level actually changes
+      const note = after !== before ? `Level ${moved} → Lv ${after} · ${levelName()}`
+        : `Lv ${after} · ${levelName()} — ${moved === 'up' ? (after >= 5 ? 'holding at the top' : 'climbing') : 'easing off'}`;
       ex.innerHTML = `<div class="explain"><strong>${timedOut ? "⏱ Time's up." : (okFinal ? 'Correct.' : 'Not quite.')}</strong> ${esc(cur.explanation)}` +
-        `<div class="small muted" style="margin-top:6px">Level ${moved} → Lv ${Math.round(level)} · ${levelName()}</div></div>`;
+        `<div class="small muted" style="margin-top:6px">${note}</div></div>`;
       ex.style.display = '';
       $('e-next').style.display = '';
+      if (okFinal && S.get('autoAdvance')) later(show, AUTO_ADVANCE_MS);
     }
     hud(true);
   }
@@ -1017,11 +1278,17 @@ const Endless = (function () {
   }
 
   function start() {
-    pool = QUESTIONS.filter(q => eCert === '__all' || certOf(q) === eCert);
-    if (!pool.length) { alert('No questions for this certification.'); return; }
+    runTrack = trackSel.value;
+    pool = BANK.filter(q => inTrack(q, runTrack));
+    const canForge = HAS_FORGE && eSource !== 'bank' && FORGE.draw(1, { cert: runTrack }).length > 0;
+    if (!pool.length && !canForge) { alert('No questions for this selection.'); return; }
+    runId++;
     eTimerOn = $('e-timer-on').checked;
     eLightning = $('e-lightning').checked;
-    recent = []; level = 1; peak = 1; streak = 0; bestStreak = 0;
+    timerSecs = S.get('endlessSecs');
+    ramp = RAMPS[S.get('endlessRamp')] || RAMPS.normal;
+    level = S.get('endlessStart'); peak = Math.round(level);
+    recent = []; streak = 0; bestStreak = 0;
     correct = 0; total = 0; win = []; past = []; byDom = {};
     for (const k in seen) delete seen[k];
     $('endless-setup').style.display = 'none';
@@ -1031,6 +1298,8 @@ const Endless = (function () {
   }
 
   function finish() {
+    runId++;
+    clearTimeout(pendingT);
     stopTimer();
     locked = true;
     $('endless-run').style.display = 'none';
@@ -1040,14 +1309,14 @@ const Endless = (function () {
     $('er-level-name').textContent = 'Peak level · ' + LEVEL_NAMES[peak - 1];
     $('er-score').textContent = correct + '/' + total + ' correct (' + pct + '%)';
     $('er-streak').textContent = 'Best streak: ' + bestStreak;
-    $('er-domains').innerHTML = Object.entries(byDom).sort((a, b) => (a[1].c / a[1].t) - (b[1].c / b[1].t))
-      .map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    $('er-domains').innerHTML = Object.entries(byDom).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
+    releaseFocus();
     if (total > 0) {
-      pushHistory({ date: new Date().toLocaleDateString(), n: total, score: pct, mode: 'endless', cert: eCert, domains: byDom });
+      pushHistory({ date: today(), n: total, score: pct, mode: 'endless', cert: runTrack, domains: byDom });
+      const bb = getBest();
+      if (!bb[runTrack] || peak > bb[runTrack]) { bb[runTrack] = peak; writeJSON(LS.best, bb); }
       notifyProgress();
       renderHistory();
-      const bb = getBest();
-      if (!bb[eCert] || peak > bb[eCert]) { bb[eCert] = peak; try { localStorage.setItem(BEST_KEY, JSON.stringify(bb)); } catch (e) {} }
     }
     renderBest();
     window.scrollTo(0, 0);
@@ -1058,31 +1327,100 @@ const Endless = (function () {
   $('e-quit').addEventListener('click', () => {
     if (!total || confirm('End this run? Your progress so far will be saved.')) finish();
   });
-  $('er-again').addEventListener('click', () => {
+  const toSetup = () => {
     $('endless-results').style.display = 'none';
     $('endless-setup').style.display = '';
-  });
-  $('er-done').addEventListener('click', () => {
-    $('endless-results').style.display = 'none';
-    $('endless-setup').style.display = '';
-  });
-  // read-only test hook, only present when opened from disk (never on the live site)
-  if (typeof window !== 'undefined' && location.protocol === 'file:') {
+  };
+  $('er-again').addEventListener('click', toSetup);
+  $('er-done').addEventListener('click', toSetup);
+  // read-only test hook, only on a local copy (file:// or localhost), never on the live site
+  if (location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
     window.__endless = {
       state: () => ({ level, peak, streak, bestStreak, correct, total, diff: cur ? cur._diff : null, forged: !!(cur && cur._forged) }),
       correctIndex: () => (cur ? cur.correct : -1),
       questionText: () => (cur && cur._shown ? cur._shown.text : ''),
-      rephrase: (q, n) => rephrase(typeof q === 'number' ? QUESTIONS[q] : q, n),
+      rephrase: (q, n) => rephrase(typeof q === 'number' ? BANK[q] : q, n),
       forceTimeout: () => { if (!locked && timerId) { timeLeft = 1; } },
       past: () => past.slice(),
       timerText: () => $('e-timer').textContent,
       timerOn: () => eTimerOn,
       lightning: () => eLightning,
       explainVisible: () => $('e-explain').style.display !== 'none',
-      nextVisible: () => $('e-next').style.display !== 'none'
+      nextVisible: () => $('e-next').style.display !== 'none',
+      current: () => cur
     };
   }
-  return {};
+  return {
+    renderBest, renderSetup,
+    setTrack(tr) { fillTrackSelect(trackSel, tr); renderBest(); renderSetup(); } // a run captured its track at start
+  };
 })();
+
+/* ---------- settings → live UI ---------- */
+S.onChange(key => {
+  const all = key === '*';
+  if (all || key === 'passMark' || key === 'testWeight') {
+    try { renderReadiness(); } catch (e) {}
+    renderHistory();
+    renderStudyLoop();
+  }
+  if (all || key === 'track') {
+    const tr = S.get('track');
+    fillTrackSelect($('r-cert'), tr);
+    try { renderReadiness(); } catch (e) {}
+    if (Quiz.setTrack) Quiz.setTrack(tr);
+    if (PTest.setTrack) PTest.setTrack(tr);
+    if (Endless.setTrack) Endless.setTrack(tr);
+  }
+  if ((all || key === 'quizLength') && Quiz.setCount) Quiz.setCount(S.get('quizLength'));
+  if ((all || key === 'testLength' || key === 'testPace') && PTest.applyDefaults) PTest.applyDefaults();
+  if (all || key === 'cardFront') FC.show();
+  if (all || key === 'endlessSecs') Endless.renderSetup();
+  // study preferences ride the cloud sync; appearance stays on this device
+  if (!adoptingCloud && (all || S.isSynced(key))) notifyProgress();
+});
+
+/* ---------- keyboard shortcuts ----------
+   1–6 / A–F answer, Enter or → next, ← → move through a practice test,
+   Space flips a flashcard, ← / → grade it. Off in Settings. */
+document.addEventListener('keydown', e => {
+  if (!S.get('shortcuts') || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+  const sheet = $('settings');
+  if (sheet && !sheet.hidden) return;
+  const tgt = e.target;
+  if (tgt && tgt.closest && tgt.closest('input, select, textarea, [contenteditable="true"]')) return;
+  const k = e.key;
+  const ctl = tgt && tgt.closest ? tgt.closest('button, a, summary') : null;
+  // never let Enter/Space activate a control that is no longer on screen
+  if (ctl && !shown(ctl) && (k === 'Enter' || k === ' ')) e.preventDefault();
+  // Enter/Space on a visible control keeps its native meaning, except on the
+  // tab you are already on (re-activating it would do nothing)
+  const passive = !ctl || !shown(ctl) || ctl.matches('nav.tabs button.active');
+  const opt = /^[1-6]$/.test(k) ? +k - 1 : /^[a-f]$/i.test(k) ? k.toLowerCase().charCodeAt(0) - 97 : -1;
+  const next = k === 'ArrowRight' || (k === 'Enter' && passive);
+  const press = id => { const b = $(id); if (shown(b) && !b.disabled) { b.click(); return true; } return false; };
+  const choose = id => { const box = $(id), b = box && box.children[opt]; if (b && shown(b) && !b.disabled) { b.click(); return true; } return false; };
+  let done = false;
+  if (currentTab === 'cards') {
+    const gradeBtn = ctl && (ctl.id === 'fc-got' || ctl.id === 'fc-miss');
+    if ((k === ' ' && (passive || gradeBtn)) || (k === 'Enter' && passive)) done = FC.flip();
+    else if (k === 'ArrowRight') done = press('fc-got');
+    else if (k === 'ArrowLeft') done = press('fc-miss');
+  } else if (currentTab === 'quiz' && shown($('quiz-run'))) {
+    if (opt >= 0) done = choose('quiz-opts');
+    else if (next) done = press('quiz-next');
+  } else if (currentTab === 'test' && shown($('test-run'))) {
+    if (opt >= 0) done = choose('test-opts');
+    else if (k === 'ArrowLeft') done = press('test-prev');
+    else if (next) done = press('test-next');
+  } else if (currentTab === 'drills' && shown($('drill-run'))) {
+    if (opt >= 0) done = choose('drill-opts');
+    else if (next) done = press('drill-next');
+  } else if (currentTab === 'endless' && shown($('endless-run'))) {
+    if (opt >= 0) done = choose('e-opts');
+    else if (next) done = press('e-next');
+  }
+  if (done) e.preventDefault();
+});
 
 })();

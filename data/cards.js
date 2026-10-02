@@ -29,7 +29,7 @@ const CARDS = [
   {
     "domain": "CTS: AVIXA Standards",
     "front": "V201.01 contrast ratios",
-    "back": "Passive viewing 7:1 · Basic decision making 15:1 · Analytical decision making 80:1."
+    "back": "Passive viewing 7:1 · Basic decision making 15:1 · Analytical decision making 50:1 · Full-motion video 80:1."
   },
   {
     "domain": "CTS: AVIXA Standards",
@@ -204,12 +204,12 @@ const CARDS = [
   {
     "domain": "CTS: Sound & Physics",
     "front": "Line level audio",
-    "back": "-20 to -10 dBu (typical -4 dBu)"
+    "back": "+4 dBu professional (balanced) · −10 dBV consumer (unbalanced)"
   },
   {
     "domain": "CTS: Sound & Physics",
     "front": "Instrument level impedance",
-    "back": "600 ohms (high-impedance)"
+    "back": "High impedance (Hi-Z): instrument inputs are typically around 1 MΩ so pickups aren't loaded down"
   },
   {
     "domain": "CTS: Sound & Physics",
@@ -229,7 +229,7 @@ const CARDS = [
   {
     "domain": "CTS: Sound & Physics",
     "front": "Phantom power current draw",
-    "back": "10-20 mA"
+    "back": "A few mA for most mics; the P48 standard allows up to 10 mA per microphone"
   },
   {
     "domain": "CTS: Sound & Physics",
@@ -374,7 +374,7 @@ const CARDS = [
   {
     "domain": "CTS: Video & Signal",
     "front": "HDMI cable maximum length",
-    "back": "15 meters (without repeater)"
+    "back": "About 15 m passive at 1080p; plan on roughly 5–7.5 m at 4K60 (18 Gbps) before adding an extender"
   },
   {
     "domain": "CTS: Video & Signal",
@@ -439,17 +439,17 @@ const CARDS = [
   {
     "domain": "CTS: AV Networking",
     "front": "Standard PoE power",
-    "back": "15.4 watts"
+    "back": "15.4 W at the switch port; about 12.95 W reaches the device (802.3af)"
   },
   {
     "domain": "CTS: AV Networking",
     "front": "PoE+ power delivery",
-    "back": "25.5 watts"
+    "back": "30 W at the switch port; 25.5 W reaches the device (802.3at)"
   },
   {
     "domain": "CTS: AV Networking",
     "front": "PoE++ (Hi-PoE) power",
-    "back": "90 watts"
+    "back": "Up to 90 W at the port (802.3bt Type 4); about 71 W reaches the device"
   },
   {
     "domain": "CTS: AV Networking",
@@ -634,7 +634,7 @@ const CARDS = [
   {
     "domain": "CTS: AVIXA Standards",
     "front": "V201.01 contrast: analytical decision making",
-    "back": "80:1 (basic decision making 15:1, passive viewing 7:1)."
+    "back": "50:1 (full-motion video 80:1, basic decision making 15:1, passive viewing 7:1)."
   },
   {
     "domain": "CTS: Troubleshooting & Verification",

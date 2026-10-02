@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-accent="sky" data-text="md">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,7 +7,27 @@
      Safari, so Google sign-in can never complete in the installed app. The
      home-screen icon now opens in Safari, where sign-in works. -->
 <meta name="theme-color" content="#0f172a">
-<title>CTS Prep — Merged Study App</title>
+<meta name="description" content="Offline-first exam prep: study guides, spaced-repetition flashcards, quizzes, practice tests, scenario drills and an endless adaptive mode.">
+<title>Study</title>
+<!-- topic.js holds everything topic-specific (name, tracks, copy, sync). -->
+<script src="topic.js"></script>
+<script>
+// Pre-paint: apply saved theme / accent / text size before anything renders.
+(function () {
+  try {
+    var T = window.TOPIC || {};
+    document.title = T.title || T.name || 'Study';
+    var s = JSON.parse(localStorage.getItem((T.id || 'study') + '_settings_v1') || '{}') || {};
+    var d = document.documentElement, theme = s.theme || 'dark';
+    if (theme === 'system') theme = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    d.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+    d.setAttribute('data-accent', s.accent || T.accent || 'sky');
+    d.setAttribute('data-text', s.textSize || 'md');
+    if (s.reduceMotion) d.className += ' reduce-motion';
+    if (theme === 'light') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f1f5f9');
+  } catch (e) {}
+})();
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,7 +42,7 @@
 </div>
 <script>
 try {
-  var __t = +localStorage.getItem('cts_auth_handoff');
+  var __t = +localStorage.getItem(((window.TOPIC && TOPIC.id) || 'study') + '_auth_handoff');
   var __std = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
   if (__t && (Date.now() - __t) < 7200000 && !__std) {
     document.getElementById('handoff-splash').style.display = 'flex';
@@ -31,18 +51,18 @@ try {
 </script>
 <header>
   <div class="hdr-title">
-    <h1>CTS Prep</h1>
+    <h1 id="app-name">Study</h1>
     <span class="sub" id="hdr-stats"></span>
   </div>
   <div class="hdr-auth">
     <span class="sync-dot" id="sync-dot" title="Sync status"></span>
     <span class="sync-label" id="sync-label"></span>
-    <span class="sync-label" id="app-ver" style="opacity:.45">v5.1</span>
-    <span class="sync-label" id="offline-badge" style="display:none;opacity:.75">Offline</span>
+    <span class="sync-label" id="app-ver" style="opacity:.45"></span>
+    <span class="badge" id="offline-badge" style="display:none">Offline</span>
     <div id="auth-out">
       <button class="btn sm google-btn" id="btn-signin">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.3H12v4.5h6.5c-.1 1.1-.8 2.7-2.4 3.8l-.1.1 3.5 2.7.2.1c2.2-2 3.8-5 3.8-8.9z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.8-2.9c-1 .7-2.4 1.2-4.1 1.2-3.1 0-5.8-2.1-6.8-5l-.1.1-3.7 2.9v.1C3.4 21.5 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.4c-.2-.7-.4-1.5-.4-2.4s.1-1.7.4-2.4l-.1-.1-3.6-2.8-.1.1C.5 8.3 0 10.1 0 12s.5 3.7 1.4 5.2l3.8-2.8z"/><path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.4 0 3.4 2.5 1.4 6.8l3.8 2.9c1-2.9 3.7-5 6.8-5z"/></svg>
-        <span>Sign in with Google</span>
+        <span class="g-long">Sign in with Google</span><span class="g-short">Sign in</span>
       </button>
     </div>
     <div id="auth-in" style="display:none">
@@ -50,8 +70,18 @@ try {
       <span class="auth-name" id="auth-name"></span>
       <button class="btn ghost sm" id="btn-signout">Sign out</button>
     </div>
+    <button class="icon-btn" id="btn-settings" type="button" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94a7.5 7.5 0 0 0 .06-.94 7.5 7.5 0 0 0-.06-.94l2.03-1.58a.48.48 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58a7.5 7.5 0 0 0 0 1.88l-2.03 1.58a.48.48 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.25.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.48.48 0 0 0-.12-.61l-2.03-1.58ZM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2Z"/></svg>
+    </button>
   </div>
 </header>
+<script>
+// Fill the header from topic.js right away, before the deferred scripts run.
+try {
+  document.getElementById('app-name').textContent = TOPIC.name || 'Study';
+  document.getElementById('app-ver').textContent = TOPIC.version ? 'v' + TOPIC.version : '';
+} catch (e) {}
+</script>
 
 <div class="container">
   <!-- OVERVIEW -->
@@ -62,19 +92,16 @@ try {
       <p class="muted" style="margin-top:12px" id="ov-blurb"></p>
     </div>
     <div class="card">
-      <h2>Exam Readiness</h2>
-      <label class="f-label">Certification</label>
-      <select id="r-cert">
-        <option value="__all" selected>All certifications</option>
-        <option value="CTS">CTS</option>
-        <option value="CTS-D">CTS-D</option>
-        <option value="CTS-I">CTS-I</option>
-      </select>
+      <h2 id="readiness-title">Exam Readiness</h2>
+      <div class="track-pick">
+        <label class="f-label" for="r-cert" data-track-label>Certification</label>
+        <select id="r-cert"></select>
+      </div>
       <div id="ov-readiness"><p class="muted">Take a practice test or drill flashcards to generate your readiness signal.</p></div>
     </div>
-    <div class="card">
-      <h2>Career targets</h2>
-      <p class="muted small">Ranked by your readiness in the domains each role leans on. CTS certification is commonly preferred or required for engineer and PM-tier roles — it's the credential that unlocks this tier.</p>
+    <div class="card" id="careers-card">
+      <h2 id="careers-title">Career targets</h2>
+      <p class="muted small" id="careers-intro"></p>
       <div class="career-grid" id="ov-careers"></div>
     </div>
     <div class="card">
@@ -82,15 +109,12 @@ try {
       <div id="ov-domains"></div>
     </div>
     <div class="card">
-      <h2>Recent practice tests</h2>
-      <div id="ov-history"><p class="muted">No practice tests yet — generate one in the Practice Test tab.</p></div>
+      <h2>Recent sessions</h2>
+      <div id="ov-history"><p class="muted">No sessions yet — generate one in the Practice tab.</p></div>
     </div>
     <div class="card">
       <h2>Suggested study loop</h2>
-      <p class="small">1. Read a <b>Study Guide</b> for your weakest domain.<br>
-      2. Drill its <b>Flashcards</b> until most reach Box 4+.<br>
-      3. Take a <b>Quiz</b> filtered to that domain.<br>
-      4. When every domain feels solid, run <b>Full exam sims</b> until you consistently beat 80%.</p>
+      <p class="small" id="ov-loop"></p>
     </div>
   </section>
 
@@ -110,12 +134,12 @@ try {
   <section class="tabpane" id="pane-cards">
     <div class="card">
       <h2>Flashcards <span class="muted small" id="fc-count"></span></h2>
-      <label class="f-label">Category</label>
+      <label class="f-label" for="fc-filter">Category</label>
       <select id="fc-filter"><option value="__all">All categories</option></select>
       <div class="leitner" id="fc-boxes"></div>
       <div class="fcard-wrap">
-        <div class="fcard" id="fc-card">
-          <div class="fface"><div class="front-t" id="fc-front"></div><div class="hint">tap to flip</div></div>
+        <div class="fcard" id="fc-card" role="button" tabindex="0" aria-label="Flashcard. Tap or press Space to flip.">
+          <div class="fface front"><div class="front-t" id="fc-front"></div><div class="hint">tap to flip</div></div>
           <div class="fface back"><div class="back-t" id="fc-back"></div><div class="hint">tap to flip back</div></div>
         </div>
       </div>
@@ -135,21 +159,25 @@ try {
   <section class="tabpane" id="pane-quiz">
     <div class="card" id="quiz-setup">
       <h2>Quiz</h2>
-      <label class="f-label">Domain</label>
+      <div class="track-pick">
+        <label class="f-label" for="q-cert" data-track-label>Certification</label>
+        <select id="q-cert"></select>
+      </div>
+      <label class="f-label" for="q-domain">Domain</label>
       <select id="q-domain"><option value="__all">All domains</option></select>
       <label class="f-label">Questions</label>
       <div class="seg" id="q-count-seg">
         <button data-n="10">10</button><button data-n="25" class="on">25</button><button data-n="50">50</button><button data-n="0">All</button>
       </div>
-      <label class="f-label">Timer (minutes, 0 = off)</label>
-      <input type="number" id="q-timer" value="0" min="0" max="180">
-      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;margin:8px 0">
-        <input type="checkbox" id="q-shuffle" checked style="width:16px;height:16px;accent-color:#38bdf8"> Shuffle questions
+      <label class="f-label" for="q-timer">Timer (minutes, 0 = off)</label>
+      <input type="number" id="q-timer" value="0" min="0" max="180" inputmode="numeric">
+      <label class="checkline">
+        <input type="checkbox" id="q-shuffle" checked> Shuffle questions
       </label>
       <button class="btn" id="q-start">Start quiz</button>
     </div>
     <div class="card" id="quiz-run" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div class="run-head">
         <span class="small muted" id="quiz-pos"></span>
         <span class="timer" id="quiz-timer" style="display:none"></span>
       </div>
@@ -165,6 +193,7 @@ try {
       <h2>Quiz results</h2>
       <div class="big-score" id="qr-score"></div>
       <div class="verdict" id="qr-verdict"></div>
+      <p class="muted small" id="qr-note" style="text-align:center"></p>
       <div id="qr-domains"></div>
       <div class="btnrow">
         <button class="btn" id="qr-retry">Retake</button>
@@ -180,18 +209,11 @@ try {
       <h2>Practice Test Generator</h2>
       <p class="muted small">Every test is a fresh random draw — no repeated questions within a test.</p>
       <label class="f-label">Test length</label>
-      <div class="seg" id="t-len-seg">
-        <button data-n="25">Quick · 25</button>
-        <button data-n="50" class="on">Standard · 50</button>
-        <button data-n="110">Full exam sim · 110</button>
+      <div class="seg" id="t-len-seg"></div>
+      <div class="track-pick">
+        <label class="f-label" for="t-cert" data-track-label>Certification</label>
+        <select id="t-cert"></select>
       </div>
-      <label class="f-label">Certification</label>
-      <select id="t-cert">
-        <option value="CTS" selected>CTS</option>
-        <option value="CTS-D">CTS-D</option>
-        <option value="CTS-I">CTS-I</option>
-        <option value="__all">All certifications</option>
-      </select>
       <label class="f-label">Domains <span class="muted small">— tap to include / exclude</span></label>
       <div class="btnrow" style="margin-bottom:4px">
         <button class="btn sec small" id="t-dom-all">All</button>
@@ -203,13 +225,13 @@ try {
         <button data-m="balanced" class="on">Balanced across domains</button>
         <button data-m="random">Pure random</button>
       </div>
-      <label class="f-label">Timer (minutes)</label>
-      <input type="number" id="t-timer" value="68" min="0" max="240">
-      <p class="muted small" id="t-timer-hint">Scaled default: 150 min for the full 110-question sim.</p>
+      <label class="f-label" for="t-timer">Timer (minutes, 0 = off)</label>
+      <input type="number" id="t-timer" value="0" min="0" max="300" inputmode="numeric">
+      <p class="muted small" id="t-timer-hint"></p>
       <button class="btn" id="t-start">Generate new test</button>
     </div>
     <div class="card" id="test-run" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div class="run-head">
         <span class="small muted" id="test-pos"></span>
         <span class="timer" id="test-timer"></span>
       </div>
@@ -242,13 +264,13 @@ try {
   <section class="tabpane" id="pane-drills">
     <div class="card" id="drill-setup">
       <h2>Scenario Drills</h2>
-      <p class="muted small">Short exam-style scenarios ending in a decision — not isolated facts. Weighted to the current CTS Job Task Analysis, with troubleshooting and AV-over-IP decisions carrying the most weight.</p>
+      <p class="muted small" id="drills-intro">Short scenarios that end in a decision, not isolated facts.</p>
       <div class="stat-box"><div class="stat-val" id="drill-count"></div><div class="stat-lbl">drills</div></div>
       <div style="height:12px"></div>
       <button class="btn" id="drill-start">Start drill run</button>
     </div>
     <div class="card" id="drill-run" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div class="run-head">
         <span class="small muted" id="drill-pos"></span>
       </div>
       <div class="progressbar"><div id="drill-bar"></div></div>
@@ -272,25 +294,25 @@ try {
       <div id="dr-review-list" style="display:none;margin-top:14px"></div>
     </div>
   </section>
+
   <!-- ENDLESS ADAPTIVE MODE -->
   <section class="tabpane" id="pane-endless">
     <div class="card" id="endless-setup">
       <h2>♾️ Endless Mode</h2>
       <p class="muted small">No finish line. Questions adapt to you live: nail them and they get harder, miss and they ease off. Repeats come back rephrased. End the run whenever you want.</p>
-      <label class="f-label">Certification</label>
-      <select id="e-cert">
-        <option value="CTS" selected>CTS</option>
-        <option value="CTS-D">CTS-D</option>
-        <option value="CTS-I">CTS-I</option>
-        <option value="__all">All certifications</option>
-      </select>
-      <label class="f-label">Question source</label>
-      <div class="seg" id="e-src-seg">
-        <button data-s="bank" class="on">Bank</button><button data-s="mixed">Mixed</button><button data-s="forge">Generated ∞</button>
+      <div class="track-pick">
+        <label class="f-label" for="e-cert" data-track-label>Certification</label>
+        <select id="e-cert"></select>
       </div>
-      <p class="muted small">Generated questions are built fresh every draw — calculations with new numbers, concepts with rotated distractors. Currently covers CTS core topics.</p>
+      <div id="e-src-wrap">
+        <label class="f-label">Question source</label>
+        <div class="seg" id="e-src-seg">
+          <button data-s="bank" class="on">Bank</button><button data-s="mixed">Mixed</button><button data-s="forge">Generated ∞</button>
+        </div>
+        <p class="muted small" id="e-forge-note"></p>
+      </div>
       <label class="f-label">Run options</label>
-      <div class="checkrow"><label><input type="checkbox" id="e-timer-on"> ⏱ Per-question timer (2:30)</label></div>
+      <div class="checkrow"><label><input type="checkbox" id="e-timer-on"> <span id="e-timer-label">⏱ Per-question timer (2:30)</span></label></div>
       <div class="checkrow"><label><input type="checkbox" id="e-lightning"> ⚡ Lightning round — no explanations, auto-advance, result carousel</label></div>
       <p class="muted small" id="e-best"></p>
       <button class="btn" id="e-start">Start endless run</button>
@@ -298,7 +320,7 @@ try {
     <div id="endless-run" style="display:none">
       <div class="card e-hud">
         <div class="e-hud-top">
-          <div><div class="e-level" id="e-level">Lv 1</div><div class="e-level-name" id="e-level-name">Foundations</div></div>
+          <div><div class="e-level" id="e-level">Lv 1</div><div class="e-level-name" id="e-level-name"></div></div>
           <div class="e-hud-stats">
             <div id="e-timer" class="e-timer" style="display:none">2:30</div>
             <div id="e-streak"></div>
@@ -309,7 +331,7 @@ try {
       </div>
       <div class="card">
         <div class="e-carousel" id="e-carousel" style="display:none"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="run-head">
           <span class="small muted" id="e-pos"></span>
           <span class="small e-diff" id="e-diff" title="Question difficulty"></span>
         </div>
@@ -335,27 +357,42 @@ try {
   </section>
 </div>
 
-<nav class="tabs">
-  <button data-tab="overview" class="active"><span class="ico">🏠</span>Overview</button>
-  <button data-tab="guides"><span class="ico">📖</span>Guides</button>
-  <button data-tab="cards"><span class="ico">🃏</span>Cards</button>
-  <button data-tab="quiz"><span class="ico">✏️</span>Quiz</button>
-  <button data-tab="test"><span class="ico">🎯</span>Practice</button>
-  <button data-tab="drills"><span class="ico">🎛️</span>Drills</button>
-  <button data-tab="endless"><span class="ico">♾️</span>Endless</button>
+<nav class="tabs" aria-label="Sections">
+  <button data-tab="overview" class="active" aria-current="page"><span class="ico" aria-hidden="true">🏠</span><span class="lbl">Overview</span></button>
+  <button data-tab="guides"><span class="ico" aria-hidden="true">📖</span><span class="lbl">Guides</span></button>
+  <button data-tab="cards"><span class="ico" aria-hidden="true">🃏</span><span class="lbl">Cards</span></button>
+  <button data-tab="quiz"><span class="ico" aria-hidden="true">✏️</span><span class="lbl">Quiz</span></button>
+  <button data-tab="test"><span class="ico" aria-hidden="true">🎯</span><span class="lbl">Practice</span></button>
+  <button data-tab="drills"><span class="ico" aria-hidden="true">🎛️</span><span class="lbl">Drills</span></button>
+  <button data-tab="endless"><span class="ico" aria-hidden="true">♾️</span><span class="lbl">Endless</span></button>
 </nav>
+
+<!-- SETTINGS (rendered by settings.js) -->
+<div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <h2 id="settings-title">Settings</h2>
+      <button class="icon-btn sheet-close" type="button" data-close aria-label="Close settings">✕</button>
+    </div>
+    <div class="sheet-body" id="settings-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <!-- auth.js first (not deferred): Safari must complete the redirect sign-in ASAP.
      The heavy question-bank scripts are deferred so they don't block it. -->
-<script src="auth.js?v=4"></script>
+<script src="auth.js?v=6"></script>
 <script src="data/questions.js" defer></script>
 <script src="data/cards.js" defer></script>
 <script src="data/guides.js" defer></script>
 <script src="data/drills.js" defer></script>
 <script src="forge.js" defer></script>
+<script src="data/forge.js" defer></script>
+<script src="settings.js" defer></script>
 <script src="app.js" defer></script>
 <script>
 // Offline mode: cache the app shell so it loads with no internet.
