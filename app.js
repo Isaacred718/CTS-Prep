@@ -1259,9 +1259,12 @@ const Endless = (function () {
       $('e-explain').style.display = 'none';
       later(show, S.get('lightningMs'));
     } else {
-      const ex = $('e-explain');
+      const ex = $('e-explain'), after = Math.round(level);
+      // only say "Level up/down" when the displayed level actually changes
+      const note = after !== before ? `Level ${moved} → Lv ${after} · ${levelName()}`
+        : `Lv ${after} · ${levelName()} — ${moved === 'up' ? (after >= 5 ? 'holding at the top' : 'climbing') : 'easing off'}`;
       ex.innerHTML = `<div class="explain"><strong>${timedOut ? "⏱ Time's up." : (okFinal ? 'Correct.' : 'Not quite.')}</strong> ${esc(cur.explanation)}` +
-        `<div class="small muted" style="margin-top:6px">Level ${moved} → Lv ${Math.round(level)} · ${levelName()}</div></div>`;
+        `<div class="small muted" style="margin-top:6px">${note}</div></div>`;
       ex.style.display = '';
       $('e-next').style.display = '';
       if (okFinal && S.get('autoAdvance')) later(show, AUTO_ADVANCE_MS);

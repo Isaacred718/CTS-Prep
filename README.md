@@ -1,184 +1,195 @@
-# CTS Prep — Merged Study App
+# CTS Prep
 
-A single-page, offline-first study app for the **AVIXA CTS, CTS-D, and CTS-I** certifications,
-merged from the `CTS-Prep` and `cts-study` repos with expanded content and a practice-test generator.
+An offline-first study app for the **AVIXA CTS, CTS-D and CTS-I** certifications:
+study guides, spaced-repetition flashcards, quizzes, a practice-test generator,
+scenario drills and an endless adaptive mode, with Google sign-in to sync
+progress across devices.
+
+The app runs on a topic-agnostic engine, so the same experience can be cloned
+for any other subject. See **[TEMPLATE.md](TEMPLATE.md)**.
 
 ## What's inside
 
 | Content | Count |
 |---|---|
-| Quiz / practice-test questions (every one with a full explanation) | **392** |
-| — CTS questions | 185 |
-| — CTS-D questions (design) | 104 |
-| — CTS-I questions (installation) | 103 |
+| Questions, every one with a full explanation | **392** |
+| — CTS | 185 |
+| — CTS-D (design) | 104 |
+| — CTS-I (installation) | 103 |
 | Flashcards (Leitner spaced repetition) | 131 |
-| Study guides (incl. Exam Cram quick reference) | 7 |
+| Study guides (incl. the Exam Cram quick reference) | 7 |
 | Scenario drills | 24 |
+| Question generators for Endless mode | 40 (CTS) |
 
-**Domain coverage** — 29 domains across three certifications:
+**29 domains** across three certifications:
 
-- **CTS (14 domains):** Needs Analysis, AV Design, Sound & Physics, Video & Signal,
-  AV Networking, Control Systems, Electrical & Site Survey, Project Management,
-  Customer Relations, Troubleshooting & Verification, Commissioning & Closeout,
-  AVIXA Standards — plus clearly-labeled *Advanced* material (ST 2110 suite, Dante & AES67).
-- **CTS-D (6 domains):** Needs Assessment, Allied Trade Coordination, AV System Design,
+- **CTS (14):** Needs Analysis, AV Design, Sound & Physics, Video & Signal, AV Networking,
+  Control Systems, Electrical & Site Survey, Project Management, Customer Relations,
+  Troubleshooting & Verification, Commissioning & Closeout, AVIXA Standards, plus clearly
+  labeled *Advanced* material (ST 2110 suite, Dante & AES67).
+- **CTS-D (6):** Needs Assessment, Allied Trade Coordination, AV System Design,
   Design Calculations, Design Documentation, Verification & Closeout.
-- **CTS-I (9 domains):** Pre-Installation Activities, Rough-In & First Fix,
-  Rack Build & Wiring, Mounting & Distribution, Termination & Cable Standards,
-  Configuration & Networking, Testing & Calibration, Closeout & Training,
-  Jobsite Operations & Safety.
+- **CTS-I (9):** Pre-Installation Activities, Rough-In & First Fix, Rack Build & Wiring,
+  Mounting & Distribution, Termination & Cable Standards, Configuration & Networking,
+  Testing & Calibration, Closeout & Training, Jobsite Operations & Safety.
 
-The CTS-D and CTS-I banks are grounded in the official AVIXA content outlines:
-CTS-D (Needs Assessment 16.8%, Coordinating with Other Professionals 23.2%,
-Developing AV Designs 48.0%, Project Implementation 12.0%) and the current
-six-duty CTS-I outline (Pre-Installation ~17%, Ongoing Project Responsibilities
-~12%, Site Rough-In/First-Fix ~12%, Install AV Systems ~39%, Systems Closeout
-~12%, Post-Project Activities ~8%). Questions favor realistic scenarios and
-calculations over trivia.
+The CTS-D and CTS-I banks follow the official AVIXA content outlines. Questions favor
+realistic scenarios and calculations over trivia, and wrong answers are written as real
+misconceptions at the same length and detail as the right one: always picking the
+longest answer scores about 23%, no better than guessing.
 
 ## Features
 
-- **Overview** — dashboard with content stats, domain coverage, recent test history, and a suggested study loop.
-- **Exam Readiness** — per-domain readiness scores (practice tests 60% + flashcard mastery 40%) with an overall band: Exam ready (85+), Almost there (70–84), Building momentum (50–69), Early stages (below 50). Filterable by certification (CTS / CTS-D / CTS-I / All). Domains are sorted weakest-first so you always see what to study next. Recomputed live as you study and sync. CTS-D/I domains have no flashcards yet, so practice-test performance carries full weight for them until cards exist — missing data is never scored as zero.
-- **Career targets** — full-time AV roles ranked by your readiness in the domains each role leans on (AV Engineer, AV Design Engineer, AV Project Manager, Field Service Engineer, Lead AV Technician, Control Systems Programmer, UC/Collaboration Engineer, Broadcast Systems Engineer, plus CTS-D track **AV Design Engineer** and CTS-I track **Lead AV Installer**), with Strong/Developing/Early match labels.
-- **Study Guides** — concise per-domain guides plus an *Exam Cram* (formulas, numbers to memorize, memory aids, common mistakes).
-- **Flashcards** — Leitner 5-box spaced repetition, flip animation, shuffle, category filters, progress tracking (saved in the browser).
-- **Quiz** — domain filter, question-count options, shuffle, optional timer, live progress, immediate per-question explanations, results broken down by domain, and full answer review.
-- **Practice Test generator** — build a fresh randomized test every time:
-  - Certification filter: **CTS**, **CTS-D**, **CTS-I**, or **All certifications** — the domain list, both question mixes, and the generated test all stay inside the selected certification (old history entries without a cert tag keep working)
-  - Lengths: **Quick (25)**, **Standard (50)**, **Full exam sim (110)**
-  - Domain selection: tap checkboxes to include/exclude any of the 14 domains, with All/None shortcuts
-  - Question mix: **Balanced** (even spread across the selected domains) or **Pure random** (random draw from the selected pool)
-  - Timer: scaled default (150 min for the full 110-question sim), adjustable, auto-grades on expiry
-  - No repeated questions within a test; prev/next navigation with changeable answers
-  - Score %, per-domain breakdown, 70% pass heuristic (labeled as a benchmark, not a prediction),
-    full review screen with explanations, and a **Generate new test** button
+- **Overview** — dashboard with content stats, Exam Readiness by domain (weakest first),
+  career targets ranked by readiness, domain coverage, recent sessions and a study loop.
+- **Study Guides** — concise domain guides and the *Exam Cram* (formulas, numbers to
+  memorize, memory aids, common mistakes).
+- **Flashcards** — Leitner 5-box spaced repetition with category filters; Box 4+ counts as mastered.
+- **Quiz** — filter by certification and domain, choose a length and optional timer, get an
+  explanation after every answer; ending early still scores what you answered.
+- **Practice Test generator** — Quick (25), Standard (50) or Full exam sim (110 at exam pace,
+  150 min); balanced across selected domains or pure random; no repeats; prev/next with
+  changeable answers; per-domain breakdown and a full review.
+- **Scenario Drills** — exam-style situations that end in a decision.
+- **Endless mode** — difficulty adapts live (Lv 1–5), repeats come back rephrased, and the
+  *Generated* source builds brand-new calculation, concept and trick questions forever.
+  Optional per-question timer and lightning round.
+- **Answer shuffling** — every mode shuffles answer order, so positions never give answers away.
+- **Settings** (gear in the header) — see below.
+- **Keyboard shortcuts** — 1–4 / A–D to answer, Enter or → for next, ← → in practice tests,
+  Space / ← / → on flashcards.
+- **Offline** — after one visit the whole app works with no connection.
+
+## Settings
+
+| Section | Settings |
+|---|---|
+| Appearance (this device) | Theme (dark / light / auto) · accent color · text size · reduce motion |
+| Study (syncs) | Default certification · pass mark · readiness weighting (practice vs. flashcards) · default quiz and test length · auto-advance on correct answers · flashcard side shown first |
+| Timers (syncs) | Practice-test pace (off / exam / 1.5× / 2×) · Endless question timer · lightning speed |
+| Endless (syncs) | Starting level · difficulty ramp · generated share in Mixed |
+| Sound & keyboard (this device) | Sound effects · keyboard shortcuts |
+| Your data | Export / import a backup · reset flashcards, history or personal bests · restore defaults · erase all |
+| About | Version · check for updates · repair the offline copy |
 
 ## How Exam Readiness is computed
 
-Per domain (29 domains across CTS, CTS-D, CTS-I):
-- **Practice tests — 60%:** pooled correct ÷ pooled answered across saved practice tests that carry a per-domain breakdown. Tests saved before this feature (no breakdown) are ignored for domain stats.
-- **Flashcards — 40%:** share of the domain's cards sitting in Leitner box 4 or 5.
-- If only one signal exists for a domain, it carries full weight; with neither, the domain shows "No data yet" and is excluded from the overall score. The new CTS-D and CTS-I domains have no flashcards yet, so test performance carries full weight for them — absence of data is never turned into a zero.
-- The readiness card can be filtered by certification (CTS / CTS-D / CTS-I / All) to view each track separately.
+Per domain:
 
-Overall readiness = mean of the domains that have data. Bands: **85+ Exam ready · 70–84 Almost there · 50–69 Building momentum · below 50 Early stages.** The 70% band echoes the app's pass heuristic — the real CTS exam uses scaled scoring, so readiness is a study signal, not a prediction. Career-target rankings use the average readiness of each role's mapped domains; roles with no supporting data show "Study to unlock signal" instead of a score.
+- **Practice performance** — pooled correct ÷ answered across saved sessions that carry a
+  per-domain breakdown (quizzes, practice tests and Endless runs).
+- **Flashcard mastery** — share of the domain's cards in Leitner box 4 or 5.
+- The two are blended by the *readiness weighting* setting (default 60% practice / 40% cards).
+  With only one signal, it carries full weight; with neither, the domain shows "No data yet"
+  and is left out of the overall score. Missing data is never scored as zero.
 
-## Certification recorded in history
-
-Every new practice-test entry in `cts_test_history` records the certification it was
-generated for (`cert: "CTS" | "CTS-D" | "CTS-I" | "__all"`), shown in the recent-tests
-list on the Overview tab. Entries saved before this field existed (including all
-drill entries) have no `cert` and continue to display and contribute to readiness
-wherever their stored domain breakdown applies.
-
-## Open it locally
-
-No build step, no server required — just open the file:
-
-```bash
-open ~/workspace/cts-merge/merged-app/index.html   # macOS
-xdg-open ~/workspace/cts-merge/merged-app/index.html  # Linux
-```
-
-Or serve it locally (avoids any `file://` quirks):
-
-```bash
-cd ~/workspace/cts-merge/merged-app && python3 -m http.server 8080
-# then visit http://localhost:8080
-```
-
-Progress (flashcard boxes, test history) is stored in the browser's `localStorage`.
-Signing in with Google syncs it to the cloud — see below.
+Overall readiness is the mean of the domains with data. Bands key off the *pass mark*
+setting (default 70%): **Exam ready** at the halfway point between the pass mark and 100
+(85), **Almost there** at the pass mark (70), **Building momentum** at pass − 20 (50), and
+**Early stages** below that. The real exam uses scaled scoring, so readiness is a study
+signal, not a prediction. Career targets rank roles by the average readiness of the domains
+each role leans on.
 
 ## Google sign-in & progress sync (optional)
 
-The app works fully offline without an account. Tapping **Sign in with Google** in the
-header syncs your progress to the cloud so it follows you across devices.
+The app works fully without an account. **Sign in with Google** syncs progress across devices.
 
-- **Backend:** Firebase project `lift-tracker-fade7` (shared with the fitlog-tracker app).
-  The Google sign-in provider is enabled and `isaacred718.github.io` is already an
-  authorized domain, so no extra Firebase setup is needed.
-- **What syncs:** flashcard Leitner boxes + practice-test history.
-- **Where:** one Firestore document per user at `cts_users/{uid}`
-  (kept separate from the fitlog `users/{uid}` docs):
+- **Backend:** Firebase project `lift-tracker-fade7` (shared with fitlog-tracker);
+  `isaacred718.github.io` is an authorized domain.
+- **Where:** one Firestore document per user, `cts_users/{uid}`:
 
 | Field | Contents |
 |---|---|
 | `displayName`, `email`, `photoURL` | from the Google account |
-| `updatedAt` | ms timestamp of the last change — drives the newer-wins merge |
+| `updatedAt` | ms timestamp of the last change; drives the newer-wins merge |
 | `leitnerBoxes` | flashcard boxes: `{ "domain\|front": 1–5 }` |
-| `testHistory` | last 20 practice tests: `{ date, n, score, mode, domains: { [domain]: { c, t } } }` — the per-domain breakdown powers the Exam Readiness ratings |
+| `testHistory` | last 40 sessions: `{ date, n, score, mode, cert, domains: { [domain]: { c, t } } }` |
+| `endlessBest` | Endless personal best level per certification |
+| `settings` | study settings (appearance settings stay on each device) |
 
-- **Merge rule:** on sign-in, the newer side wins by `updatedAt` — if the cloud copy is
-  newer it is adopted locally (Leitner boxes + history refresh in the UI); otherwise local
-  progress is pushed up. Local changes are pushed ~2 seconds after you make them
-  (`set(..., { merge: true })`).
-- **Offline-first:** every Firestore call is guarded — if the SDK can't load, you're
-  offline, or a write fails, the app keeps working on `localStorage` and the header
-  shows an Offline / Sync-failed status. Signing out leaves local progress on the device.
-- **Security rules:** see `../firestore-cts.rules` — a signed-in user can read/write only
-  their own `cts_users/{uid}` doc. Merge that block into the existing Firestore rules
-  (don't replace the fitlog rules).
+- **Merge rule:** on sign-in the newer side wins by `updatedAt`. Local changes push about
+  2 seconds after you make them. Signing out leaves local progress on the device.
+- **Offline-first:** every Firestore call is guarded; if it fails, the app keeps working on
+  local storage and the header shows the sync status.
+- **Security rules:** [`firestore.rules`](firestore.rules) holds the rules (a signed-in user
+  can read and write only their own doc). Merge them into the project's existing rules; don't
+  replace the fitlog rules.
 
-### iOS home-screen note
-When the app is added to the Home Screen (standalone mode), Google sign-in automatically
-uses a redirect flow, since OAuth popups don't work in standalone web apps.
+## Offline mode and updates
 
-## Deploy on GitHub Pages
+A service worker caches the app shell, content and Firebase SDK. Online, it fetches fresh
+files on every load, so a new deploy shows up the next time the app opens. No cache
+version needs bumping. Offline, or on a very slow connection, it serves the cached copy.
+Its caches are named `cts-prep-*` and it never touches other apps' caches on
+`isaacred718.github.io`. **Settings → About → Repair offline copy** rebuilds it if anything
+ever looks stuck.
 
-1. Create a new repo (or reuse one) and push the contents of `merged-app/` to the `main` branch —
-   `index.html` must be at the repo root.
-2. On GitHub: **Settings → Pages → Deploy from a branch → `main` / `/ (root)`**.
-3. The app is live at `https://<username>.github.io/<repo>/` within a minute or two.
+## Run it locally
 
-Because everything is static (HTML + CSS + JS, no backend), Pages deployment is all you need.
+```bash
+python3 -m http.server 8080   # in the repo folder, then open http://localhost:8080
+```
 
-## Suggested study plan
+## Deploy
 
-1. **Survey** — skim the Study Guides, noting unfamiliar domains.
-2. **Learn** — read one guide, then drill its flashcards until most cards reach Box 4+.
-3. **Test** — take a Quiz filtered to that domain; re-study anything under 80%.
-4. **Simulate** — run Full exam sims (110 Q, 150 min) until you consistently score 80%+.
-5. **Review** — use the per-domain breakdown after every test to aim your next study session.
+Publish with GitHub Pages from the `main` branch root (**Settings → Pages → Deploy from a
+branch → `main` / root**). Bump `version` in `topic.js` when you publish, so
+**Settings → Check for updates** can tell you there's something new.
 
-## Content notes & provenance
+## Make a study app for another topic
 
-- Built from `CTS-Prep` (36 questions, 36 cards, 6 guides) and `cts-study` (87 questions, 83 cards).
-- All 87 `cts-study` questions were given full 2–3 sentence teaching explanations (replacing one-liners).
-- 50 new questions were added for under-weighted CTS domains (needs analysis, AV design,
-  project management, customer relations, troubleshooting, commissioning/closeout).
-- Near-duplicate questions were removed (e.g. a duplicated ONVIF camera-control question);
-  short "stands for?" stems that test different acronyms were kept.
-- One factually weak `cts-study` question was corrected: HDMI copper cables use
-  **twisted-pair** construction (the original answer choice was wrong).
-- Advanced ST 2110 / Dante material is tagged `Advanced:` so it can't be confused with core CTS scope.
-- 15 new flashcards and an *Exam Cram* guide were added; the old "How to use this app" guide
-  was rewritten for the merged app.
-- **2026-09-27 expansion:** every question now carries a `cert` tag (`CTS` | `CTS-D` | `CTS-I`);
-  the 172 legacy questions were backfilled as `CTS`. 104 new CTS-D questions (6 domains)
-  and 103 new CTS-I questions (9 domains) were authored against the official AVIXA
-  content outlines, and 13 questions topped up thin CTS domains
-  (Commissioning & Closeout, Electrical & Site Survey, AVIXA Standards,
-  Control Systems, Dante & AES67). Practice tests gained a certification selector,
-  readiness gained a certification filter, history entries record their certification,
-  and career targets added CTS-D track **AV Design Engineer** and CTS-I track
-  **Lead AV Installer**.
+```bash
+node tools/new-topic.mjs ../spanish-prep --name "Spanish Prep" --id spanish --accent emerald
+```
+
+This creates a complete app with the same engine and the astronomy sample content from
+`template/`. Then edit `topic.js`, replace `data/*.js`, and run `node tools/validate.mjs`.
+[TEMPLATE.md](TEMPLATE.md) documents every field, content format and deploy step.
+
+## Checking content
+
+```bash
+node tools/validate.mjs           # formats, indexes, duplicate card keys, length tells, generators
+node tools/validate.mjs --strict  # warnings fail too
+```
 
 ## File layout
 
 ```
-merged-app/
-├── index.html        # app shell (5 tabs) + Firebase CDN scripts + auth UI
-├── styles.css        # dark glassmorphism theme
-├── app.js            # all logic: tabs, guides, Leitner cards, quiz, test generator
-├── auth.js           # Google sign-in + Firestore progress sync (offline-first)
-├── data/
-│   ├── questions.js  # 172 questions: { domain, q, options[4], correct, explanation }
-│   ├── cards.js      # 131 flashcards: { domain, front, back }
-│   └── guides.js     # 7 guides: { title, domain, body }
-└── README.md
+index.html        app shell; loads topic.js first and applies saved theme before paint
+topic.js          everything CTS-specific: tracks, copy, careers, exam pace, sync config
+styles.css        dark/light themes, accents, text sizes
+settings.js       settings store and sheet, export/import, update check
+app.js            tabs, readiness, guides, flashcards, quiz, practice tests, drills, Endless
+forge.js          question-generator engine
+auth.js           Google sign-in + Firestore sync (offline-first)
+sw.js             offline service worker
+data/
+  questions.js    392 questions: { domain, cert, q, options[4], correct, explanation }
+  cards.js        131 flashcards: { domain, front, back }
+  guides.js       7 guides: { title, domain, body }
+  drills.js       24 drills: { duty, task, scenario, question, options, correct, explanation }
+  forge.js        CTS generators: calculations, concept tables, trick tables
+template/         starter topic for new apps (astronomy sample)
+tools/
+  new-topic.mjs   scaffold a new study app
+  validate.mjs    content checker
+TEMPLATE.md       how to build a study app for another topic
+firestore.rules   reference Firestore security rules
 ```
 
-Firestore rules live at `../firestore-cts.rules` (merge into the existing
-`lift-tracker-fade7` ruleset — not part of the deployed site).
+## Content notes & provenance
+
+- Merged from `CTS-Prep` (36 questions, 36 cards, 6 guides) and `cts-study` (87 questions,
+  83 cards); every `cts-study` question got a full teaching explanation.
+- 50 questions added for under-weighted CTS domains; near-duplicates removed.
+- Advanced ST 2110 / Dante material is tagged `Advanced:` so it can't be confused with core CTS scope.
+- **2026-09-27:** every question carries a `cert` tag; 104 CTS-D and 103 CTS-I questions
+  authored against the official AVIXA outlines; 13 CTS top-ups.
+- **2026-10-01:** 222 distractors rewritten and trick-question generators added.
+- **2026-10-02 (v6):** settings menu; topic-agnostic engine and study-app template; answer
+  shuffling in every mode; a second distractor pass that removed the remaining
+  longest-answer giveaways (176 questions and 22 drills); and fact fixes — the EDID
+  expansion, fiber bend radius, image system contrast ratios (analytical decision
+  making 50:1, full-motion video 80:1), PAG/NAG, line level, Hi-Z impedance, phantom current,
+  PoE switch-port vs device power, and HDMI passive length at 1080p vs 4K60.

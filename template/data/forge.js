@@ -32,7 +32,7 @@
 
   // Weight on another world: weight scales with surface gravity
   F.calc('weight', 'Solar System', 'BASICS', 2, () => {
-    const w = pick([600, 700, 800, 900, 1000]);
+    const w = R(6, 10) * 100; // 600–1000 N; R(a, b) is a random integer from a to b
     const g = pick([['the Moon', 0.165], ['Mars', 0.38], ['Venus', 0.91], ['Titan', 0.14]]); // solid surfaces only
     const ans = w * g[1];
     const o = mkOptions(`${fmt(ans, 0)} N`, [
