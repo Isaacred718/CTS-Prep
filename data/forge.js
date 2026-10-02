@@ -177,7 +177,7 @@
         { t: 'genlock', d: 'Synchronizing video devices to a common reference signal so switching between them is clean.' },
         { t: 'scaling', d: 'Converting an image from one resolution to another; scaling up cannot create detail that was never captured.' },
         { t: 'refresh rate', d: 'How many times per second a display redraws its image, measured in hertz.' },
-        { t: 'the practical limit of passive HDMI copper', d: 'About 5 meters at 4K; longer runs need active, fiber, or HDBaseT extension.' },
+        { t: 'the practical limit of passive HDMI copper', d: 'About 5–7.5 meters at 4K60 (about 15 m at 1080p); longer runs need active, fiber, or HDBaseT extension.' },
         { t: 'HDBaseT', d: 'A standard carrying uncompressed video, audio, Ethernet, control, and power up to 100 m over one Cat6 cable.' },
         { t: 'contrast ratio', d: 'The luminance difference between the brightest white and the darkest black a display can produce.' },
         { t: 'video latency', d: 'The delay from camera capture to display; lip-sync problems typically appear above about 40 ms.' }
