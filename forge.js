@@ -111,6 +111,8 @@ const FORGE = (function () {
         }
       });
     });
+    // "does NOT belong" needs an outsider table, so it waits for a second table
+    generators.forEach(g => { if (g.family === 'belong') g.disabled = conceptTables.length < 2; });
     rebalance('belong');
   }
 
@@ -190,7 +192,7 @@ const FORGE = (function () {
     opts = opts || {};
     const cert = opts.cert || '__all';
     const target = opts.diff || 2;
-    const inCert = generators.filter(g => cert === '__all' || g.cert === cert);
+    const inCert = generators.filter(g => !g.disabled && (cert === '__all' || g.cert === cert));
     if (!inCert.length) return [];
     let elig = inCert.filter(g => Math.abs(g.diff - target) <= 1);
     if (!elig.length) elig = inCert;
@@ -217,8 +219,8 @@ const FORGE = (function () {
   return {
     draw, calc, concepts, tricks, generators,
     helpers: { R, pick, shuf, fmt, mkOptions, lcfirst, ucfirst },
-    tracks: () => [...new Set(generators.map(g => g.cert))],
+    tracks: () => [...new Set(generators.filter(g => !g.disabled).map(g => g.cert))],
     // introspection for tests / debugging
-    info: () => generators.map(g => ({ id: g.id, domain: g.domain, cert: g.cert, diff: g.diff, kind: g.kind, weight: g.weight }))
+    info: () => generators.map(g => ({ id: g.id, domain: g.domain, cert: g.cert, diff: g.diff, kind: g.kind, weight: g.weight, disabled: !!g.disabled }))
   };
 })();
