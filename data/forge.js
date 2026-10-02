@@ -716,7 +716,7 @@
           topic: 'viewing distance',
           trueStmts: [
             'For detailed content, the farthest viewer should sit within about 4 times the image height.',
-            'The 6-times-height figure is a maximum, so seats closer than that are still acceptable.',
+            'The 4-times-height figure is a maximum for detailed content, so seats closer than that are still acceptable.',
             'Content with larger text and simpler graphics can be read from farther than the detailed-content limit.'
           ],
           falseStmts: [
