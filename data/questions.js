@@ -2262,7 +2262,7 @@ const QUESTIONS = [
       "Remove wireless microphones and room combining so there is less for the staff to manage"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty A Task 2: the skill level of end users drives UI and system complexity decisions. For untrained rotating staff, the design must offer single-button presets (e.g., 'Presentation', 'Dinner', 'Dance') with advanced functions hidden behind a technician password."
+    "explanation": "CTS-D Duty A Task 1: the skill level of end users drives UI and system complexity decisions. For untrained rotating staff, the design must offer single-button presets (e.g., 'Presentation', 'Dinner', 'Dance') with advanced functions hidden behind a technician password."
   },
   {
     "domain": "CTS-D: Needs Assessment",
@@ -2275,7 +2275,7 @@ const QUESTIONS = [
       "Decline the project, because a professional designer should never deliver less than the client requested"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty A Task 3 (Educate AV Clients): the designer must translate marketing terms into infrastructure reality — uncompressed 4K60 4:4:4 needs ~18 Gbps, far beyond Cat5e. Educate, present options (compression, new cable, realistic 1080p), and document what the client actually approves."
+    "explanation": "CTS-D Duty A Task 1 (Educate AV Clients): the designer must translate marketing terms into infrastructure reality — uncompressed 4K60 4:4:4 needs ~18 Gbps, far beyond Cat5e. Educate, present options (compression, new cable, realistic 1080p), and document what the client actually approves."
   },
   {
     "domain": "CTS-D: Needs Assessment",
@@ -2288,7 +2288,7 @@ const QUESTIONS = [
       "Follow it for the control platform only, since codecs are chosen by the IT department"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty A Task 4: reviewing the client's technology master plan is a formal task. Designing to the standard reduces training, spares, and support costs. Deviations need written justification and approval, not silent substitution."
+    "explanation": "CTS-D Duty A Task 2: reviewing the client's technology master plan is a formal task. Designing to the standard reduces training, spares, and support costs. Deviations need written justification and approval, not silent substitution."
   },
   {
     "domain": "CTS-D: Needs Assessment",
@@ -2301,7 +2301,7 @@ const QUESTIONS = [
       "Copy the design of the competitor's boardroom, since the client already admires it"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty A Task 5 (Identify Client Expectations): 'impressive' is not a design criterion. The designer translates subjective desires into verifiable performance targets (viewing distances, intelligibility, ease of use) that the finished system can be tested against."
+    "explanation": "CTS-D Duty A Task 1 (Identify Client Expectations): 'impressive' is not a design criterion. The designer translates subjective desires into verifiable performance targets (viewing distances, intelligibility, ease of use) that the finished system can be tested against."
   },
   {
     "domain": "CTS-D: Needs Assessment",
@@ -2314,7 +2314,7 @@ const QUESTIONS = [
       "Glossy marketing brochures for each specified product, bound into the contract appendix as exhibits"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty A Task 6: the scope of work defines what the project includes — and just as importantly what it excludes (e.g., 'client-provided network drops excluded'). It becomes the contractual baseline that change orders are measured against."
+    "explanation": "CTS-D Duty C Task 4: the scope of work defines what the project includes — and just as importantly what it excludes (e.g., 'client-provided network drops excluded'). It becomes the contractual baseline that change orders are measured against."
   },
   {
     "domain": "CTS-D: Needs Assessment",
@@ -2444,7 +2444,7 @@ const QUESTIONS = [
       "Cancel the project entirely, since an acoustically poor room can never support a functioning AV system"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 2: coordinating with architectural/interior professionals means raising AV impacts of finish choices early. Glass + concrete can push RT60 past 1.5 seconds, wrecking speech intelligibility. Document the concern and the options while finishes can still change."
+    "explanation": "CTS-D Duty B Task 1: coordinating with architectural/interior professionals means raising AV impacts of finish choices early. Glass + concrete can push RT60 past 1.5 seconds, wrecking speech intelligibility. Document the concern and the options while finishes can still change."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2470,7 +2470,7 @@ const QUESTIONS = [
       "Use heavier chain and extra shackles to be safe, since stronger rigging hardware offsets any unknown structural load path"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 4: structural coordination is non-negotiable for suspended loads. Only a structural engineer can approve attachment points and load paths. Improvised rigging kills people and ends companies."
+    "explanation": "CTS-D Duty B Task 2: structural coordination is non-negotiable for suspended loads. Only a structural engineer can approve attachment points and load paths. Improvised rigging kills people and ends companies."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2483,7 +2483,7 @@ const QUESTIONS = [
       "Nothing needs specifying — standard building power is always adequate for any AV rack room regardless of connected load"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 5: the designer provides the electrical engineer with connected load, circuit counts, and special requirements (isolated ground, sequenced power). AV sharing noisy circuits with dimmers or motors is a hum-and-buzz guarantee."
+    "explanation": "CTS-D Duty B Task 3: the designer provides the electrical engineer with connected load, circuit counts, and special requirements (isolated ground, sequenced power). AV sharing noisy circuits with dimmers or motors is a hum-and-buzz guarantee."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2496,7 +2496,7 @@ const QUESTIONS = [
       "Brighter rooms always improve the viewing experience, so driving house lights to full is the correct video-playback preset"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 6: lighting zones over the screen vs. over the audience must be separately controllable and coordinated with AV presets. This is agreed on drawings and in the sequence of operations — not discovered at commissioning."
+    "explanation": "CTS-D Duty B Task 1: lighting zones over the screen vs. over the audience must be separately controllable and coordinated with AV presets. This is agreed on drawings and in the sequence of operations — not discovered at commissioning."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2509,7 +2509,7 @@ const QUESTIONS = [
       "After the client signs off on the finished system, as a punch-list item for the security team to resolve"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 7: network security requirements discovered at commissioning cause weeks of delay. The designer coordinates with IT early: which devices support 802.1X supplicants, who configures the switch, and what the InfoSec review timeline is."
+    "explanation": "CTS-D Duty B Task 4: network security requirements discovered at commissioning cause weeks of delay. The designer coordinates with IT early: which devices support 802.1X supplicants, who configures the switch, and what the InfoSec review timeline is."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2522,7 +2522,7 @@ const QUESTIONS = [
       "Louder program loudspeakers are required to overcome NC-25, so the design should specify higher-SPL speakers that can mask the room's very low background noise"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 8: Noise Criterion ratings set the room's background noise target. NC-25 is quiet (good for conferencing). The designer must confirm the HVAC and envelope can actually achieve it — designing AEC and mic coverage for NC-25 in an NC-40 room guarantees complaints."
+    "explanation": "CTS-D Duty B Task 5: Noise Criterion ratings set the room's background noise target. NC-25 is quiet (good for conferencing). The designer must confirm the HVAC and envelope can actually achieve it — designing AEC and mic coverage for NC-25 in an NC-40 room guarantees complaints."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2535,7 +2535,7 @@ const QUESTIONS = [
       "Life-safety rules apply solely to the electrical contractor, so AV speakers and cable need no fire or code review at all"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty B Task 9: low voltage doesn't mean no life-safety impact. Plenum spaces require plenum-rated cable, penetrations need firestopping, and in many jurisdictions the AV system must mute or override for emergency notification. Coordinate with the fire protection engineer."
+    "explanation": "CTS-D Duty B Task 6: low voltage doesn't mean no life-safety impact. Plenum spaces require plenum-rated cable, penetrations need firestopping, and in many jurisdictions the AV system must mute or override for emergency notification. Coordinate with the fire protection engineer."
   },
   {
     "domain": "CTS-D: Allied Trade Coordination",
@@ -2652,7 +2652,7 @@ const QUESTIONS = [
       "Architects prefer markups — the design team explicitly forbids dedicated AV drawing sets, so redlined markups are the only deliverable the contract allows"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty C Tasks 3–4: AV infrastructure and system drawings are formal deliverables — they define pathways, device locations, wiring, and rack build. A redline on someone else's PDF is not a buildable, biddable document set."
+    "explanation": "CTS-D Duty C Task 3: AV infrastructure and system drawings are formal deliverables — they define pathways, device locations, wiring, and rack build. A redline on someone else's PDF is not a buildable, biddable document set."
   },
   {
     "domain": "CTS-D: AV System Design",
@@ -3237,7 +3237,7 @@ const QUESTIONS = [
       "It is only for the client — the block diagram is a sales visual, and installers and programmers never reference it at any point during the build"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty C Task 4: the block diagram is the design's single source of truth for signal flow. The installer builds from it, the programmer programs from it, and troubleshooting starts from it. Ambiguity here becomes field improvisation."
+    "explanation": "CTS-D Duty C Task 3: the block diagram is the design's single source of truth for signal flow. The installer builds from it, the programmer programs from it, and troubleshooting starts from it. Ambiguity here becomes field improvisation."
   },
   {
     "domain": "CTS-D: Design Documentation",
@@ -3250,7 +3250,7 @@ const QUESTIONS = [
       "System drawings are only for large projects — on small jobs, device connections and signal flow are documented with a hand sketch taped inside the rack door"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty C Tasks 3–4: infrastructure (conduit/backbox/cable schedule) is built by the electrical contractor during rough-in; system drawings (rack elevations, point-to-point wiring, RCP device plans) are built by the AV integrator. Different audiences, different bid packages."
+    "explanation": "CTS-D Duty C Task 3: infrastructure (conduit/backbox/cable schedule) is built by the electrical contractor during rough-in; system drawings (rack elevations, point-to-point wiring, RCP device plans) are built by the AV integrator. Different audiences, different bid packages."
   },
   {
     "domain": "CTS-D: Design Documentation",
@@ -3432,7 +3432,7 @@ const QUESTIONS = [
       "Remove the specifications to save printing — dropping the spec section cuts printing costs, which is the designer’s final quality assurance duty"
     ],
     "correct": 1,
-    "explanation": "CTS-D Duty C Task 5 (Finalize Project Documentation): internal QA catches the drawing that shows 12 speakers while the BOM lists 10. Inconsistent bid documents produce inconsistent bids — and disputes."
+    "explanation": "CTS-D Duty C Task 4 (Finalize Project Documentation): internal QA catches the drawing that shows 12 speakers while the BOM lists 10. Inconsistent bid documents produce inconsistent bids — and disputes."
   },
   {
     "domain": "CTS-D: Verification & Closeout",
@@ -3627,7 +3627,7 @@ const QUESTIONS = [
       "Staging wastes time — shop assembly duplicates the site work, so the best practice is to ship everything boxed and assemble it all on site later"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty A Task 3: shop staging catches DOA equipment, lets programmers load code, and means the rack arrives tested. An hour of shop time saves three hours of ladder time."
+    "explanation": "CTS-I Duty A Task 4: shop staging catches DOA equipment, lets programmers load code, and means the rack arrives tested. An hour of shop time saves three hours of ladder time."
   },
   {
     "domain": "CTS-I: Pre-Installation Activities",
@@ -3640,7 +3640,7 @@ const QUESTIONS = [
       "Install wireless access points and wireless HDMI links instead of cable, since wireless systems eliminate the need for any in-wall cable rough-in work"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty A Task 4: evaluating facility readiness means confirming the site can actually receive your work — power on, pathways in, preceding trades complete, materials on hand. Working out of sequence multiplies cost."
+    "explanation": "CTS-I Duty A Task 3: evaluating facility readiness means confirming the site can actually receive your work — power on, pathways in, preceding trades complete, materials on hand. Working out of sequence multiplies cost."
   },
   {
     "domain": "CTS-I: Pre-Installation Activities",
@@ -3653,7 +3653,7 @@ const QUESTIONS = [
       "Wait for instructions — the lead should stand by until the GC personally assigns each task for the day"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty A Task 5: on-site preparation — secure storage (gear walks away), safety briefing, GC coordination, and a plan for the day. Crews that 'just start pulling' spend the afternoon looking for the cable they left in the truck."
+    "explanation": "CTS-I Duty A Task 4: on-site preparation — secure storage (gear walks away), safety briefing, GC coordination, and a plan for the day. Crews that 'just start pulling' spend the afternoon looking for the cable they left in the truck."
   },
   {
     "domain": "CTS-I: Pre-Installation Activities",
@@ -3809,7 +3809,7 @@ const QUESTIONS = [
       "Cut everything with one snip and toss it all in the dumpster, because abandoned cable and old speakers have no disposal regulations at all"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty B Task 1: deinstallation is surgical, not demolition. Label circuits before disconnecting (some may stay live), verify power is off, and handle disposal — including e-waste rules for old electronics."
+    "explanation": "CTS-I Duty C Task 1: deinstallation is surgical, not demolition. Label circuits before disconnecting (some may stay live), verify power is off, and handle disposal — including e-waste rules for old electronics."
   },
   {
     "domain": "CTS-I: Rough-In & First Fix",
@@ -3822,7 +3822,7 @@ const QUESTIONS = [
       "Substructure is optional — projector mounts can hang directly from the ceiling tile grid, since the tiles distribute the equipment load evenly across the ceiling"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty B Task 2: substructure carries the load to the building. Fasteners must suit the substrate (concrete anchors, beam clamps — never drywall alone for heavy loads), and the assembly must handle the weight with margin."
+    "explanation": "CTS-I Duty C Task 2: substructure carries the load to the building. Fasteners must suit the substrate (concrete anchors, beam clamps — never drywall alone for heavy loads), and the assembly must handle the weight with margin."
   },
   {
     "domain": "CTS-I: Rough-In & First Fix",
@@ -3874,7 +3874,7 @@ const QUESTIONS = [
       "During commissioning, when each cable can be toned out and verified one at a time"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty B Task 3: label at pull time. Once the ceiling closes, identifying 40 identical black cables is archaeology. Both ends, matching the cable schedule, before close-up."
+    "explanation": "CTS-I Duty C Task 3: label at pull time. Once the ceiling closes, identifying 40 identical black cables is archaeology. Both ends, matching the cable schedule, before close-up."
   },
   {
     "domain": "CTS-I: Rough-In & First Fix",
@@ -3939,7 +3939,7 @@ const QUESTIONS = [
       "Outside the rack — amplifiers and UPS units should sit on the floor beside the rack to keep all heat out of the enclosure"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 1: heavy at the bottom is both safety (a top-heavy rack tips when rolled) and thermal sense. Follow the rack elevation drawing — it was engineered, not suggested."
+    "explanation": "CTS-I Duty D Task 1: heavy at the bottom is both safety (a top-heavy rack tips when rolled) and thermal sense. Follow the rack elevation drawing — it was engineered, not suggested."
   },
   {
     "domain": "CTS-I: Rack Build & Wiring",
@@ -3965,7 +3965,7 @@ const QUESTIONS = [
       "Wrapped in a tight spiral around the analog audio cables, so the power runs stay neatly organized right alongside them in the rack"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 2: signal separation is fundamental rack craft. Parallel power/audio runs couple 60 Hz hum inductively; separation plus right-angle crossings keeps the noise floor down."
+    "explanation": "CTS-I Duty D Task 2: signal separation is fundamental rack craft. Parallel power/audio runs couple 60 Hz hum inductively; separation plus right-angle crossings keeps the noise floor down."
   },
   {
     "domain": "CTS-I: Rack Build & Wiring",
@@ -4108,7 +4108,7 @@ const QUESTIONS = [
       "Lean the display against the wall on a credenza, since wall mounting always voids the manufacturer's warranty on 85-inch panels"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 4: mounts must attach to structure. Metal studs alone won't hold 120 lbs reliably; backing (plywood spanning studs) or structural attachment is required. Drywall anchors for a display this size are a collapse waiting to happen."
+    "explanation": "CTS-I Duty D Task 4: mounts must attach to structure. Metal studs alone won't hold 120 lbs reliably; backing (plywood spanning studs) or structural attachment is required. Drywall anchors for a display this size are a collapse waiting to happen."
   },
   {
     "domain": "CTS-I: Mounting & Distribution",
@@ -4225,7 +4225,7 @@ const QUESTIONS = [
       "Reflected ceiling plans are optional reference drawings and do not govern where ceiling equipment is placed"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 3: distributed equipment follows the coordinated RCP. Verifying each location against other trades' devices before cutting prevents the speaker-in-the-sprinkler-head classic."
+    "explanation": "CTS-I Duty D Task 3: distributed equipment follows the coordinated RCP. Verifying each location against other trades' devices before cutting prevents the speaker-in-the-sprinkler-head classic."
   },
   {
     "domain": "CTS-I: Termination & Cable Standards",
@@ -4238,7 +4238,7 @@ const QUESTIONS = [
       "Always terminate to T568B for AV — T568A fails HDCP handshakes on every AV-over-IP encoder in the system"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 5: electrically, A and B both work if both ends match. The standard that matters is consistency across the facility. Document which scheme the project uses and terminate everything to it."
+    "explanation": "CTS-I Duty D Task 5: electrically, A and B both work if both ends match. The standard that matters is consistency across the facility. Document which scheme the project uses and terminate everything to it."
   },
   {
     "domain": "CTS-I: Termination & Cable Standards",
@@ -4394,7 +4394,7 @@ const QUESTIONS = [
       "DHCP is insecure — DHCP leases expose AV devices to network attacks, while statically addressed devices are invisible to hackers"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 6: when the touch panel can't find the DSP because DHCP reassigned it, the room is down. Static IPs or documented reservations, recorded in the IP schedule, keep the system deterministic."
+    "explanation": "CTS-I Duty D Task 6: when the touch panel can't find the DSP because DHCP reassigned it, the room is down. Static IPs or documented reservations, recorded in the IP schedule, keep the system deterministic."
   },
   {
     "domain": "CTS-I: Configuration & Networking",
@@ -4446,7 +4446,7 @@ const QUESTIONS = [
       "Only the power button — testing the power on/off button proves the program loaded correctly, which covers all of the other panel functions by implication"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 7: loading code is step one; verification is the job. Exercise every UI element against the sequence of operations. The untested preset is the one that fails during the board meeting."
+    "explanation": "CTS-I Duty D Task 7: loading code is step one; verification is the job. Exercise every UI element against the sequence of operations. The untested preset is the one that fails during the board meeting."
   },
   {
     "domain": "CTS-I: Configuration & Networking",
@@ -4550,7 +4550,7 @@ const QUESTIONS = [
       "Testing order doesn’t matter — infrastructure, devices, and subsystems can be verified in any sequence with identical results"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 8: test in layers. Certified cable and correct power first — then each device, then signal paths, then the whole system. Testing top-down wastes hours chasing symptoms of a bad cable."
+    "explanation": "CTS-I Duty D Task 8: test in layers. Certified cable and correct power first — then each device, then signal paths, then the whole system. Testing top-down wastes hours chasing symptoms of a bad cable."
   },
   {
     "domain": "CTS-I: Testing & Calibration",
@@ -4589,7 +4589,7 @@ const QUESTIONS = [
       "Vivid mode is best — the Vivid/Dynamic picture preset is the factory reference mode, so selecting it completes calibration with no further adjustment needed"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty C Task 9: calibration uses test patterns — PLUGE for black level, resolution patterns for scaling check, grayscale for color temp. 'Vivid' mode is the enemy; calibrated is the deliverable."
+    "explanation": "CTS-I Duty D Task 9: calibration uses test patterns — PLUGE for black level, resolution patterns for scaling check, grayscale for color temp. 'Vivid' mode is the enemy; calibrated is the deliverable."
   },
   {
     "domain": "CTS-I: Testing & Calibration",
@@ -4680,7 +4680,7 @@ const QUESTIONS = [
       "To sell more equipment — the closeout demo exists to pitch upgrades and service contracts, not to verify the installed system"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty D Task 1: the demo is the acceptance test in front of the client. Every specified function demonstrated, every criterion shown met. Sign-off follows demonstrated performance — not promises."
+    "explanation": "CTS-I Duty E Task 1: the demo is the acceptance test in front of the client. Every specified function demonstrated, every criterion shown met. Sign-off follows demonstrated performance — not promises."
   },
   {
     "domain": "CTS-I: Closeout & Training",
@@ -4693,7 +4693,7 @@ const QUESTIONS = [
       "None at all — a well-designed system needs zero training, and users will figure out every function on their own"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty D Task 2: training matches roles — users get daily workflows, admins get deeper access. Hands-on practice plus a one-page quick guide beats a lecture. The best-designed system fails if users fear it."
+    "explanation": "CTS-I Duty E Task 2: training matches roles — users get daily workflows, admins get deeper access. Hands-on practice plus a one-page quick guide beats a lecture. The best-designed system fails if users fear it."
   },
   {
     "domain": "CTS-I: Closeout & Training",
@@ -4706,7 +4706,7 @@ const QUESTIONS = [
       "The client’s verbal approval — a spoken ‘looks good’ over the phone constitutes formal project completion sign-off"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty D Task 3: sign-off is the contractual finish line. Chasing signatures with open punch items or missing manuals poisons the relationship — and delays final payment."
+    "explanation": "CTS-I Duty E Task 3: sign-off is the contractual finish line. Chasing signatures with open punch items or missing manuals poisons the relationship — and delays final payment."
   },
   {
     "domain": "CTS-I: Closeout & Training",
@@ -4849,7 +4849,7 @@ const QUESTIONS = [
       "Only the hours each crew member worked, since the daily report exists for payroll and the PM tracks progress, delays and safety issues separately"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 1: daily reports are the project's memory. 'We were delayed three days waiting for the electrician' needs a dated record — written the day it happened, not reconstructed in a dispute."
+    "explanation": "CTS-I Duty B Task 1: daily reports are the project's memory. 'We were delayed three days waiting for the electrician' needs a dated record — written the day it happened, not reconstructed in a dispute."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
@@ -4862,7 +4862,7 @@ const QUESTIONS = [
       "Stop all work permanently — one blocked cable path means the entire installation project must be abandoned immediately"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 2: trade coordination runs through the GC/PM with documentation. Silent workarounds become unbillable costs; confrontation becomes a jobsite war. Coordinate and document."
+    "explanation": "CTS-I Duty B Task 2: trade coordination runs through the GC/PM with documentation. Silent workarounds become unbillable costs; confrontation becomes a jobsite war. Coordinate and document."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
@@ -4875,7 +4875,7 @@ const QUESTIONS = [
       "Skip that cable section entirely and leave it undocumented, because the system will probably work fine without those runs"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 3: field modifications need approval before execution. Document the condition (photos, measurements), get authorization, then install. After-the-fact change orders are where margins die."
+    "explanation": "CTS-I Duty B Task 3: field modifications need approval before execution. Document the condition (photos, measurements), get authorization, then install. After-the-fact change orders are where margins die."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
@@ -4888,7 +4888,7 @@ const QUESTIONS = [
       "Blaming the previous installer's workmanship and re-quoting the client for a full system replacement before diagnosing anything"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 4: most 'dead system' calls are power, a muted channel, or a loose cable. Check the obvious first, then isolate methodically. The expensive part is guilty last, not first."
+    "explanation": "CTS-I Duty F Task 2: most 'dead system' calls are power, a muted channel, or a loose cable. Check the obvious first, then isolate methodically. The expensive part is guilty last, not first."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
@@ -4901,7 +4901,7 @@ const QUESTIONS = [
       "Maintenance is the client’s job alone — the integrator’s responsibility ends at handover, and PM contracts are never offered"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 5: projectors clog, batteries die, firmware ages. Scheduled maintenance — with a checklist and report — is both a service revenue stream and the reason systems keep working."
+    "explanation": "CTS-I Duty F Task 1: projectors clog, batteries die, firmware ages. Scheduled maintenance — with a checklist and report — is both a service revenue stream and the reason systems keep working."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
@@ -4914,7 +4914,7 @@ const QUESTIONS = [
       "Maintenance wastes time — sharpening bits and calibrating meters consumes billable hours with no measurable quality benefit"
     ],
     "correct": 1,
-    "explanation": "CTS-I Duty E Task 6: a drifting meter certifies bad cable as good; a dull hole saw tears up the ceiling. Tool maintenance — calibration, batteries, cutting edges — is part of professional practice."
+    "explanation": "CTS-I Duty F Task 1: a drifting meter certifies bad cable as good; a dull hole saw tears up the ceiling. Tool maintenance — calibration, batteries, cutting edges — is part of professional practice."
   },
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
