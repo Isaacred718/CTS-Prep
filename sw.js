@@ -28,7 +28,20 @@ var ASSETS = [
   './data/cards.js',
   './data/guides.js',
   './data/drills.js',
-  './data/forge.js'
+  './data/forge.js',
+  // Document library: official AVIXA PDFs, cached so they open offline.
+  './data/docs/cts_handbook_august_2026.pdf',
+  './data/docs/cts_exam_content_outline_2024.pdf',
+  './data/docs/code_of_ethics.pdf',
+  './data/docs/cts-d_handbook_august_2026.pdf',
+  './data/docs/cts-d_exam_content_outline.pdf',
+  './data/docs/ctsd_math_formulas_2024.pdf',
+  './data/docs/cts-i_handbook_august_2026.pdf',
+  './data/docs/cts-i_exam_content_outline.pdf',
+  './data/docs/anp_handbook_2026.pdf',
+  './data/docs/anp-exam-content-outline-october-2023.pdf',
+  './data/docs/certification_fee_schedule_2025.pdf',
+  './data/docs/ru_options_chart_2023.pdf'
 ];
 var SDK = [
   'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',

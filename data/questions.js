@@ -1,10 +1,13 @@
 // Merged CTS question bank — built from CTS-Prep, cts-study, and new content.
-// Every entry: { domain, q, options[4], correct (index), explanation }
-// Generated 2026-09-22; expanded 2026-09-27 — 172 CTS + 104 CTS-D + 103 CTS-I + 13 CTS top-ups = 392 questions.
+// Every entry: { domain, cert, duty, task, q, options[4], correct (index), explanation }
+// Duty/task tags follow the official AVIXA outlines (CTS 2024, CTS-D 2023, CTS-I 2023).
+// Expanded 2026-10-06 — 272 CTS + 134 CTS-D + 124 CTS-I = 530 questions.
 const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "When addressing scope creep during installation, what formal document must be submitted to and approved by the client?",
     "options": [
       "Field Report",
@@ -18,6 +21,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What does the Certificate of Substantial Completion establish on an AV project?",
     "options": [
       "That every punch list item is closed and the contractor can leave the site",
@@ -31,6 +36,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "In a project schedule, what does the critical path represent?",
     "options": [
       "The tasks carrying the highest budget, which need the closest cost control",
@@ -44,6 +51,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "A speaker produces 80 dB SPL at 2 meters. What is the SPL at 4 meters in a free field?",
     "options": [
       "77 dB SPL",
@@ -57,6 +66,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Doubling the electrical power to a loudspeaker produces roughly what change in SPL?",
     "options": [
       "+2 dB",
@@ -70,6 +81,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the approximate wavelength of a 1 kHz tone in air at room temperature?",
     "options": [
       "0.034 m",
@@ -83,6 +96,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Per the Potential Acoustic Gain concept, what is the most effective way to increase gain before feedback?",
     "options": [
       "Add amplifier headroom so the whole system can run louder before it starts to ring out",
@@ -96,6 +111,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Under AVIXA V201.01, what minimum contrast ratio is recommended for Basic Decision Making content?",
     "options": [
       "7:1",
@@ -109,6 +126,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which AVIXA standard defines Display Image Size for 2D content in viewing environments?",
     "options": [
       "V201.01",
@@ -122,6 +141,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does AVIXA A102.01 govern?",
     "options": [
       "Audio coverage uniformity in listener areas",
@@ -135,6 +156,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "What is the total current draw of three 120V racks if each draws 480 Watts?",
     "options": [
       "4 Amps",
@@ -148,6 +171,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "What is the continuous load limit on a 20A branch circuit under standard derating practice?",
     "options": [
       "12 A",
@@ -161,6 +186,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "A ground loop hum in an unbalanced audio run is best resolved by which approach?",
     "options": [
       "Lifting the safety ground pin on one piece of equipment's power cord",
@@ -174,6 +201,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the approximate uncompressed bit rate of 1080p59.94 video at 4:2:2, 10-bit?",
     "options": [
       "1.5 Gbps",
@@ -187,6 +216,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "In HDCP, what is the practical consequence of a repeater exceeding its device or depth limit?",
     "options": [
       "Video falls back to standard definition so the content stays protected",
@@ -200,6 +231,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does EDID communicate in an HDMI link?",
     "options": [
       "The content-protection keys the source uses to encrypt the video stream",
@@ -213,6 +246,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which protocol does SMPTE ST 2110-10 leverage for microsecond-level synchronization across IP media networks?",
     "options": [
       "NTP / RFC 5905 (stratum 1)",
@@ -226,6 +261,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which sub-standard governs transport of PCM digital audio streams?",
     "options": [
       "ST 2110-10",
@@ -239,6 +276,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the defining architectural change ST 2110 makes relative to ST 2022-6?",
     "options": [
       "It replaces uncompressed SDI with a compressed IP payload to reduce overall network bandwidth",
@@ -252,6 +291,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does ST 2110-21 define?",
     "options": [
       "Ancillary data mapping for embedding captions and timecode into 2110 streams",
@@ -265,6 +306,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "How does a receiver handle duplicate streams under SMPTE ST 2022-7?",
     "options": [
       "It averages the two streams sample by sample to cancel out network jitter",
@@ -278,6 +321,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Which AMWA NMOS specification handles discovery and registration of media nodes?",
     "options": [
       "IS-04",
@@ -291,6 +336,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "What protocol do receiver endpoints use to join an active IP multicast stream?",
     "options": [
       "PIM-SM",
@@ -304,6 +351,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "In a PTP domain, what is the role of the Boundary Clock in a leaf-spine media network?",
     "options": [
       "It generates the master time reference from a GPS receiver and distributes it as the domain grandmaster",
@@ -317,6 +366,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: ST 2110 Suite",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does SDP (Session Description Protocol) provide in an ST 2110 workflow?",
     "options": [
       "The encryption keys and cipher suite used to secure the media payload as it crosses the network",
@@ -330,6 +381,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the relationship between Dante and AES67?",
     "options": [
       "They are the same protocol: AES67 is simply the standards body's name for Dante",
@@ -343,6 +396,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "In a Dante network, what does the Leader clock (formerly Master) provide?",
     "options": [
       "The routing table that decides which devices subscribe",
@@ -356,6 +411,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "When calculating the distance for a projector, what does 'Throw Ratio' represent?",
     "options": [
       "The ratio of the image width to the image height",
@@ -369,6 +426,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which color space is the industry standard for HD video transmission and represents the primary colors of Red, Green, and Blue?",
     "options": [
       "YPbPr",
@@ -382,6 +441,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "In a projection system, what is the primary cause of 'Keystone' distortion?",
     "options": [
       "A source resolution that does not match the native panel",
@@ -395,6 +456,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the primary purpose of a 'Bass Trap' in a room's acoustic treatment?",
     "options": [
       "To reinforce low frequencies so the room sounds fuller in corners",
@@ -408,6 +471,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "A microphone with a 'Cardioid' polar pattern is most sensitive to sound arriving from which direction?",
     "options": [
       "The rear",
@@ -421,6 +486,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "What does RT60 refer to in room acoustics?",
     "options": [
       "The time it takes for sound to travel 60 meters",
@@ -434,6 +501,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "According to the DISCAS standard, the 'Minimum Content Element' is determined by what?",
     "options": [
       "The distance to the closest viewer",
@@ -447,6 +516,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "What is the primary goal of 'Commissioning' in an AV installation?",
     "options": [
       "To close out every punch list item before the client walkthrough",
@@ -460,6 +531,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "When performing a site survey, why is it critical to identify the 'HVAC noise floor'?",
     "options": [
       "To determine whether the HVAC can handle the equipment rack heat load",
@@ -473,6 +546,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the standard impedance of professional audio equipment?",
     "options": [
       "75 ohms",
@@ -486,6 +561,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which video resolution is considered 4K UHD?",
     "options": [
       "1920x1080",
@@ -499,6 +576,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does SPL stand for?",
     "options": [
       "Sound Power Level",
@@ -512,6 +591,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which conductor construction is used inside a standard copper HDMI cable?",
     "options": [
       "Coaxial conductors",
@@ -525,6 +606,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the refresh rate of standard NTSC video?",
     "options": [
       "25 Hz",
@@ -538,6 +621,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which protocol is used for lighting control?",
     "options": [
       "DMX512",
@@ -551,6 +636,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Maximum cable length for Cat6 Ethernet?",
     "options": [
       "50 meters",
@@ -564,6 +651,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which frequency range is mid-range audio?",
     "options": [
       "20-200 Hz",
@@ -577,6 +666,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What does EDID stand for?",
     "options": [
       "Extended Display Identification Data",
@@ -590,6 +681,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Standard connector for professional microphones?",
     "options": [
       "1/4 inch TRS",
@@ -603,6 +696,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Standard frame rate for film?",
     "options": [
       "23.976 fps",
@@ -616,6 +711,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Technology for simultaneous multi-source display?",
     "options": [
       "Scaling",
@@ -629,6 +726,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Mixing console mic input impedance?",
     "options": [
       "600 ohms",
@@ -642,6 +741,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Highest color depth video format?",
     "options": [
       "RGB",
@@ -655,6 +756,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "T568A/B 'T' stands for?",
     "options": [
       "Telephone",
@@ -668,6 +771,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Audio connector providing phantom power?",
     "options": [
       "1/4 inch TS",
@@ -681,6 +786,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Standard phantom power voltage?",
     "options": [
       "12V",
@@ -694,6 +801,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Wireless microphone transmission technology?",
     "options": [
       "AM",
@@ -707,6 +816,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Purpose of DI box?",
     "options": [
       "Amplify signals",
@@ -720,6 +831,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Protocol for digital audio over IP?",
     "options": [
       "AES/EBU",
@@ -733,6 +846,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "CD audio bit depth?",
     "options": [
       "8 bits",
@@ -746,6 +861,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Highest bandwidth video interface?",
     "options": [
       "HDMI 1.4",
@@ -759,6 +876,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "HDR stands for?",
     "options": [
       "High Definition Resolution",
@@ -772,6 +891,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Acoustic treatment that absorbs sound?",
     "options": [
       "Diffusion panels",
@@ -785,6 +906,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "4K display viewing distance?",
     "options": [
       "1.5× screen height",
@@ -798,6 +921,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Network topology with most redundancy?",
     "options": [
       "Star",
@@ -811,6 +936,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Purpose of matrix switcher?",
     "options": [
       "Amplify weak signals over long runs",
@@ -824,6 +951,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Speaker sensitivity measurement?",
     "options": [
       "Watts",
@@ -837,6 +966,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "VSWR measures?",
     "options": [
       "Power output",
@@ -850,6 +981,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Best codec for 4K?",
     "options": [
       "H.264",
@@ -863,6 +996,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Standard daylight color temperature?",
     "options": [
       "3200K",
@@ -876,6 +1011,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Best EMI cable shielding?",
     "options": [
       "Unshielded",
@@ -889,6 +1026,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Crossover purpose?",
     "options": [
       "Boost the bass response",
@@ -902,6 +1041,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "IP camera control protocol?",
     "options": [
       "RTSP",
@@ -915,6 +1056,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Single-mode fiber transmission distance?",
     "options": [
       "2 km",
@@ -928,6 +1071,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Object-based surround sound format?",
     "options": [
       "Dolby 5.1",
@@ -941,6 +1086,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "IP rating 'P' means?",
     "options": [
       "Power",
@@ -954,6 +1101,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Video standard with interlaced scanning?",
     "options": [
       "1080p",
@@ -967,6 +1116,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Time code purpose?",
     "options": [
       "Color space mapping",
@@ -980,6 +1131,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Device discovery protocol?",
     "options": [
       "DHCP server",
@@ -993,6 +1146,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Standard HDTV aspect ratio?",
     "options": [
       "4:3",
@@ -1006,6 +1161,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Most wind-sensitive microphone?",
     "options": [
       "Dynamic",
@@ -1019,6 +1176,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "PoE+ provides?",
     "options": [
       "Higher voltage",
@@ -1032,6 +1191,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Commercial AV control protocols?",
     "options": [
       "RS-232",
@@ -1045,6 +1206,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Media server purpose?",
     "options": [
       "Store/play content",
@@ -1058,6 +1221,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Wireless mic range factors?",
     "options": [
       "Battery",
@@ -1071,6 +1236,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Professional audio sampling rate?",
     "options": [
       "44.1 kHz",
@@ -1084,6 +1251,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Deepest black display tech?",
     "options": [
       "LCD",
@@ -1097,6 +1266,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "DHCP stands for?",
     "options": [
       "Dynamic Host Configuration Protocol",
@@ -1110,6 +1281,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Balanced audio connector?",
     "options": [
       "1/4 inch TS",
@@ -1123,6 +1296,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Scaler purpose?",
     "options": [
       "Change resolution",
@@ -1136,6 +1311,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Best live streaming codec?",
     "options": [
       "H.264",
@@ -1149,6 +1326,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Roughly how far can a passive copper HDMI cable reliably carry 1080p video?",
     "options": [
       "5m",
@@ -1162,6 +1341,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "Reverberation time factors?",
     "options": [
       "Size",
@@ -1175,6 +1356,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "RTMP stands for?",
     "options": [
       "Real-Time Messaging Protocol",
@@ -1188,6 +1371,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Best stereo speaker placement?",
     "options": [
       "Equilateral triangle",
@@ -1201,6 +1386,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Compressor purpose?",
     "options": [
       "Increase overall level",
@@ -1214,6 +1401,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Video format with alpha channel?",
     "options": [
       "MP4",
@@ -1227,6 +1416,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Video signal impedance?",
     "options": [
       "50 ohms",
@@ -1240,6 +1431,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Wi-Fi frequency bands?",
     "options": [
       "900 MHz",
@@ -1253,6 +1446,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "API stands for?",
     "options": [
       "Application Programming Interface",
@@ -1266,6 +1461,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Long audio run cable type?",
     "options": [
       "Unbalanced",
@@ -1279,6 +1476,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Limiter purpose?",
     "options": [
       "Boost signals",
@@ -1292,6 +1491,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Professional video calibration standard?",
     "options": [
       "sRGB",
@@ -1305,6 +1506,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Latency refers to?",
     "options": [
       "Signal strength",
@@ -1318,6 +1521,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Digital audio connector?",
     "options": [
       "RCA phono plug",
@@ -1331,6 +1536,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "RGB color bit depth?",
     "options": [
       "8 bits per channel",
@@ -1344,6 +1551,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Edge processing technology?",
     "options": [
       "Scaling",
@@ -1357,6 +1566,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Buffer amplifier purpose?",
     "options": [
       "Boost volume",
@@ -1370,6 +1581,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "HDMI backward compatible?",
     "options": [
       "DisplayPort",
@@ -1383,6 +1596,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Professional lighting standard?",
     "options": [
       "DMX512",
@@ -1396,6 +1611,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Wireless mic frequencies?",
     "options": [
       "VHF",
@@ -1409,6 +1626,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "SNR stands for?",
     "options": [
       "Signal-to-Noise Ratio",
@@ -1422,6 +1641,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Video needing pulldown conversion?",
     "options": [
       "1080p",
@@ -1435,6 +1656,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Dante Controller purpose?",
     "options": [
       "Route audio",
@@ -1448,6 +1671,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "RJ45 termination connector?",
     "options": [
       "HDMI",
@@ -1461,6 +1686,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "USB 3.0 data rate?",
     "options": [
       "480 Mbps",
@@ -1474,6 +1701,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Networking",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Real-time streaming protocol?",
     "options": [
       "HTTP",
@@ -1487,6 +1716,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "THD stands for?",
     "options": [
       "Total Harmonic Distortion",
@@ -1500,6 +1731,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Best bright environment display?",
     "options": [
       "OLED",
@@ -1513,6 +1746,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Broadcast color space?",
     "options": [
       "RGB",
@@ -1526,6 +1761,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Reference monitor purpose?",
     "options": [
       "Record video",
@@ -1539,6 +1776,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Sound & Physics",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Audio format needing more bandwidth?",
     "options": [
       "Analog",
@@ -1552,6 +1791,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Blu-ray standard resolution?",
     "options": [
       "1280x720",
@@ -1565,6 +1806,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Video & Signal",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Frame synchronization technology?",
     "options": [
       "Genlock",
@@ -1578,6 +1821,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "CTS stands for?",
     "options": [
       "Certified Technical Specialist",
@@ -1591,6 +1836,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "What is the primary purpose of a needs analysis on an AV project?",
     "options": [
       "To select the equipment brands and models the design will be built on",
@@ -1604,6 +1851,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "During stakeholder interviews, which group is MOST important to include for a conference room project?",
     "options": [
       "The executive sponsor, who owns the budget and vision",
@@ -1617,6 +1866,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "What is the key difference between a client's stated 'needs' and their 'wants'?",
     "options": [
       "There is no real difference; the contract treats both as deliverables",
@@ -1630,6 +1881,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "What document is the primary deliverable of a completed needs analysis?",
     "options": [
       "A detailed equipment list with manufacturer part numbers and quoted unit pricing",
@@ -1643,6 +1896,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "Why should budget expectations be established during the needs analysis phase?",
     "options": [
       "To lock in equipment pricing now, before manufacturers announce their next price rise",
@@ -1656,6 +1911,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "How does a site survey differ from a needs analysis?",
     "options": [
       "They are the same activity, but a site survey is done by the installer instead",
@@ -1669,6 +1926,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "Which accessibility consideration must be captured during needs analysis for a public assembly space?",
     "options": [
       "Only the assistive listening system, since the ADA requires nothing else",
@@ -1682,6 +1941,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Needs Analysis",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "When assessing a client's existing infrastructure, what should you document?",
     "options": [
       "Only the equipment you plan to replace, since everything else stays as it is",
@@ -1695,6 +1956,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Per AVIXA DISCAS principles, what primarily determines the minimum image height for a display?",
     "options": [
       "The projector's lumen output and the ambient light level in the room",
@@ -1708,6 +1971,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "For a 1080p image, what is the generally accepted minimum viewing distance to avoid seeing individual pixels?",
     "options": [
       "Equal to the image width",
@@ -1721,6 +1986,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "When designing a distributed loudspeaker system, what does a uniformity target of ±3 dB mean?",
     "options": [
       "The system runs 3 dB louder than the design target to leave a safety margin",
@@ -1734,6 +2001,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Why must ambient light levels be measured during the design phase for a projection system?",
     "options": [
       "Ambient light has no measurable effect on projected images, so measuring it during design adds nothing of value",
@@ -1747,6 +2016,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the recommended maximum conduit fill for AV cabling pathways?",
     "options": [
       "100%, since low-voltage cable produces no heat and conduit is costly",
@@ -1760,6 +2031,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Why is heat load calculation part of equipment rack design?",
     "options": [
       "It is only required for outdoor racks that sit in direct sun through the summer",
@@ -1773,6 +2046,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the purpose of a block diagram / signal flow drawing in an AV design package?",
     "options": [
       "It is a summary drawing for the client's sign-off, retired once installation starts",
@@ -1786,6 +2061,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "For a seated audience, how high should the bottom of a presentation screen typically be mounted?",
     "options": [
       "At floor level, to maximize the projected image size when ceiling height limits the screen placement",
@@ -1799,6 +2076,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AV Design",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Why should AV traffic be placed on a separate VLAN or physical network from general corporate data?",
     "options": [
       "Because AV devices can't use the standard TCP/IP stack found on office networks",
@@ -1812,6 +2091,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What does a RACI chart clarify on an AV project?",
     "options": [
       "The Risks, Assumptions, Constraints and Issues logged against each project phase",
@@ -1825,6 +2106,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is the primary value of a Gantt chart in AV project management?",
     "options": [
       "It lists every task with its assigned budget and its actual cost to date",
@@ -1838,6 +2121,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is an RFI and when is it used?",
     "options": [
       "A Request for Information — used during construction to get clarification on ambiguous or conflicting design documents",
@@ -1851,6 +2136,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What are submittals in the AV construction process?",
     "options": [
       "The final payment applications submitted at project closeout, requesting release of the retained contract balance",
@@ -1864,6 +2151,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is a schedule of values in AV contracting?",
     "options": [
       "A negotiated list of equipment discounts and dealer margins, showing the client every markup applied to the original quote",
@@ -1877,6 +2166,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "Which project risk should be identified earliest on an AV installation?",
     "options": [
       "Final programming details, such as the button labels and touch panel page layouts",
@@ -1890,6 +2181,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What should a project communication plan define?",
     "options": [
       "The contact list for every trade, with their office phone numbers and emails",
@@ -1903,6 +2196,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is a milestone in a project schedule?",
     "options": [
       "A routine daily task assigned to the lead technician and tracked on the project’s punch list every morning",
@@ -1916,6 +2211,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Project Management",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is the purpose of a pre-installation / kickoff meeting with all trades?",
     "options": [
       "It serves a purely social function — the trades meet for introductions and lunch before real coordination begins",
@@ -1929,6 +2226,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "What is the most effective way to manage client expectations during an AV project?",
     "options": [
       "Promise the fastest possible timeline to win the client's confidence, then adjust it as you go",
@@ -1942,6 +2241,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
     "q": "A client is upset about a system malfunction during an important event. What is the best immediate response?",
     "options": [
       "Explain the technical cause in detail first, so the client understands what failed",
@@ -1955,6 +2256,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "Why should important client decisions and verbal agreements be confirmed in writing?",
     "options": [
       "It is unnecessary once a trusting relationship with the client has been built",
@@ -1968,6 +2271,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "When a client asks for out-of-scope work, what is the most professional response?",
     "options": [
       "Decline it immediately and point the client to the scope section of the contract",
@@ -1981,6 +2286,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What is the business value of thorough end-user training at project handover?",
     "options": [
       "Very little, since well-designed systems are intuitive enough to need no training",
@@ -1994,6 +2301,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What does presenting 'good / better / best' options accomplish in an AV proposal?",
     "options": [
       "It anchors the client on the cheapest tier, which lowers the final contract value",
@@ -2007,6 +2316,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
     "q": "After project completion, what is the best way to maintain the client relationship?",
     "options": [
       "Wait for the client to call, since unsolicited contact can feel like a sales pitch",
@@ -2020,6 +2331,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Customer Relations",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A1",
     "q": "Why is active listening more valuable than technical expertise in an initial client meeting?",
     "options": [
       "Technical expertise is never needed in a client meeting — only the contract terms and pricing matter",
@@ -2033,6 +2346,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "What is the 'half-splitting' method of AV troubleshooting?",
     "options": [
       "Cutting each cable in the signal chain in half to physically expose the precise location of the fault",
@@ -2046,6 +2361,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "A display shows 'no signal' from a known-good source over HDMI. After verifying power and input selection, what is the most likely cause?",
     "options": [
       "The display's audio is muted, which blanks the HDMI input",
@@ -2059,6 +2376,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "A loud 60 Hz hum is present in the audio system. What does this symptom most likely indicate?",
     "options": [
       "A ground loop between equipment on different electrical grounds",
@@ -2072,6 +2391,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
     "q": "During sound check, the system feeds back when the presenter speaks. What is the correct order of corrective actions?",
     "options": [
       "Add loudspeakers near the stage so the presenter hears more, then raise the system level",
@@ -2085,6 +2406,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "There is no audio from any zone of a distributed system. What is the most logical first check?",
     "options": [
       "Rewire all the loudspeakers in every zone, since a single bad speaker connection is the most likely cause of total silence",
@@ -2098,6 +2421,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "What is a toner (tone generator and probe) used for during verification?",
     "options": [
       "Calibrating projector color and grayscale against a reference",
@@ -2111,6 +2436,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Why are test patterns and signal generators used during video system verification?",
     "options": [
       "They are mainly for showroom demonstrations that show off a display's color range",
@@ -2124,6 +2451,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "An AV device is not reachable on the network. Which troubleshooting step comes first?",
     "options": [
       "Replace the network switch with a higher-capacity managed model before verifying link lights, cabling, or IP addressing",
@@ -2137,6 +2466,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Troubleshooting & Verification",
     "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
     "q": "Why is gain staging verified before any other audio troubleshooting step?",
     "options": [
       "Gain staging is not important — modern DSPs auto-correct any level mismatch, so audio troubleshooting can begin anywhere in the chain",
@@ -2150,6 +2481,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "How does commissioning differ from installation?",
     "options": [
       "They are identical activities — commissioning is simply another word for the installation phase of a project",
@@ -2163,6 +2496,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What are as-built drawings and why do they matter?",
     "options": [
       "Stylized marketing renderings of the finished room, produced for client presentations and the firm’s portfolio",
@@ -2176,6 +2511,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What should client training at handover cover at minimum?",
     "options": [
       "Nothing formal; a well-designed system should explain itself to new users",
@@ -2189,6 +2526,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What warranty information must be delivered to the client at closeout?",
     "options": [
       "None at handover; warranty terms are only shared once the first fault is reported",
@@ -2202,6 +2541,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "What does final acceptance / sign-off signify on an AV project?",
     "options": [
       "The installer is released from all further support obligations and may stop responding to the client's calls",
@@ -2215,6 +2556,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
     "q": "Why is 'attic stock' (spare parts) often specified at closeout?",
     "options": [
       "To pad the project cost with extra hardware the client will likely never touch or bother to inventory",
@@ -2228,6 +2571,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A3",
     "q": "What is the purpose of a post-project lessons-learned review?",
     "options": [
       "To assign blame for project problems to the specific team members responsible",
@@ -2241,6 +2586,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "A university asks you to design lecture capture for 40 classrooms. Several faculty members have strong opinions about features, but who must you formally identify FIRST before the design can be approved?",
     "options": [
       "The most vocal faculty members, since they teach in the rooms every day",
@@ -2254,6 +2601,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "You are designing a divisible ballroom where the operators will be rotating hotel banquet staff with no AV training. What is the most important design implication of their skill level?",
     "options": [
       "Specify the most powerful DSP available so its automation can correct any operator mistakes",
@@ -2267,6 +2616,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "A client insists on '4K everywhere' but their building has only Cat5e infrastructure and no budget to re-cable. What is the designer's proper role here?",
     "options": [
       "Specify 4K endpoints anyway, since the cabling limits are the installer's responsibility",
@@ -2280,6 +2631,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A2",
     "q": "A corporate client has a published 5-year global AV technology master plan standardizing on one control platform and one soft-codec. How should this affect your design for their new regional office?",
     "options": [
       "Treat it as informational, since each project should still pick best-of-breed products",
@@ -2293,6 +2646,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "During needs assessment interviews, the client's team describes wanting a 'really impressive' boardroom. What is the designer's most effective next step?",
     "options": [
       "Specify the largest display and loudest audio that the budget can possibly accommodate",
@@ -2306,6 +2661,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "Which element belongs in the AV scope of work document produced during the design phase?",
     "options": [
       "The installer’s internal labor rates, material markups, and profit margins for each line item",
@@ -2319,6 +2676,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "What is the most reliable technique for uncovering a client's TRUE operational needs, beyond what they state in meetings?",
     "options": [
       "Send a detailed written questionnaire and design directly from the responses received",
@@ -2332,6 +2691,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "IT wants the new boardroom on the corporate LAN with 802.1X; facilities wants it completely isolated for simplicity. Both are stakeholders. What should the designer do?",
     "options": [
       "Side with whichever department controls the larger share of the overall project budget and schedule",
@@ -2345,6 +2706,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "How should a designer assess the technical skill level of the client's in-house support staff?",
     "options": [
       "Assume they are beginners with no AV knowledge, since in-house staff never have meaningful technical experience with systems",
@@ -2358,6 +2721,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "A client with a $50k budget expects a $200k experience. What concept should the designer use to reframe the conversation?",
     "options": [
       "Tell them plainly the budget is unrealistic and decline to design until it is raised",
@@ -2371,6 +2736,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A2",
     "q": "Why do enterprise clients standardize AV equipment across dozens of rooms, and what does the designer gain from knowing the standard?",
     "options": [
       "It is purely about bulk purchase discounts — standardization saves nothing on training, spare parts, or support costs across the enterprise",
@@ -2384,6 +2751,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A3",
     "q": "Before detailed design begins, what formal step protects both the designer and the client?",
     "options": [
       "Ordering long-lead equipment immediately so delivery never delays the schedule",
@@ -2397,6 +2766,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "A client asks for larger displays because 'nobody can read the slides.' Observation shows the real problem is uncontrolled daylight washing out the screen. What is the correct design response?",
     "options": [
       "Specify the larger displays exactly as requested, since the client’s stated solution is authoritative",
@@ -2410,6 +2781,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Needs Assessment",
     "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
     "q": "A 300-seat auditorium design must include hearing assistance. What drives this requirement?",
     "options": [
       "It is merely a nice-to-have experiential upgrade that improves comfort but carries no actual code or legal requirement",
@@ -2423,6 +2796,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "On the architect's reflected ceiling plan (RCP), you need to confirm projector locations won't clash with HVAC diffusers. What is the RCP actually showing you?",
     "options": [
       "The floor finishes — the RCP documents the carpet, tile, and wood selections for every area shown on the floor plan",
@@ -2436,6 +2811,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "The interior designer proposes a glass-walled huddle room with a hard concrete floor. What is your coordination responsibility?",
     "options": [
       "No action is required — finish selections are the interior designer’s sole responsibility, so AV has no input",
@@ -2449,6 +2826,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B3",
     "q": "Your rack room design dissipates 8 kW of heat. Who must you coordinate with, and what do they need from you?",
     "options": [
       "The electrical engineer — the heat load in watts, so they can upsize the panel feeders",
@@ -2462,6 +2841,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B2",
     "q": "A line-array loudspeaker cluster weighing 900 lbs will hang from the roof structure. What must happen before you finalize the rigging design?",
     "options": [
       "The installer can field-verify the steel by visual inspection and proceed with the rigging plan",
@@ -2475,6 +2856,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B2",
     "q": "What electrical infrastructure information must the AV designer specify or coordinate for a large auditorium rack room?",
     "options": [
       "The brand and model of the electrician's hand tools, so the rack drawings can note the equipment used on site",
@@ -2488,6 +2871,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B7",
     "q": "The lighting designer plans a preset that drives house lights to full during video playback. What is the coordination issue?",
     "options": [
       "There is no coordination issue — the house lighting system operates independently of AV, so designers need not coordinate presets",
@@ -2501,6 +2886,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B4",
     "q": "The client's IT security team requires 802.1X authentication and MACsec on all switch ports the AV system will use. When should this surface in the design process?",
     "options": [
       "At commissioning, when the AV devices fail to authenticate and the failed connections stall the whole project",
@@ -2514,6 +2901,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B5",
     "q": "The acoustical consultant specifies NC-25 for a videoconferencing suite. What does this mean for your microphone and DSP design?",
     "options": [
       "Nothing — NC ratings are purely an architectural and HVAC concern, so microphone selection, placement, and AEC tuning can proceed without reference to the noise criterion",
@@ -2527,6 +2916,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B6",
     "q": "Your design includes ceiling speakers in a plenum air-handling space and cable above the ceiling. What life-safety coordination items apply?",
     "options": [
       "No coordination is required — low-voltage AV equipment is entirely exempt from life-safety and building code review",
@@ -2540,6 +2931,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "When in the project timeline should the AV designer engage the architect and other trades?",
     "options": [
       "After the AV design is finished, so the trades can price it from complete drawings",
@@ -2553,6 +2946,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "The millwork shop drawings show a credenza 18 inches deep for the rack. Your rack needs 30 inches with service clearance. What is the correct action?",
     "options": [
       "Order a shallower rack than the one specified and just hope the reduced depth still allows adequate airflow and service access",
@@ -2566,6 +2961,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "Floor boxes for table connectivity must land under a 20-foot conference table. Whose drawings determine the final location?",
     "options": [
       "The AV designer's drawings alone determine the location, since the furniture and electrical plans always conform to the AV floor plan",
@@ -2579,6 +2976,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
     "q": "A wall-mounted touch panel is drawn at 60 inches to center in a public corridor. What coordination issue exists?",
     "options": [
       "No coordination issue exists — 60 inches to center is the universal mounting standard for touch panels in every public corridor",
@@ -2592,6 +2991,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B6",
     "q": "The security consultant's camera layout and your videoconference camera layout both cover the boardroom. Why coordinate rather than work independently?",
     "options": [
       "There is no benefit to coordination, because AV and security systems operate on completely separate networks with no shared infrastructure",
@@ -2605,6 +3006,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B2",
     "q": "Structural drawings show open-web steel joists where you planned to mount a projector. The joist bottom is 6 inches above your planned mount point. What do you do?",
     "options": [
       "Mount to the joist anyway, using longer bolts and a drop pipe to make up the 6 inches",
@@ -2618,6 +3021,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B3",
     "q": "What is the AV designer's deliverable to the electrical engineer for a divisible ballroom with three AV racks?",
     "options": [
       "A verbal estimate of ‘a lot of power’ — telling the electrical engineer the racks need plenty of juice is sufficient for proper circuit sizing",
@@ -2631,6 +3036,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D1",
     "q": "During a coordination meeting, the GC says AV conduit can go in 'after the drywall.' What is the risk, and how do you respond?",
     "options": [
       "Agree — it saves time — installing conduit after drywall is faster since the crew can see the finished surfaces",
@@ -2644,6 +3051,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Allied Trade Coordination",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "The architect asks you to 'just mark up our PDF' instead of producing AV drawings. Why should the AV designer still produce dedicated infrastructure and system drawings?",
     "options": [
       "Markups are sufficient for construction — a redlined PDF carries the same contractual weight as dedicated AV drawings, so producing a full drawing set adds no value",
@@ -2657,6 +3066,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "You are designing speech reinforcement for a 200-seat fan-shaped auditorium. Which loudspeaker approach best delivers even coverage?",
     "options": [
       "Two large loudspeakers at the front corners of the room, aimed straight ahead at the center of the seating",
@@ -2670,6 +3081,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A boardroom table seats 12 and will use ceiling microphones for soft-codec conferencing. What is the critical design consideration?",
     "options": [
       "Ceiling microphones work in any room without further design — microphone placement and room acoustics need no engineering attention whatsoever",
@@ -2683,6 +3096,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "For a videoconference room, the farthest viewer sits 18 feet from the display. What is the design rule for minimum image size?",
     "options": [
       "Any display size works as long as the resolution is 4K, since pixel density fully replaces image-height rules and guarantees legibility at any distance",
@@ -2696,6 +3111,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A client wants to display one 4K source on four 1080p displays in a video wall. What must the design address?",
     "options": [
       "Nothing — any consumer HDMI splitter will automatically downscale, manage EDID, and strip HDCP for a mixed-resolution video wall",
@@ -2709,6 +3126,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "You are designing control for a divisible room with three modes: whole, A/B split, and separate. What is the key control design principle?",
     "options": [
       "One fixed panel layout for all three modes, so users only ever learn a single interface that never changes regardless of the partition state",
@@ -2722,6 +3141,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "B",
+    "task": "B4",
     "q": "An enterprise wants 50 Dante-enabled rooms on the corporate network. What must the AV design specify for the network?",
     "options": [
       "Any unmanaged switch will do — Dante auto-configures QoS, multicast routing, and clocking on any hardware with zero setup",
@@ -2735,6 +3156,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A lecture hall needs both in-room reinforcement and a separate record/stream mix. How should the DSP be designed?",
     "options": [
       "One mix fits all purposes — the in-room reinforcement feed is ideal for the stream, since remote viewers want to hear exactly what the room hears",
@@ -2748,6 +3171,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "When designing a streaming encoder workflow for town halls, what must be specified beyond the encoder itself?",
     "options": [
       "Nothing beyond the encoder itself — modern encoders are plug-and-play and negotiate the entire streaming workflow automatically",
@@ -2761,6 +3186,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A museum gallery has 85 dBA ambient noise from interactive exhibits. What does this demand of the audio design for a narration system?",
     "options": [
       "Standard ceiling speakers at normal levels — a typical 70V ceiling speaker layout at conversation volume stays fully intelligible even over 85 dBA of exhibit noise",
@@ -2774,6 +3201,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "You must choose between projection and direct-view LED for a bright atrium with 24/7 operation. What drives the decision?",
     "options": [
       "Purchase price alone (projection always wins), the projector's lamp wattage, fan noise level, and whichever vendor returns calls the fastest",
@@ -2787,6 +3216,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "A global company wants identical Teams Room experiences in 200 rooms across 30 countries. What is the central design strategy?",
     "options": [
       "Let each region design its rooms independently from scratch, since local engineers always understand their needs better than any central standard",
@@ -2800,6 +3231,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "In a courtroom, the judge requires that attorney microphones NEVER feed the public address when in recess. How is this designed?",
     "options": [
       "Trust the operator to mute — the court reporter watches the proceedings and mutes the attorneys’ microphones at the mixer whenever recess is called",
@@ -2813,6 +3246,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "What is the purpose of a DSP's acoustic echo canceller (AEC) in a soft-codec room, and what does it require?",
     "options": [
       "It boosts the room's loudspeaker output so the far end hears it louder; it requires bridging larger power amplifiers directly onto every microphone channel",
@@ -2826,6 +3261,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A performing arts center needs a system that visiting engineers can walk up to and mix on with no training. What design approach serves this?",
     "options": [
       "A fully custom DSP layout with a unique workflow that guest engineers can explore and master during soundcheck",
@@ -2839,6 +3276,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "You are designing BYOD wireless presentation for a university. What are the key design decisions?",
     "options": [
       "Pick any consumer dongle — any $30 streaming stick performs identically in an enterprise deployment, so network, security, and protocol decisions are unnecessary",
@@ -2852,6 +3291,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A 2,000-seat arena needs emergency voice evacuation override of the entertainment audio system. What is the design requirement?",
     "options": [
       "The operator will turn it down in an emergency — the house audio engineer manually ducks the entertainment system when the fire alarm sounds",
@@ -2865,6 +3306,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "What is 'gain structure' and why does the designer care before the installer touches a knob?",
     "options": [
       "It is the installer’s problem — gain staging is purely field work; the designer never specifies nominal levels, and the drawings carry no gain-structure information",
@@ -2878,6 +3321,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A client wants to add 20 networked AV endpoints next year without new switch hardware. What should the design include now?",
     "options": [
       "Nothing — deal with it next year — switches can be swapped and recabled in a day, so planning for growth wastes design effort",
@@ -2891,6 +3336,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "For a video wall with a 1.2mm pixel pitch viewed from 10 feet, what design check matters most?",
     "options": [
       "The wall’s weight only — structural loading is the sole design check that matters; pixel pitch has no relationship to viewing distance or perceived image quality",
@@ -2904,6 +3351,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A house of worship wants to livestream with volunteer operators. What is the most robust design approach?",
     "options": [
       "A full-featured manual vision switcher with 12 inputs, which the volunteers can learn to operate reliably over several consecutive Sunday services",
@@ -2917,6 +3366,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "What is the design purpose of a 'tech table' or operator position in a multi-purpose venue?",
     "options": [
       "It is decorative — the tech table is a furniture showpiece for the room’s design photos and carries no power, network, or sightline requirements",
@@ -2930,6 +3381,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "When designing for HDCP-protected content (Blu-ray, streaming sticks) across a distributed system, what must be true?",
     "options": [
       "HDCP works automatically over any extender or matrix, so the design needs no HDCP planning as long as the source is HDCP-compliant",
@@ -2943,6 +3396,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A corporate lobby wants a 'wow' video wall but the facilities team has no AV staff. What should the design prioritize?",
     "options": [
       "The most complex system possible — maximum features and manual controls give the facilities team the most options, even with no AV staff on site",
@@ -2956,6 +3411,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: AV System Design",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Why would a designer specify Dante Domain Manager or a similar management platform for a campus deployment?",
     "options": [
       "It makes audio sound better — Domain Manager applies enhancement algorithms that improve Dante audio fidelity and reduce latency",
@@ -2969,6 +3426,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A projector with a 1.5–2.0:1 throw ratio lens must fill a 10-foot-wide screen. What is the allowable projector-to-screen distance range?",
     "options": [
       "5 to 6.7 feet (image width ÷ throw ratio)",
@@ -2982,6 +3441,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Per AVIXA DISCAS, the farthest viewer of detailed content (spreadsheets, CAD) should be within what multiple of image height?",
     "options": [
       "12x image height",
@@ -2995,6 +3456,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A loudspeaker produces 90 dB SPL at 1 meter. What is the level at 8 meters in a free field?",
     "options": [
       "84 dB SPL",
@@ -3008,6 +3471,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Doubling amplifier power to a loudspeaker yields approximately what SPL increase?",
     "options": [
       "+6 dB",
@@ -3021,6 +3486,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "What is the approximate uncompressed bandwidth of 4K60 4:4:4 video (8-bit)?",
     "options": [
       "1.5 Gbps",
@@ -3034,6 +3501,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "NEC conduit fill for more than two cables is limited to what percentage of the conduit's cross-section?",
     "options": [
       "100%",
@@ -3047,6 +3516,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "An AV rack's equipment draws 2,500 watts continuously. What cooling load must the HVAC design handle for this rack?",
     "options": [
       "Approximately 2,500 BTU/hr (1 watt = 1 BTU/hr)",
@@ -3060,6 +3531,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A 16:9 display has a 60-inch diagonal. What is its image width?",
     "options": [
       "60 inches — image width always equals the diagonal",
@@ -3073,6 +3546,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "What is the maximum recommended viewing angle (horizontal) for the farthest off-axis seat to a flat display?",
     "options": [
       "90 degrees — viewers at 90° off-axis see full image quality, so seating may wrap fully around the display",
@@ -3086,6 +3561,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "An amplifier rated 500W per channel will drive loudspeakers rated 250W continuous. What headroom concern applies?",
     "options": [
       "No concern exists — amplifiers always self-limit to the connected speaker's rating, so any extra headroom above 250W is automatically safe",
@@ -3099,6 +3576,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "How many uncompressed 1080p60 video streams (~3 Gbps each) fit on a 10 Gbps AV-over-IP link?",
     "options": [
       "10, one stream per gigabit",
@@ -3112,6 +3591,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A projector outputs 6,000 lumens onto a 120 sq ft screen (gain 1.0). What is the approximate screen luminance in foot-lamberts?",
     "options": [
       "6,000 fL (no division)",
@@ -3125,6 +3606,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Cat6A cable has a 90-meter permanent link limit (100m channel). A design shows a 130-meter horizontal run to a projector. What is the correct response?",
     "options": [
       "It’s close enough — install it — 130 meters is near enough to the 100m limit that the link will certify",
@@ -3138,6 +3621,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A PoE++ (802.3bt Type 4) switch port can deliver up to what power, and why does the designer track the PoE budget?",
     "options": [
       "15.4W per port — PoE++ still delivers the original 802.3af 15.4W, and power budgets don’t matter because the switch sheds load automatically when oversubscribed",
@@ -3151,6 +3636,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "What is the minimum bend radius rule of thumb for fiber optic cable during installation?",
     "options": [
       "Bend it as tightly as needed — fiber optic glass is flexible enough for any bend radius without signal loss",
@@ -3164,6 +3651,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A room needs 95 dB SPL peaks at the listener, 4 meters from the loudspeaker. The speaker sensitivity is 92 dB (1W/1m). Roughly how much amplifier power is needed?",
     "options": [
       "1 watt",
@@ -3177,6 +3666,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Screen gain of 1.3 vs 1.0: what is the trade-off the designer is calculating?",
     "options": [
       "Higher gain is always better for every room, because a 1.3 screen delivers a full 30 percent more lumens than the projector itself outputs",
@@ -3190,6 +3681,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "A 70V distributed system has 12 ceiling speakers tapped at 7.5W each. What is the minimum amplifier size, following the 20% headroom practice?",
     "options": [
       "Exactly 90W (12 × 7.5) — no headroom is needed on 70V systems",
@@ -3203,6 +3696,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C1",
     "q": "Voltage drop on a long 70V speaker run causes what problem, and how does the designer prevent it?",
     "options": [
       "No problem — 70V is immune — constant-voltage distribution experiences zero wire loss at any distance or gauge, so the designer never needs to calculate voltage drop",
@@ -3216,6 +3711,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Calculations",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C2",
     "q": "An ST 2110 uncompressed 1080p59.94 stream needs about 1.5 Gbps. A design puts 24 such streams on one 25 Gbps uplink. Is this sound?",
     "options": [
       "Yes — 24 × 1.5 = 36 Gbps fits within a 25 Gbps uplink because 2110 streams share the capacity dynamically",
@@ -3229,6 +3726,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "What is the purpose of an AV block diagram (flow diagram) in the design documentation set?",
     "options": [
       "It is decorative — the block diagram is presentation artwork for the proposal cover, with no role in communicating the design",
@@ -3242,6 +3741,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "What distinguishes AV infrastructure drawings from AV system drawings?",
     "options": [
       "They are the same thing — infrastructure and system drawings are two names for a single identical document, and producing both is pure duplication",
@@ -3255,6 +3756,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "A cable schedule lists 'C-101, 2× Cat6A + 1× 18/2, AV Rack → Lectern floor box.' What is the designer communicating?",
     "options": [
       "A purchase order — the cable schedule is the financial document authorizing the vendor to ship cable to the jobsite",
@@ -3268,6 +3771,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "Why does the design include a rack elevation drawing with exact RU positions?",
     "options": [
       "For decoration — a nicely rendered rack elevation impresses the client during the proposal, but experienced installers ignore it and lay out the gear by feel on site",
@@ -3281,6 +3786,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "What belongs in the AV equipment list / bill of materials (BOM)?",
     "options": [
       "Only the big-ticket items — displays, processors, and speakers; small parts like mounts and connectors are field-supplied and need no documentation",
@@ -3294,6 +3801,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "What is a 'sequence of operations' document in an AV design package?",
     "options": [
       "The installer’s work schedule — a day-by-day timetable showing crew assignments, which rooms get worked in what order, and the target completion date for the GC",
@@ -3307,6 +3816,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "TIA-606 labeling (e.g., '1A-B03' style identifiers) matters in AV documentation because:",
     "options": [
       "Labels are decorative and add no technical value — the cable schedule alone lets any technician trace cables years later without identifiers on the wire",
@@ -3320,6 +3831,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "What are 'as-built' drawings, and when are they produced?",
     "options": [
       "The original design drawings as issued for construction, which remain accurate because installations always match the design exactly",
@@ -3333,6 +3846,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D1",
     "q": "An installer submits an RFI: 'Drawing A-201 shows the projector at 18 ft; structural steel is at 16 ft. Advise.' What is the RFI process protecting?",
     "options": [
       "Nothing — RFIs are just paperwork — the installer should resolve the steel conflict in the field without bothering the busy design team",
@@ -3346,6 +3861,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "What is the purpose of equipment submittals in the design-bid-build process?",
     "options": [
       "To delay the project — submittals exist to slow procurement and give the designer billable review hours",
@@ -3359,6 +3876,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "A reflected ceiling AV plan shows speaker symbols with coverage angles. What is the installer expected to derive from it?",
     "options": [
       "Just the speaker count — the plan communicates how many speakers to order; placement is decided by the installer on the ladder",
@@ -3372,6 +3891,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "Why does the design package include an IP address schedule for networked AV?",
     "options": [
       "IP addresses configure themselves through plug-and-play — DHCP auto-assigns every address, so documenting the scheme is redundant",
@@ -3385,6 +3906,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "What is drawing revision control (Rev A, B, C / delta triangles) protecting on an AV project?",
     "options": [
       "The designer’s artistic vision — revision control protects the aesthetic integrity of the drawings against unauthorized changes",
@@ -3398,6 +3921,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "The O&M (Operations & Maintenance) manual the designer specifies should contain what?",
     "options": [
       "Only the equipment warranties — the O&M manual is just a binder of manufacturer warranty cards, since the client calls the integrator for any operational question",
@@ -3411,6 +3936,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C3",
     "q": "A riser diagram in the AV package shows what?",
     "options": [
       "The building’s plumbing — the riser diagram traces water and waste stacks between floors for the AV rough-in",
@@ -3424,6 +3951,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Design Documentation",
     "cert": "CTS-D",
+    "duty": "C",
+    "task": "C4",
     "q": "Before issuing the design for bid, what final documentation QA step should the designer perform?",
     "options": [
       "None — issue it immediately — speed to bid matters more than accuracy, so the package goes out without any QA review",
@@ -3437,6 +3966,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "What is 'system performance verification' in the CTS-D context, and how does it differ from the installer's own testing?",
     "options": [
       "They are the same thing — the installer’s button-press checks and the designer’s verification are identical activities with different names",
@@ -3450,6 +3981,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "During verification, you measure speech intelligibility with STI. The design criterion was STI ≥ 0.60 ('good'). You measure 0.45 in several seats. What is the correct response?",
     "options": [
       "Sign off anyway — the room sounds subjectively fine to you, so the STI number can be safely ignored at acceptance",
@@ -3463,6 +3996,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "What should the designer's verification test plan be based on?",
     "options": [
       "Whatever tests are quick — the fastest checks that fit the site visit define the plan; formal criteria and thresholds slow down closeout",
@@ -3476,6 +4011,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "A punch list item reads 'Boardroom display flickers intermittently.' What makes a punch list effective at closeout?",
     "options": [
       "Vague descriptions are fine — ‘display flickers’ is specific enough for the punch list, and the assigned technician will figure out the rest on site",
@@ -3489,6 +4026,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D3",
     "q": "What does the Certificate of Substantial Completion signify for the AV designer at closeout?",
     "options": [
       "The project is over — the certificate ends all obligations, so no warranty, documentation, or training follows it",
@@ -3502,6 +4041,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D1",
     "q": "Why should the designer participate in project implementation communication (site meetings, field reports)?",
     "options": [
       "To bill more hours — site meetings exist to generate additional billable time, with no benefit to the installed system",
@@ -3515,6 +4056,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D3",
     "q": "At closeout, the client asks for the admin passwords, DSP files, and control system source code. What is the correct position?",
     "options": [
       "Refuse to release passwords and source code — keeping them proprietary protects the integrator's future service revenue and builds healthy dependency",
@@ -3528,6 +4071,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D3",
     "q": "What is 'attic stock' and why is it specified at closeout?",
     "options": [
       "Insulation for the rack room — attic stock is thermal insulation specified for the rack closet to control equipment heat",
@@ -3541,6 +4086,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "The verification report shows the videoconference room meets all criteria except the camera framing preset for the whiteboard. What happens next?",
     "options": [
       "Accept the system as substantially complete — a single camera framing preset is too minor to hold up final acceptance",
@@ -3554,6 +4101,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D3",
     "q": "Why does the designer conduct or witness end-user training at closeout?",
     "options": [
       "To demonstrate the system's cost savings to the client's finance team — and to let the installer run all training alone with no design review of the UI or documentation",
@@ -3567,6 +4116,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D3",
     "q": "What is the value of a post-project review for the design practice?",
     "options": [
       "It has no value — moving straight to the next project is always more profitable than spending hours reviewing completed work",
@@ -3580,6 +4131,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-D: Verification & Closeout",
     "cert": "CTS-D",
+    "duty": "D",
+    "task": "D2",
     "q": "Final acceptance testing reveals the assistive listening system doesn't cover the back rows. The design specified the correct transmitter power. What is the likely field issue?",
     "options": [
       "The design was wrong — the transmitter power specification was miscalculated, so the entire assistive listening design must be redone",
@@ -3593,6 +4146,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A1",
     "q": "Before mobilizing to site, you review the AV design package. What are you primarily verifying?",
     "options": [
       "That every specified product is the latest model, so outdated equipment can be swapped out before any orders are placed",
@@ -3606,6 +4161,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
     "q": "During the technical site survey, you find the equipment room is 4 feet narrower than the drawings show. What is the correct action?",
     "options": [
       "Squeeze the racks into the smaller room anyway and force the layout to fit on site during installation",
@@ -3619,6 +4176,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "What does 'staging' the installation mean, and why does it happen before site work?",
     "options": [
       "Delivering all equipment to a staging area on site, where it waits until each room is ready for installation",
@@ -3632,6 +4191,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
     "q": "The GC's schedule shows drywall closing in 5 days, but your cable isn't on site. What facility-readiness issue is this?",
     "options": [
       "None — cable can be fished through finished drywall at no extra cost, so material delays have no impact on the close-up schedule",
@@ -3645,6 +4206,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "On day one at the site, what should the lead installer establish FIRST?",
     "options": [
       "Start pulling cable immediately — billable progress on day one matters more than storage, safety orientation, or planning",
@@ -3658,6 +4221,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
     "q": "The design calls for a projector mount at a location where you find a sprinkler head 12 inches away. What do you do?",
     "options": [
       "Mount it anyway — close enough — a projector mount 12 inches from a sprinkler head has adequate clearance, so proceed with the installation",
@@ -3671,6 +4236,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "Why should firmware on all networked AV devices be updated and standardized during staging rather than on site?",
     "options": [
       "Firmware doesn’t matter — firmware versions have no effect on device compatibility, so updating is pure busywork",
@@ -3684,6 +4251,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "What belongs on a pre-mobilization checklist for the lead installer?",
     "options": [
       "Only the tool inventory and van loading list, since drawings, materials, site contacts and safety are the project manager's job and get sorted out on site",
@@ -3697,6 +4266,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
     "q": "The site survey reveals asbestos tile where floor boxes were designed. What is the correct response?",
     "options": [
       "Cut through it — asbestos floor tile is just tile, and coring through it poses no hazard to the installation crew",
@@ -3710,6 +4281,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "How should high-value AV equipment be handled between delivery and installation?",
     "options": [
       "Leave the equipment in an unlocked hallway or stairwell under casual crew observation, issued by word of mouth with no inventory log",
@@ -3723,6 +4296,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "The design specifies plenum cable above the ceiling, but your survey finds the space is used as an air-handling plenum with no fire rating on the cable in the BOM. What do you do?",
     "options": [
       "Install the non-plenum cable anyway, since the BOM is authoritative and ordering corrections cost time",
@@ -3736,6 +4311,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the installer's responsibility regarding permits and inspections?",
     "options": [
       "Permits are the client’s problem — the installer never verifies permits; if the inspector stops the job, that’s the client’s fault",
@@ -3749,6 +4326,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "A pre-installation labor plan should account for what?",
     "options": [
       "Only the total headcount matters — any warm body can pull cable, trim wall plates, and commission DSPs equally well",
@@ -3762,6 +4341,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
     "q": "Why take pre-installation photos of the site?",
     "options": [
       "For social media — jobsite photos build the integrator’s Instagram following, which is the primary business purpose of site documentation",
@@ -3775,6 +4356,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "The project requires work in an occupied hospital wing. What pre-installation coordination is essential?",
     "options": [
       "No special coordination is needed — an occupied hospital wing works exactly like any office floor, so the crew works normal hours with its standard tools",
@@ -3788,6 +4371,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Pre-Installation Activities",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "Your test equipment (cable certifier, SPL meter) hasn't been calibrated in three years. What is the risk?",
     "options": [
       "None — test gear doesn’t drift — certifiers and SPL meters hold factory accuracy forever, so recalibration is a revenue scheme",
@@ -3801,6 +4386,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C1",
     "q": "The project requires removing existing ceiling speakers and cable before the new install. What is the proper deinstallation practice?",
     "options": [
       "Rip it all out as fast as possible to keep the schedule, since speed matters more than documentation during a deinstallation",
@@ -3814,6 +4401,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C2",
     "q": "You are mounting unistrut substructure for a projector mount. What determines whether the attachment is acceptable?",
     "options": [
       "It feels solid — grab the unistrut and shake it hard; if nothing moves under force, the attachment is acceptable regardless of substrate or fastener type",
@@ -3827,6 +4416,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "While pulling Cat6A, the cable kinks hard around a conduit elbow. What is the correct response?",
     "options": [
       "Straighten it and keep pulling — a kinked section straightens out under tension and the run will certify normally afterward",
@@ -3840,6 +4431,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "What is the maximum pulling tension generally recommended for Cat6 UTP cable?",
     "options": [
       "As much tension as the puller can exert — copper conductors can handle any pulling force",
@@ -3853,6 +4446,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "Cables pass through a 2-hour fire-rated wall. What is required at the penetration?",
     "options": [
       "Nothing — low voltage is exempt — AV cable penetrations need no firestopping in any rated wall",
@@ -3866,6 +4461,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "When should cables be labeled during rough-in?",
     "options": [
       "At the end of the project, once the final cable routes are known for the as-builts",
@@ -3879,6 +4476,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "A cable run exceeds the practical pull length with three 90-degree bends and no pull box. What is the correct fix?",
     "options": [
       "Pull harder with a stronger tugger — maximum pulling force overcomes any number of bends, so pull boxes are optional",
@@ -3892,6 +4491,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "Why must cable ends be protected (capped/taped) during rough-in?",
     "options": [
       "For looks — capped cable ends look professional in progress photos, which is the only reason to protect them",
@@ -3905,6 +4506,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "The electrician's conduit run for AV is full at 60% fill with their own wire. What is the issue?",
     "options": [
       "None — share it — conduit fill limits don’t apply when mixing trades, and AV signal cable runs fine alongside power conductors",
@@ -3918,6 +4521,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rough-In & First Fix",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C2",
     "q": "What is 'first fix' sequencing relative to drywall, and why does it matter?",
     "options": [
       "First fix happens after paint — substructure and cable go in once finishes are complete, so the AV work stays clean and protected",
@@ -3931,6 +4536,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D1",
     "q": "Where should the heaviest equipment (large amplifiers, UPS) be placed in an AV rack?",
     "options": [
       "At the top for easy access — heavy amplifiers belong at the top where technicians can reach their controls without bending down",
@@ -3944,6 +4551,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D1",
     "q": "Empty rack spaces between equipment should be filled with blanking panels primarily because:",
     "options": [
       "They look professional — blanking panels are purely cosmetic, filling gaps so the client doesn’t see empty rack space",
@@ -3957,6 +4566,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "When wiring the rack, AC power cables and low-level analog audio cables should be:",
     "options": [
       "Bundled tightly together with the audio cables for the neatest, most serviceable rack dressing possible",
@@ -3970,6 +4581,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "What is a service loop, and why does every rack cable need one?",
     "options": [
       "Extra cable coiled for decoration behind the rack, since a full coil of spare wire makes the installation look professional",
@@ -3983,6 +4596,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "For bundling Cat6A patch cables in a rack, what should you use instead of nylon zip ties pulled tight?",
     "options": [
       "Nothing — let them hang — unsecured Cat6A patch cables hanging freely in the rack avoid all pressure points and certify reliably",
@@ -3996,6 +4611,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
     "q": "What is the purpose of a sequenced power controller in an AV rack?",
     "options": [
       "It makes the whole rack turn on faster — sequenced controllers boot every device simultaneously for the quickest possible system startup",
@@ -4009,6 +4626,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D1",
     "q": "The rack elevation shows 1RU ventilation gaps above each amplifier. The installer wants to close them up to fit an extra device. What is the correct response?",
     "options": [
       "Go ahead — space is tight — rack space is expensive, and ventilation gaps are just empty air that could hold revenue-generating equipment",
@@ -4022,6 +4641,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "Why must the AV rack have a proper equipment grounding/bonding connection to the building ground?",
     "options": [
       "Grounding is optional for low-voltage racks — bonding adds no real safety benefit and only complicates the cable management inside the rack",
@@ -4035,6 +4656,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "Patch panel ports in the rack should be labeled:",
     "options": [
       "With a marker when you remember — hand-labeling ports whenever it occurs to you is the standard field practice",
@@ -4048,6 +4671,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "A rack with 3,000W of equipment is fed from a single 20A/120V circuit (2,400W max continuous at 80%). What is the problem?",
     "options": [
       "No problem — circuit breakers are conservative by design, so a 20A breaker will carry 3,000W continuously without ever tripping",
@@ -4061,6 +4686,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "What is 'wire dress' and why do clients judge it?",
     "options": [
       "It is purely cosmetic — wire dress affects only appearance, and tangled, unlabeled cable performs and services identically to neatly dressed cable",
@@ -4074,6 +4701,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "Before the rack leaves the shop, what final staging check should be performed?",
     "options": [
       "None — it was built carefully — careful assembly eliminates all defects, so power-on testing in the shop wastes billable hours",
@@ -4087,6 +4716,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Rack Build & Wiring",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "Cable bend radius inside the rack for Cat6A patch cords should be respected because:",
     "options": [
       "It looks tidy — bend radius is an aesthetic guideline; tight bends at the patch panel look neat and perform identically",
@@ -4100,6 +4731,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "You are mounting an 85-inch display (120 lbs) on a metal-stud wall. What is the correct approach?",
     "options": [
       "Toggle bolts directly into the drywall will hold 120 lbs safely, since modern toggle bolts are rated for any commercial display weight",
@@ -4113,6 +4746,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "A projector mount installation requires a safety cable (tether) in addition to the primary mount because:",
     "options": [
       "It looks professional — the safety cable is a cosmetic touch that signals quality workmanship to the client",
@@ -4126,6 +4761,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
     "q": "When aiming installed loudspeakers, what should the installer verify?",
     "options": [
       "That they look straight — visually aligning the cabinets so they appear level is the complete aiming procedure",
@@ -4139,6 +4776,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "Equipment installed inside millwork (credenza) requires what special attention?",
     "options": [
       "None — it’s hidden — equipment inside millwork needs no special treatment since it’s out of sight and the wood insulates it",
@@ -4152,6 +4791,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
     "q": "A floor box was roughed in 2 feet from where the conference table will sit. What is the least-bad option?",
     "options": [
       "Leave it in place — 2 feet from the table is well within cable reach, and a low-profile floor box in the open floor is not a trip hazard worth relocating",
@@ -4165,6 +4806,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "Outdoor-rated displays or projectors differ from indoor models in what key installation respects?",
     "options": [
       "They are identical products — indoor displays and projectors perform exactly the same when mounted outdoors, with no installation changes needed",
@@ -4178,6 +4821,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C2",
     "q": "What is the working load limit (WLL) and why must rigging hardware never exceed it?",
     "options": [
       "WLL is a suggestion — the working load limit is a conservative guideline, and exceeding it by 50% is standard rigging practice",
@@ -4191,6 +4836,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C2",
     "q": "In seismic zones, AV equipment installations may require:",
     "options": [
       "Nothing special — standard rack installation survives earthquakes undamaged, so seismic zones need no additional measures",
@@ -4204,6 +4851,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "C",
+    "task": "C3",
     "q": "Wall penetrations for cable between rooms must be:",
     "options": [
       "Just drilled and left open — an open hole is fine for low-voltage cable, and firestopping doesn’t apply to AV penetrations",
@@ -4217,6 +4866,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Mounting & Distribution",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "Distributed ceiling equipment (speakers, mics, WAPs) across a large floor should be installed:",
     "options": [
       "Wherever is most convenient for each device on installation day, adjusting the locations freely on the fly as the crew works through the floor",
@@ -4230,6 +4881,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "When terminating RJ45 connectors for AV-over-IP, which wiring standard matters most?",
     "options": [
       "The standard doesn't matter as long as both ends of a cable match — mixing T568A and T568B across the facility causes no issues",
@@ -4243,6 +4896,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "For Cat6 terminations, the pairs should be untwisted no more than:",
     "options": [
       "2 inches — untwisting 2 inches at the jack is standard and has no effect on NEXT or certification",
@@ -4256,6 +4911,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "When soldering (or terminating) an XLR connector for a balanced microphone line, the correct pinout is:",
     "options": [
       "Pin 1 hot (+), Pin 2 ground/shield, Pin 3 cold (−)",
@@ -4269,6 +4926,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "Speaker wire polarity (positive to positive) matters because:",
     "options": [
       "It doesn’t matter — speakers work identically either way, and polarity has no audible effect",
@@ -4282,6 +4941,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "Before mating fiber optic connectors, what is the essential step?",
     "options": [
       "Blow on them — a sharp breath across the end-face removes dust effectively, and it’s the fastest field-cleaning method available on site",
@@ -4295,6 +4956,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D2",
     "q": "A shielded twisted-pair (F/UTP) cable's drain wire should be terminated:",
     "options": [
       "Left floating at both ends — the drain wire should never contact ground anywhere, since any bond creates interference",
@@ -4308,6 +4971,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "What is the practical field limit for passive HDMI cable runs at 4K60?",
     "options": [
       "100 meters — passive HDMI cables carry 4K60 reliably to 100m, so no converters are needed for long runs",
@@ -4321,6 +4986,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "BNC connectors for SDI video should be terminated with:",
     "options": [
       "Pliers and hope — squeeze the BNC barrel with standard pliers; if it doesn’t fall off immediately, the termination is good for SDI",
@@ -4334,6 +5001,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "After terminating a Cat6A run, what proves the termination is good?",
     "options": [
       "The link light comes on — an active link LED proves the termination meets Category 6A performance, so no further testing is needed",
@@ -4347,6 +5016,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "Balanced audio lines (XLR/TRS) reject interference because:",
     "options": [
       "They are magic — balanced lines use proprietary noise-eating circuitry that no textbook explains; it simply works",
@@ -4360,6 +5031,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D4",
     "q": "When terminating 70V speaker lines, what must be verified at each tap?",
     "options": [
       "Nothing — 70V is foolproof — constant-voltage taps cannot be miswired or shorted, so verification is pointless",
@@ -4373,6 +5046,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Termination & Cable Standards",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D5",
     "q": "Compression vs. crimp RJ45 connectors: what is the practical difference for the installer?",
     "options": [
       "No difference — compression and crimp connectors are fully interchangeable, and any generic crimp tool works correctly on every RJ45 connector brand",
@@ -4386,6 +5061,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "AV devices on the corporate network should use static IP addresses (or DHCP reservations) rather than plain DHCP because:",
     "options": [
       "DHCP doesn’t work — DHCP servers cannot assign addresses to AV devices at all, so static addressing is the only functional option",
@@ -4399,6 +5076,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "IGMP snooping must be enabled on switches carrying Dante multicast flows because:",
     "options": [
       "It makes audio sound better — IGMP snooping applies audio enhancement to multicast streams, improving clarity and frequency response",
@@ -4412,6 +5091,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "QoS/DSCP markings for AV traffic (e.g., PTP clocking at the highest priority) are configured to:",
     "options": [
       "Make the whole network run faster by doubling the switch's clock speed — so every packet, including bulk file transfers, arrives noticeably sooner",
@@ -4425,6 +5106,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "A Dante device shows a clocking fault (red clock icon). What is the first thing to check?",
     "options": [
       "Replace the device — a red clock icon means the Dante hardware has failed permanently, so swap the unit before checking anything else",
@@ -4438,6 +5121,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D7",
     "q": "When loading a control system program to the processor, what must be verified afterward?",
     "options": [
       "Nothing — uploads always work — a successful file transfer guarantees every button and preset operates exactly as programmed",
@@ -4451,6 +5136,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D7",
     "q": "EDID issues manifest as wrong resolutions or no video. What is the installer's EDID management task?",
     "options": [
       "Ignore EDID — it’s automatic — sources and displays always negotiate the perfect format, so EDID management is now obsolete",
@@ -4464,6 +5151,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "Before connecting AV devices to the client's production network, what coordination is required?",
     "options": [
       "Just plug in — it’s easier to ask forgiveness than permission — corporate networks auto-configure unknown devices, so IT coordination just wastes time",
@@ -4477,6 +5166,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "A network cable tester shows 'split pair' on a newly terminated run. What does this mean?",
     "options": [
       "The cable is fine — ‘split pair’ is the tester’s term for a correctly wired run, so the cable will certify and perform at full rated speed",
@@ -4490,6 +5181,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D7",
     "q": "When configuring a DSP, what is 'gain structure' in practical commissioning terms?",
     "options": [
       "Turning everything to maximum — push every input gain and fader to full scale; the DSP’s built-in limiters will sort out the levels automatically",
@@ -4503,6 +5196,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "Multicast vs. unicast Dante flows: when does the installer need to care?",
     "options": [
       "Never — the Dante devices and the switch automatically negotiate the flow type, so multicast and unicast behave identically with zero configuration differences",
@@ -4516,6 +5211,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D7",
     "q": "What is the installer's role when the control system needs to integrate with the building's lighting or HVAC?",
     "options": [
       "Guess the protocol — cycle through common baud rates and command strings until the lights respond; formal documentation can be written after handover if there’s time",
@@ -4529,6 +5226,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Configuration & Networking",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D6",
     "q": "After configuring all networked AV devices, what documentation must be left?",
     "options": [
       "None — every device stores its own configuration internally, so future technicians can recover everything by logging into each unit one at a time",
@@ -4542,6 +5241,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "What is the correct order of operations when testing a newly installed AV system?",
     "options": [
       "Test everything at once — powering the whole system and pressing buttons immediately is the fastest valid test sequence",
@@ -4555,6 +5256,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "A multimeter shows 0 ohms between the + and − of a 70V speaker run. What does this indicate?",
     "options": [
       "Normal 70V operation — tapped transformers present nearly zero ohms when the run is wired correctly",
@@ -4568,6 +5271,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "How should loudspeaker polarity be verified across a distributed ceiling system?",
     "options": [
       "By standing in the center of the room and listening carefully — a trained ear can reliably detect one reversed speaker among twelve in a zone",
@@ -4581,6 +5286,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
     "q": "What does calibrating a display (beyond 'looks good') actually involve?",
     "options": [
       "Turning up the brightness — pushing brightness and contrast to maximum is the complete calibration procedure, since a brighter image always looks better to every viewer in the room",
@@ -4594,6 +5301,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
     "q": "An SPL meter is used during commissioning primarily to:",
     "options": [
       "Impress the client — the SPL meter’s real purpose is demonstrating professional gear to the client during the walkthrough",
@@ -4607,6 +5316,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "A video path shows sparkles intermittently. What is the most likely cause and test?",
     "options": [
       "The display is broken — intermittent sparkles mean the panel’s internal video processor is failing, so replace the display before testing anything else in the chain",
@@ -4620,6 +5331,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "What is the 'signal flow' troubleshooting method?",
     "options": [
       "Randomly swapping parts — replace the components in any order until the system works again; the faulty part will reveal itself eventually",
@@ -4633,6 +5346,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "Network testing for AV-over-IP should include what beyond 'it connects'?",
     "options": [
       "Nothing else is required — a single successful ping and the link LED confirm the switch is fine, and AV-over-IP streams use so little bandwidth that load testing is pointless",
@@ -4646,6 +5361,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "Why test the control system with the actual user workflows (not just button-by-button)?",
     "options": [
       "Button tests are sufficient — pressing each button once proves the program logic, since sequences are just buttons pressed in a particular order",
@@ -4659,6 +5376,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Testing & Calibration",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D8",
     "q": "All test results should be:",
     "options": [
       "Kept in the installer’s head — experienced technicians memorize every measurement, which is more reliable than written records",
@@ -4672,6 +5391,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E1",
     "q": "What is the purpose of the client demonstration at closeout?",
     "options": [
       "To show off — the demonstration is a sales showcase for the integrator’s capabilities, with no connection to the contracted specifications",
@@ -4685,6 +5406,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E2",
     "q": "Effective end-user training should be:",
     "options": [
       "A quick five-minute walkthrough of the remote at handover, since modern systems are designed to be fully intuitive",
@@ -4698,6 +5421,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "What does project completion sign-off require from the installer?",
     "options": [
       "Just a signature — the installer signs the acceptance form and the project is complete, regardless of documentation or training status",
@@ -4711,6 +5436,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "As-built documentation the installer provides should reflect:",
     "options": [
       "The original design drawings, unchanged, since the engineer's design intent is the authoritative record regardless of any field changes that were made",
@@ -4724,6 +5451,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "Why hand over admin passwords and configuration backups at closeout?",
     "options": [
       "You shouldn't hand them over — keeping the admin passwords guarantees the client must call you back for every future service visit",
@@ -4737,6 +5466,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "Warranty registration and documentation at closeout should include:",
     "options": [
       "Nothing — warranties are automatic — manufacturers track every serial number, so registration and documentation are unnecessary",
@@ -4750,6 +5481,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "What is a punch list, and when is it truly complete?",
     "options": [
       "A shopping list of spare parts; the punch list is considered complete the moment it is written down and handed to the client",
@@ -4763,6 +5496,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "Spare parts ('attic stock') left at closeout typically include:",
     "options": [
       "A spare rack — a complete loaded spare rack is the standard attic stock, so the client can swap the entire system during any failure",
@@ -4776,6 +5511,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E1",
     "q": "The final client walkthrough should cover what?",
     "options": [
       "Just the main room — the largest space represents the whole project, so demonstrating it covers the walkthrough requirement for every other room",
@@ -4789,6 +5526,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Closeout & Training",
     "cert": "CTS-I",
+    "duty": "E",
+    "task": "E3",
     "q": "What financial/administrative items typically gate final payment at closeout?",
     "options": [
       "Nothing — payment is automatic — final payment releases on the contract date regardless of the punch list or the closeout documentation status",
@@ -4802,6 +5541,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "Before working from a 12-foot ladder on a jobsite, what is required?",
     "options": [
       "Nothing — ladders are simple — any ladder found on site is safe to climb immediately, and inspection is a waste of setup time",
@@ -4815,6 +5556,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "What PPE is typically required on an active construction site for AV installers?",
     "options": [
       "None — AV is clean work — pulling cable and hanging displays involves no hazards, so PPE is unnecessary for AV installers",
@@ -4828,6 +5571,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B2",
     "q": "Lockout/tagout (LOTO) applies to AV installers when:",
     "options": [
       "Never — it’s for electricians — lockout/tagout applies exclusively to licensed electricians, so AV installers never use it on any jobsite",
@@ -4841,6 +5586,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B1",
     "q": "Daily progress reports / field reports should capture:",
     "options": [
       "Nothing — they’re busywork — daily reports consume crew time without protecting against disputes, so skipping them saves money",
@@ -4854,6 +5601,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B2",
     "q": "The electrician's work blocks your cable path. What is the professional response?",
     "options": [
       "Move the electrician's work out of the way yourself — physically repositioning another trade's installed work is accepted, standard practice on a busy jobsite",
@@ -4867,6 +5616,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
     "q": "You discover the field condition requires 200 extra feet of cable beyond the design. What is the correct process?",
     "options": [
       "Install the extra 200 feet immediately and bury the cost in the original bid, hoping nobody notices the overrun at closeout",
@@ -4880,6 +5631,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "F",
+    "task": "F2",
     "q": "A systematic approach to repairing a failed AV system on a service call starts with:",
     "options": [
       "Replacing the most expensive component in the rack first, since the high-cost parts are statistically the most likely points of failure in a system",
@@ -4893,6 +5646,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "F",
+    "task": "F1",
     "q": "Preventive maintenance visits for installed AV systems typically include:",
     "options": [
       "Nothing — AV doesn’t need maintenance — installed systems run indefinitely with zero service, so PM visits are pure profit-taking",
@@ -4906,6 +5661,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "A",
+    "task": "A4",
     "q": "Why must installers maintain their tools and test equipment?",
     "options": [
       "They don’t — tools are disposable — drill bits and meters are consumables, so maintenance is wasted effort and you should just buy new ones",
@@ -4919,6 +5676,8 @@ const QUESTIONS = [
   {
     "domain": "CTS-I: Jobsite Operations & Safety",
     "cert": "CTS-I",
+    "duty": "D",
+    "task": "D1",
     "q": "Lifting a heavy amplifier into a rack alone is:",
     "options": [
       "Fine — technicians are strong — AV techs lift heavy gear daily, so solo amplifier lifts are safe and expected",
@@ -4932,6 +5691,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Commissioning & Closeout",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "During commissioning you find the installed projector's throw distance produces a 100-inch image but the client specified 120 inches. The mount is fixed. What is the correct action?",
     "options": [
       "Leave it — close enough — a 100-inch image from a 120-inch spec is within visual tolerance, so no documentation or client discussion is needed",
@@ -4945,6 +5706,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "A site survey finds the only available circuit for the AV rack is shared with the break-room microwave and refrigerator. What should you do?",
     "options": [
       "Use it — AV doesn’t draw much — amplifiers and racks sip power, so sharing a circuit with the break-room appliances causes no issues",
@@ -4958,6 +5721,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Electrical & Site Survey",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A2",
     "q": "Why should a site survey measure ambient noise levels (NC rating) in each AV space?",
     "options": [
       "It isn’t necessary — modern DSP noise reduction eliminates all background noise electronically, so measuring the room’s NC rating wastes survey time",
@@ -4971,6 +5736,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "Which AVIXA standard addresses cable labeling for AV systems?",
     "options": [
       "AVIXA F502.01:2018 — Cable Labeling for Audiovisual Systems",
@@ -4984,6 +5751,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: AVIXA Standards",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "AVIXA's standard for image system contrast ratio (V201.01) is primarily concerned with:",
     "options": [
       "The projector’s marketing specs — V201.01 certifies that the manufacturer’s published contrast numbers are truthful",
@@ -4997,6 +5766,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is the practical difference between RS-232 and IR control of a display?",
     "options": [
       "No difference — RS-232 and IR carry identical control commands with the same reliability, and both interfaces provide two-way status feedback from the display",
@@ -5010,6 +5781,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "A touch panel should be programmed so that:",
     "options": [
       "Every function is on the first page — cramming all controls onto one screen minimizes taps and is the professional standard",
@@ -5023,6 +5796,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "What is 'feedback' in a control system, and why does it matter?",
     "options": [
       "Audio squealing — feedback is the loud howl when a microphone hears itself, and the control system’s job is to eliminate it",
@@ -5036,6 +5811,8 @@ const QUESTIONS = [
   {
     "domain": "CTS: Control Systems",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "When a control processor loses network connectivity to its touch panels, the panels typically:",
     "options": [
       "Keep working normally — touch panels store the complete control program locally, so they keep operating the room with no dependence on the processor or network",
@@ -5049,6 +5826,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Dante's 'device latency' setting (e.g., 1ms vs 5ms) represents:",
     "options": [
       "How fast the device boots — the latency setting controls the device’s startup time, with 1ms booting faster than 5ms",
@@ -5062,6 +5841,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "AES67 differs from Dante in that it is:",
     "options": [
       "A proprietary protocol — AES67 is owned by a single manufacturer and requires licensed hardware, so it cannot interoperate with any Dante-equipped devices",
@@ -5075,6 +5856,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
     "q": "A redundant Dante network uses primary and secondary ports. What is the key cabling rule?",
     "options": [
       "Both primary and secondary ports can share one managed switch with VLANs, since VLANs provide full redundancy isolation",
@@ -5088,6 +5871,8 @@ const QUESTIONS = [
   {
     "domain": "Advanced: Dante & AES67",
     "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
     "q": "Dante Controller's 'Transmit' tab showing a flow as multicast (flower icon) means:",
     "options": [
       "The flow is broken — the flower icon is Dante Controller’s error symbol, indicating the multicast stream has failed and needs rebuilding",
@@ -5097,5 +5882,2075 @@ const QUESTIONS = [
     ],
     "correct": 1,
     "explanation": "Multicast flows are bandwidth-efficient for one-to-many, but they REQUIRE proper IGMP snooping/querier on the switches. The flower icon is your cue to verify the network config matches."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "During installation verification, what is the correct power-up sequence for a newly wired AV rack?",
+    "options": [
+      "Amplifiers first, then processors and sources, so the outputs stabilize before signal arrives",
+      "All devices at once via the master breaker, which is the fastest way to find wiring faults",
+      "Sources and processors first, amplifiers last, to prevent turn-on transients from hitting the speakers",
+      "Displays first, then control system, then audio, matching the order of the signal flow diagram"
+    ],
+    "correct": 2,
+    "explanation": "Powering amplifiers last keeps turn-on thumps and surges away from the loudspeakers, and lets you verify each upstream stage is clean before adding gain. Sequence controllers exist for exactly this reason. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "Before landing loudspeaker wiring on the amplifier outputs, what check protects the amplifier?",
+    "options": [
+      "Measure each run for continuity and confirm no shorts between conductors or to ground",
+      "Play program audio through the cable with a portable speaker to confirm it carries signal",
+      "Megger-test the cable at 1000V to verify the insulation rating exceeds the amplifier output",
+      "Short all conductors together at the far end to balance the load the amplifier will see"
+    ],
+    "correct": 0,
+    "explanation": "A shorted or grounded speaker run can destroy an amplifier output stage the instant it powers up. A quick meter check for continuity, shorts, and impedance sanity takes two minutes and saves a very expensive mistake. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "Two ceiling speakers covering one zone both produce sound, but the zone sounds thin with almost no bass. What is the most likely installation error?",
+    "options": [
+      "The amplifier is underpowered for the combined load of the two speakers",
+      "One speaker is wired out of phase, so the low frequencies cancel between the two",
+      "The speaker cable is too long, rolling off the low frequencies before they arrive",
+      "The DSP high-pass filter is set too high for full-range ceiling speakers"
+    ],
+    "correct": 1,
+    "explanation": "Out-of-phase wiring makes one speaker push while the other pulls, and low frequencies cancel first because their long wavelengths overlap the most. It is the classic 'everything works but sounds wrong' fault, caught by a polarity check during verification. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "The design calls for 75 dBA at the listener seats. After programming the DSP, how do you verify the installed system meets that target?",
+    "options": [
+      "Play familiar music and ask the client whether the level feels right for the room",
+      "Check that the amplifier output meters peak near 0 dB during program material",
+      "Play pink noise through the system and measure SPL with a calibrated meter at the seating positions",
+      "Compare the amplifier's rated wattage against the speaker's program power handling"
+    ],
+    "correct": 2,
+    "explanation": "Verification means measuring, not guessing. Pink noise gives equal energy per octave like real program material, and a calibrated meter at actual seats proves the design target is met where people sit. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "Installation is complete and the control system is programmed. What does control system verification require before handover?",
+    "options": [
+      "Confirming the processor powers on and the touch panel displays the home page",
+      "Testing one representative button per page, since all buttons share the same code",
+      "Verifying the program file uploaded without errors, which proves all functions work",
+      "Pressing every button, preset, and macro and confirming each produces its documented result"
+    ],
+    "correct": 3,
+    "explanation": "A successful upload proves the code transferred, not that it works. Button-for-button testing against the documented outcomes is the only way to catch wrong joins, missing feedback, and macros that fire halfway. The client will press every button eventually; find the failures first. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "A newly pulled Cat6A run passes a wiremap test on the verifier. Why is that not sufficient to certify the run for AV-over-IP distribution?",
+    "options": [
+      "Wiremap only confirms pinout and continuity; certification measures NEXT, return loss, and other parameters the standard requires",
+      "Wiremap tests are only valid for analog audio cable, not for twisted-pair data cable",
+      "A passing wiremap voids the cable manufacturer's warranty, so it must be redone with a certifier",
+      "Wiremap results expire after 24 hours, so the run must be retested the next day"
+    ],
+    "correct": 0,
+    "explanation": "Wiremap says the cable is connected correctly; certification proves it performs to the category standard under real signal conditions. AV-over-IP needs the full performance envelope, so the certifier's report, not the wiremap, is the verification record. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "A 4K HDMI run of 60 feet from rack to display shows sparkles and intermittent dropouts. The cable tests continuous on every pin. What is the most likely cause?",
+    "options": [
+      "The display's EDID is corrupted and must be rewritten with the manufacturer's utility",
+      "Passive copper HDMI is unreliable at that length for 4K bandwidth; use an active optical cable or extender",
+      "The source output voltage is too low, so a distribution amplifier must be added at the display",
+      "The cable shield is picking up Wi-Fi interference, which only affects runs over 50 feet"
+    ],
+    "correct": 1,
+    "explanation": "Continuity proves the cable is connected, not that it can carry 18 Gbps. Passive HDMI has real length limits that shrink as bandwidth grows; sparkles are the signature of a marginal link. Active optical HDMI or an extender is the correct fix. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "During verification you find a cable labeled PROJ-1 at the rack end and DISP-2 at the display end. What is the correct action?",
+    "options": [
+      "Note the mismatch in the punch list and let the service tech sort it out on the first call",
+      "Leave it; the labels are close enough that any tech will figure out the intent",
+      "Relabel both ends to match the as-built drawing and retest the run end to end",
+      "Swap the labels so the rack end reads DISP-2, which matches how the signal flows"
+    ],
+    "correct": 2,
+    "explanation": "A label that lies is worse than no label: the next tech will trust it and waste an hour. Both ends must match the as-built exactly, and the run gets retested after relabeling so the record is trustworthy. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "New AV-over-IP encoders and decoders power up and link lights are on, but no stream establishes between them. What should you check first?",
+    "options": [
+      "Replace the Ethernet cables, since link lights can be on with a damaged cable",
+      "Reboot the network switch, which clears most AV-over-IP discovery failures",
+      "Verify the displays are set to the correct HDMI input for the decoder output",
+      "Confirm all endpoints run matching, manufacturer-approved firmware versions"
+    ],
+    "correct": 3,
+    "explanation": "AV-over-IP endpoints negotiate streams with protocols that change between firmware revisions. Mismatched firmware is the most common reason fresh-out-of-box units see each other but never stream. Match versions first, then troubleshoot the network. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "During verification the fully loaded rack runs for an hour and the internal temperature keeps climbing past the equipment's rated limit. What is the correct response?",
+    "options": [
+      "Resolve the cooling problem (blanking panels, fans, ventilation) before the system is accepted",
+      "Accept the system and note the temperature in the punch list for the client to monitor",
+      "Turn down the amplifier gains until the temperature stabilizes, then sign off",
+      "Leave the rack door open permanently, which is standard practice for warm racks"
+    ],
+    "correct": 0,
+    "explanation": "Heat kills electronics slowly and voids warranties quickly. Verification under full load exists to catch exactly this, and the fix is airflow engineering, not gain reduction or wishful thinking. A rack that cannot stay cool is not ready for handover. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "The projector is mounted well off-axis and the image is squared up with 25 degrees of digital keystone correction. Why should verification flag this?",
+    "options": [
+      "Keystone correction voids the projector warranty, so the manufacturer will refuse future claims",
+      "Heavy digital keystone rescales the image, throwing away resolution and brightness the client paid for",
+      "Keystone correction increases lamp power draw, which shortens the lamp life dramatically",
+      "Off-axis mounting is a code violation in commercial installations regardless of image quality"
+    ],
+    "correct": 1,
+    "explanation": "Digital keystone remaps pixels, so a 25-degree correction discards a large share of the projector's native resolution and light output. The correct fix is mechanical: reposition the mount or use optical lens shift. Flagging it at verification is the last chance before the client lives with a compromised image. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: AVIXA Standards",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "The installer declares the system finished, but the client questions whether every requirement was met. What is the authoritative reference for deciding the system is complete?",
+    "options": [
+      "The installer's professional judgment, since they built the system and know it best",
+      "The manufacturer's specification sheets, which define what each device can do",
+      "The approved design documents and performance targets the system was built against",
+      "The project schedule, which defines completion as the date commissioning was planned"
+    ],
+    "correct": 2,
+    "explanation": "Done is defined by the contract documents: drawings, performance targets, and the scope the client approved. Verification tests the installed system against those documents, which is why AVIXA's verification frameworks are built around comparing measured performance to documented requirements. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "AV-over-IP streams are clean to one display but stutter badly when three more displays join. The switch is unmanaged. What is the most likely cause?",
+    "options": [
+      "The encoder cannot handle more than one decoder, so a second encoder must be added",
+      "The displays are negotiating different resolutions, which overloads the decoder buffers",
+      "The Ethernet cables are too long, and the signal degrades with each added display",
+      "Without IGMP snooping the switch floods multicast to every port, saturating the network"
+    ],
+    "correct": 3,
+    "explanation": "Multicast video only scales when the switch prunes it with IGMP snooping. An unmanaged switch blasts every stream to every port, so each added display multiplies the traffic until the network chokes. Managed switching with IGMP snooping is a design requirement, not an upgrade. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "Why must the AV rack's main power disconnect be clearly labeled and readily accessible?",
+    "options": [
+      "So power can be cut instantly in an emergency and locked out safely during service",
+      "So the client can power-cycle the rack themselves instead of calling for support",
+      "So the fire alarm panel can automatically shut down AV equipment during a drill",
+      "So the cleaning crew can switch the rack off each night to save electricity"
+    ],
+    "correct": 0,
+    "explanation": "An accessible, labeled disconnect is a life-safety and service-safety item: first responders and techs must kill power without hunting through a rack. Verification includes confirming it exists, is labeled, and actually disconnects the load. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "How do you verify installed ceiling microphone coverage matches the design during system verification?",
+    "options": [
+      "Check the microphone spec sheets against the room dimensions to confirm the math",
+      "Walk the seating area speaking at normal level while watching pickup and metering in the DSP",
+      "Measure the distance from each microphone to the nearest seat with a laser measure",
+      "Play pink noise through the loudspeakers and confirm the microphones do not feed back"
+    ],
+    "correct": 1,
+    "explanation": "Coverage is proven by a talker test, not by paperwork. Walking the seats while watching live metering shows exactly where pickup drops off, which is the only evidence that matters to the client on their first conference call. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "At final verification the brand-new projector's lamp-hour counter reads 214 hours. What should you do?",
+    "options": [
+      "Nothing; manufacturers burn in every projector for 200 hours before shipping",
+      "Reset the counter to zero so the client's maintenance log starts clean",
+      "Investigate and document it, since new equipment should show near-zero hours",
+      "Replace the lamp immediately, because 214 hours means it is already near end of life"
+    ],
+    "correct": 2,
+    "explanation": "A high hour count on 'new' equipment means it was a demo unit, previously installed, or the counter was never reset after testing. Any of those change what the client paid for, so it gets documented and resolved, not quietly zeroed. CTS Duty B Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Field conditions forced several cable reroutes and two device substitutions during installation. Who is responsible for recording those changes in the as-built drawings?",
+    "options": [
+      "The architect, since all building record drawings flow through their office",
+      "The integrator, who must document what was actually installed for the client to own",
+      "The equipment manufacturer, whose cut sheets define the final configuration",
+      "No one; as-builts are issued from the original design drawings unchanged"
+    ],
+    "correct": 1,
+    "explanation": "As-builts are the integrator's deliverable: the marked-up record of reality, reviewed against the design. The service tech who arrives in three years works from these drawings, so 'we meant to update them' is a closeout failure. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Which set of documents belongs in the system closeout package handed to the client?",
+    "options": [
+      "The original proposal, the installer's internal labor logs, and the equipment invoices",
+      "Marketing brochures for every installed product and the manufacturer's full catalog",
+      "As-built drawings, schematics, the operations manual, warranties, IP and password inventory, and training records",
+      "The project schedule, the crew's time sheets, and the permit applications"
+    ],
+    "correct": 2,
+    "explanation": "The closeout package is everything the owner needs to operate, maintain, and service the system without calling you for basics. If a document answers 'how does this work' or 'who do I call,' it belongs in the package. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Many manufacturers require product registration within a short window after installation. What is the risk if registration is missed?",
+    "options": [
+      "The warranty may fall back to a shorter term or the date of manufacture instead of the install date",
+      "The equipment will stop functioning until it is registered with the manufacturer",
+      "There is no risk; registration is only used for marketing emails to the client",
+      "The installer becomes personally liable for all future repairs on that equipment"
+    ],
+    "correct": 0,
+    "explanation": "Registration locks the warranty start to the project, not the factory or the distributor's shelf. Missing the window can quietly cost the client months of coverage, so warranty registration is a closeout task with a deadline, not a favor. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Why do integrators collect sign-in sheets at handover training sessions?",
+    "options": [
+      "To bill the client per attendee for the training time",
+      "To prove training was delivered if the client later claims nobody was trained",
+      "To build a marketing mailing list of the client's employees",
+      "To satisfy the fire code occupancy count for the training room"
+    ],
+    "correct": 1,
+    "explanation": "'Nobody ever trained us' is one of the most common post-project disputes, and it usually appears the first time something breaks. A signed attendance sheet with the topics covered ends that argument in seconds. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "A critical switcher arrives dead on arrival two days before commissioning. What is the correct project response?",
+    "options": [
+      "Open the unit and attempt a component-level repair to keep the schedule",
+      "Wait for the manufacturer to investigate before telling the client anything",
+      "Document the failure, start the RMA immediately, deploy a workaround or loaner, and update the schedule",
+      "Install it anyway; most DOA units recover after a firmware update and a power cycle"
+    ],
+    "correct": 2,
+    "explanation": "DOA equipment is a logistics problem, not a repair project. Protect the schedule with a workaround, protect the warranty with a documented RMA, and protect trust by telling the client the plan the same day. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "What must an AV operations manual contain to be useful to the client's staff?",
+    "options": [
+      "The integrator's internal cost breakdown and the crew's contact information",
+      "Full programming source code for the control system and DSP",
+      "A history of every change order issued during the project",
+      "System description, normal operating procedures, basic troubleshooting, maintenance schedule, and support contacts"
+    ],
+    "correct": 3,
+    "explanation": "The operations manual is written for the person running the room at 8 AM, not for the engineer who built it. If it does not answer 'how do I run a meeting, what do I do when it fails, and who do I call,' it is a binder, not a manual. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "The installed system has dozens of device passwords and IP addresses. How should that inventory reach the client at handover?",
+    "options": [
+      "Through a secure handoff such as an encrypted file or in-person transfer, never plain email",
+      "Printed on a label inside the rack door so any tech can find it quickly",
+      "Emailed to the client's general info address for easy forwarding to whoever needs it",
+      "Stored only in the integrator's ticketing system and provided on request"
+    ],
+    "correct": 0,
+    "explanation": "Credentials are the keys to the client's network. A secure, documented transfer protects both sides: the client gets full ownership of their system, and the integrator cannot be blamed for a later breach. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "During the warranty period, a device fails and the client calls the manufacturer directly for a replacement. What is the problem with bypassing the integrator?",
+    "options": [
+      "There is no problem; the manufacturer always responds faster than the integrator",
+      "The integrator owns the system-level warranty and must coordinate the claim, verify the diagnosis, and protect the rest of the system",
+      "Manufacturers refuse to speak with end users, so the call will be automatically rejected",
+      "Direct manufacturer contact doubles the warranty period, which complicates the service records"
+    ],
+    "correct": 1,
+    "explanation": "The integrator warranted the working system, not just the boxes. They confirm the device is truly at fault, handle the RMA without disrupting the installation, and keep one accountable party in front of the client. Bypassing them fragments responsibility the next time something fails. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "The control system was reprogrammed in the field and three devices were substituted during installation. When must the schematics be updated?",
+    "options": [
+      "Never; schematics are design documents and the field changes are recorded verbally at training",
+      "Only if the client pays for a documentation change order after the project closes",
+      "Before closeout, so the as-built set reflects what was actually installed and programmed",
+      "At the next service call, when the tech discovers the differences"
+    ],
+    "correct": 2,
+    "explanation": "Drawings that do not match reality are worse than useless on a service call. Every field change gets captured before the as-built set is issued, while the crew that made the changes still remembers them. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "What is retainage in AV contracting, and when is it typically released?",
+    "options": [
+      "A bonus paid to the integrator for finishing early, released at substantial completion",
+      "The client's deposit, refunded if the project finishes under budget",
+      "A penalty withheld for every day the project runs past the scheduled end date",
+      "A percentage of each payment held back until punch list items are closed and final acceptance is signed"
+    ],
+    "correct": 3,
+    "explanation": "Retainage is the client's leverage to ensure the last 5 percent of the work, the punch list, actually gets finished. It releases at final acceptance, which is why closing punch items promptly is a cash-flow issue, not just good manners. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Why leave a one-page quick-start guide at the lectern instead of relying on the full operations manual?",
+    "options": [
+      "Users need the five common tasks in thirty seconds; the full manual stays at the rack for deeper issues",
+      "The full manual is proprietary and clients are not permitted to keep a copy",
+      "Quick-start guides replace the need for any handover training session",
+      "Manuals are too heavy to leave in the room and the lectern has limited space"
+    ],
+    "correct": 0,
+    "explanation": "Nobody opens a 60-page manual five minutes before a meeting. The quick-start card handles power, source select, volume, and the help number; the manual handles everything else. Both get delivered, each where it will actually be used. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "At handover, two devices are still running beta firmware the programmer installed to test a feature. What is the correct action?",
+    "options": [
+      "Leave it; the beta enabled the feature the client asked for and it works",
+      "Roll back to the released firmware version before the client accepts the system",
+      "Document the beta version in the as-builts and let the client decide later",
+      "Upgrade every other device to the same beta so the versions match"
+    ],
+    "correct": 1,
+    "explanation": "Beta firmware has no place in a client's production system: no support, no stability history, and no upgrade path guarantees. If the feature matters, wait for the release; hand over only released, manufacturer-supported versions. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "Between substantial and final completion, who creates and owns the punch list?",
+    "options": [
+      "The client alone, since only the client can judge whether the work is acceptable",
+      "The equipment manufacturers, who must certify each installed device",
+      "The integrator compiles it with input from the client and consultant, then closes each item",
+      "The general contractor, who holds the master punch list for all trades"
+    ],
+    "correct": 2,
+    "explanation": "The integrator owns the punch list because the integrator owns the fixes. Client and consultant add items, but one party tracks, assigns, and closes every line, or items drift for months. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "End users and the client's IT staff need different handover training. What is the key difference?",
+    "options": [
+      "End users are trained first because their session is longer and more technical",
+      "There is no difference; everyone receives the same training for consistency",
+      "IT staff are trained on daily operation while end users learn network administration",
+      "End users learn daily operation; IT staff learn network setup, admin access, passwords, and backups"
+    ],
+    "correct": 3,
+    "explanation": "Training matches the audience's job. Users need confidence running meetings; IT needs the keys to keep the system alive: admin credentials, network details, configuration backups, and the escalation path. Training IT like end users leaves nobody able to administer the system. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B2",
+    "q": "The client has occupied the rooms and the warranty clock has started, but several punch list items remain open. Which milestone was reached?",
+    "options": [
+      "Substantial completion: the system is usable for its intended purpose, with minor items still open",
+      "Final completion: all obligations are fulfilled and retainage is released",
+      "Beneficial occupancy: a real-estate term that has no meaning in AV contracts",
+      "Provisional acceptance: the client has conditionally rejected the installation"
+    ],
+    "correct": 0,
+    "explanation": "Substantial completion means usable, not perfect: the warranty clock and the punch list both start here. Final completion comes only after every punch item is closed and accepted. Confusing the two costs real money in warranty disputes. CTS Duty B Task 2."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "What is the minimum pre-event check for a high-stakes town hall starting in one hour?",
+    "options": [
+      "Confirm the room lights work and the seats are arranged, since facilities handles the rest",
+      "Power up every source, test each microphone, confirm the recording path, and check the backup gear",
+      "Play background music through the system to confirm the amplifiers are on",
+      "Verify the control system home page loads, which proves all subsystems are ready"
+    ],
+    "correct": 1,
+    "explanation": "High-stakes events get a full rehearsal of the signal path, not a glance. Every source, every mic, the record light actually recording, and the backup mic with fresh batteries: the hour before the event is when failures are cheap. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Mid-presentation, a wireless handheld microphone starts dropping out. What is the correct first action while the presenter is still on stage?",
+    "options": [
+      "Open the receiver menu and start a fresh frequency scan during the presentation",
+      "Raise the receiver's squelch threshold to force the signal to lock",
+      "Hand the presenter the tested backup microphone and troubleshoot the dropout after the session",
+      "Ask the presenter to speak louder and hold the mic closer until the dropout stops"
+    ],
+    "correct": 2,
+    "explanation": "During a live event, restore service first and diagnose second. A backup mic on a coordinated frequency takes ten seconds; a menu dive takes the presenter's credibility with it. Root cause analysis happens when nobody is watching. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "The main display wall goes dark five minutes before a board meeting starts. What is the correct priority?",
+    "options": [
+      "Get any working image on screen first using a backup input or path, then diagnose the failure after the meeting",
+      "Trace the full signal path immediately; the meeting can wait for a proper diagnosis",
+      "Explain to the board members that the hardware has failed and the meeting should be rescheduled",
+      "Reboot every device in the chain at once, which is the fastest way to clear a digital fault"
+    ],
+    "correct": 0,
+    "explanation": "The meeting is the product, not the display wall. A laptop direct to a confidence monitor or a backup input saves the meeting; the forensic work happens afterward. Clients remember that you saved their meeting far longer than they remember what failed. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "You are supporting a CEO keynote with no rehearsal time. Which backup preparation matters most?",
+    "options": [
+      "A printed copy of the CEO's slides in case the audience wants handouts",
+      "A redundant playback source and a spare wireless microphone on a coordinated frequency, both tested",
+      "Extra gaffer tape and a longer HDMI cable in the equipment case",
+      "The manufacturer's support phone number saved in your phone contacts"
+    ],
+    "correct": 1,
+    "explanation": "No rehearsal means no chance to discover failures gently, so the two most failure-prone links, playback and wireless, each get a hot spare. Backups only count if they are tested before showtime. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "The live stream drops during a hybrid all-hands meeting. What should the operator communicate to the room?",
+    "options": [
+      "Nothing; announcing problems makes the company look bad and the stream may recover on its own",
+      "A detailed technical explanation of the encoder failure so the audience understands the complexity",
+      "A brief, honest update on what is happening and when service is expected back, without jargon",
+      "A promise that the recording will be perfect even though the live stream failed"
+    ],
+    "correct": 2,
+    "explanation": "Silence breeds rumors and jargon breeds confusion. A short, plain-language update respects the audience and buys the operator the working time needed to fix the real problem. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "A guest presenter plugs in a laptop and the projector reports an unsupported signal. What is the fastest fix?",
+    "options": [
+      "Replace the projector lamp, since a weak lamp cannot sync to unusual resolutions",
+      "Reboot the projector and hope the laptop renegotiates on the second attempt",
+      "Open the laptop's display settings and enable every available resolution until one works",
+      "Set the laptop to a standard resolution the system supports, or switch to the tested house laptop"
+    ],
+    "correct": 3,
+    "explanation": "Guest laptops output whatever their last setup used, and the fix is to meet the system where it lives: a standard, EDID-safe resolution. The house laptop, already tested with the room, is the backup that ends the debate in seconds. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "After an AV failure disrupts a client's important event, what follow-up best protects the relationship?",
+    "options": [
+      "A written incident report within 24 hours with root cause and the prevention plan",
+      "A verbal apology at the next scheduled maintenance visit",
+      "A discount offered immediately before anyone asks what went wrong",
+      "No follow-up; raising it again only reminds the client of the failure"
+    ],
+    "correct": 0,
+    "explanation": "The report turns a failure into evidence of professionalism: what happened, why, and what changes so it never recurs. Delivered fast and unprompted, it is often what keeps the contract. Silence reads as indifference. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Two tickets arrive at once: a dead projector in an unused huddle room, and intermittent audio in the boardroom with a meeting in one hour. Which gets priority?",
+    "options": [
+      "The huddle room, because a dead projector is a complete failure while the boardroom still has partial audio",
+      "The boardroom, because business impact and urgency outrank the severity of the fault alone",
+      "Whichever ticket arrived first, since queues must be worked in order to be fair",
+      "Neither until both requesters confirm the problem still exists"
+    ],
+    "correct": 1,
+    "explanation": "Prioritization weighs impact and urgency, not just brokenness. A total failure in an empty room loses to a partial failure in a room that matters in an hour, every time. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Why should the event operator arrive 30 to 60 minutes before the start time?",
+    "options": [
+      "To reserve parking near the loading dock before the attendees arrive",
+      "To socialize with the client contact and build the relationship before the pressure starts",
+      "To test every source, microphone, and the recording path before anyone is watching",
+      "To read the operations manual for a room they have never worked in"
+    ],
+    "correct": 2,
+    "explanation": "The pre-show check is the event's insurance policy: every input switched, every mic spoken into, the record path confirmed. Failures found with an empty room are maintenance; failures found with a full room are incidents. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Before a recorded deposition begins, what must be verified about the recording path?",
+    "options": [
+      "That the record button is illuminated, which guarantees the file is being written",
+      "That the recording device powered on successfully during the morning check",
+      "That last week's recording played back correctly, which proves the path still works",
+      "That the device is actually recording now, with sufficient storage and a backup recorder running"
+    ],
+    "correct": 3,
+    "explanation": "A lit record button once meant nothing when the disk was full, and depositions cannot be re-shot. Verify actual recording in progress, check remaining storage, and run a backup recorder: the content is legally irreplaceable. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "During a hybrid meeting, remote participants hear the room clearly, but the room cannot hear the remote participants. Where is the fault?",
+    "options": [
+      "In the return audio path to the room, such as the far-end feed or the AEC reference routing",
+      "In the room microphones, which are clearly not picking up the remote audio",
+      "In the remote participants' internet connections, which are too slow for two-way audio",
+      "In the room loudspeakers, which need to be turned up so the remote audio is audible"
+    ],
+    "correct": 0,
+    "explanation": "One-way audio that favors the far end points at the return path: the far-end mix into the room, the AEC reference, or a muted return channel. The room mics are proven working because the remote side hears the room. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "During a live event the operator hits a DSP fault they cannot resolve. What should have been defined before the event?",
+    "options": [
+      "The operator's hourly rate for the extended troubleshooting time",
+      "The escalation contact and the expected response time for each level of problem",
+      "A written guarantee from the manufacturer that the DSP would not fail",
+      "The client's approval to purchase a replacement DSP on the spot"
+    ],
+    "correct": 1,
+    "explanation": "Escalation is decided in calm planning, not in crisis. Knowing exactly who to call and how fast they answer turns a show-stopper into a ten-minute pause. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "What belongs in a technician's go-bag for live-event support calls?",
+    "options": [
+      "Only a laptop, since modern systems are entirely software-configured",
+      "Marketing brochures and a contract template to upsell the client on site",
+      "Adapters, spare cables, fresh batteries, a laptop, a toner, and a multimeter",
+      "A full spare rack of equipment to replace anything that fails"
+    ],
+    "correct": 2,
+    "explanation": "Most event failures are solved with adapters, batteries, and a cable, not a spare rack. The go-bag carries the high-probability fixes and the diagnostic tools to prove what failed. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Repairs will take 20 minutes but the client's meeting starts in 10. What do you tell the client contact?",
+    "options": [
+      "That everything is under control, to avoid worrying them before the meeting",
+      "That the meeting must be cancelled, since the system will not be ready",
+      "Nothing until the repair is done, so you are not distracted from the work",
+      "The honest timeframe plus the interim workaround you are setting up for the first 10 minutes"
+    ],
+    "correct": 3,
+    "explanation": "Bad news delivered early with a plan preserves trust; bad news discovered at start time destroys it. The workaround shows you are protecting their meeting, not just their equipment. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "When providing remote assistance on a client's AV system, what is required before connecting?",
+    "options": [
+      "The client's permission and an agreed support window; never connect silently",
+      "Nothing; the support contract implies standing permission to connect at any time",
+      "A full system backup, which the remote session performs automatically",
+      "Physical presence of the client's IT staff watching the remote session"
+    ],
+    "correct": 0,
+    "explanation": "Remote access to a client's network is a trust instrument. Permission and a defined window keep it professional and auditable; silent connections, even with good intent, read as intrusions when discovered. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "A support contract promises a 4-hour response time. What does that obligate the provider to do?",
+    "options": [
+      "Fix any reported problem completely within 4 hours of the ticket",
+      "Acknowledge the ticket and begin active work within 4 hours",
+      "Arrive on site within 4 hours regardless of the problem's severity",
+      "Answer the phone within 4 hours during business days only"
+    ],
+    "correct": 1,
+    "explanation": "Response time is the clock to engagement, not to resolution: acknowledge, triage, and start work. Resolution times are a separate SLA tier. Knowing the difference prevents both overpromising and disputes. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Why do AV support teams run an on-call rotation instead of relying on one senior technician?",
+    "options": [
+      "Junior technicians need the overtime pay to stay motivated",
+      "Clients prefer speaking to a different technician on every call",
+      "It provides coverage without burnout and removes a single point of failure",
+      "Senior technicians are not permitted to work after hours by labor law"
+    ],
+    "correct": 2,
+    "explanation": "One hero tech is a resilience problem: vacations, illness, and exhaustion all become client-facing outages. A rotation spreads load and builds depth across the team. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "The main projector lamp fails mid-keynote and no spare lamp is on site. What is the best immediate recovery?",
+    "options": [
+      "Pause the keynote for 30 minutes while someone drives to buy a replacement lamp",
+      "Continue in the dark and describe the slides verbally until the lamp cools and restrikes",
+      "Open the projector and bypass the lamp safety interlock to force a restrike",
+      "Reroute the program feed to the overflow displays and confidence monitors while a replacement is sourced"
+    ],
+    "correct": 3,
+    "explanation": "The show continues on whatever displays exist: overflow rooms, confidence monitors, even a large flat panel. Forcing a hot restrike risks the lamp and the interlock bypass risks people. Redundancy in the signal path is the real backup plan. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "What makes end-user training stick after the trainer leaves the building?",
+    "options": [
+      "Hands-on practice where the users operate the system themselves, plus a quick-start card left behind",
+      "A long, detailed lecture covering every feature so nothing is missed",
+      "Training only the most technical employee and letting them teach everyone else",
+      "Emailing the full operations manual the day after the session"
+    ],
+    "correct": 0,
+    "explanation": "People remember what their hands did, not what a presenter said. Users who run a mock meeting during training build muscle memory, and the quick-start card catches what memory drops. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "The same conference room 'loses audio' every Monday morning, and each time a reboot fixes it. What should the support tech do beyond the weekly reboot?",
+    "options": [
+      "Schedule a standing Monday morning reboot so the client never notices",
+      "Find the pattern's cause, such as a weekend shutdown sequence or a scheduled device reboot, and fix it",
+      "Replace the entire audio chain; recurring faults always mean failing hardware",
+      "Train the client to reboot the system themselves every Monday"
+    ],
+    "correct": 1,
+    "explanation": "A fault with a schedule has a cause with a schedule. The pattern points at something timed: an energy-saving shutdown, a network maintenance window, a device that does not recover from a weekly reboot. Fix the cause and the Mondays fix themselves. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "What must every on-site support visit produce before the technician leaves?",
+    "options": [
+      "A five-star review request sent to the client contact's phone",
+      "A verbal summary given to whoever happens to be in the room",
+      "A written service report: symptoms, actions taken, parts used, time spent, and follow-ups",
+      "An invoice for the visit, payable before the technician departs"
+    ],
+    "correct": 2,
+    "explanation": "The service report is the institutional memory of the system: the next tech reads it instead of rediscovering the fault. No report means every visit starts from zero, and repeat failures look like new problems. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "During an event the rack UPS starts beeping steadily although the building power is normal. What is the likely situation and response?",
+    "options": [
+      "The UPS is performing a scheduled self-test; ignore it until the event ends",
+      "The UPS batteries are fully charged; the beep confirms the system is protected",
+      "The beeping is a ground fault warning; lift the equipment grounds to silence it",
+      "The UPS is on battery because its input power path failed; find the tripped breaker or failed UPS and restore normal power"
+    ],
+    "correct": 3,
+    "explanation": "A UPS on battery with utility power present means the UPS is not seeing that power: tripped breaker, failed input, or a UPS fault. The beep is a countdown on finite battery runtime, so the power path gets restored now, not after the event. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Why assign a dedicated operator to a VIP event instead of relying on on-call support?",
+    "options": [
+      "A dedicated operator monitors proactively and responds in seconds, which the stakes justify",
+      "VIP attendees require an operator with a higher certification level by regulation",
+      "On-call technicians are not permitted inside executive boardrooms",
+      "Dedicated operators cost less than on-call overtime for events over two hours"
+    ],
+    "correct": 0,
+    "explanation": "On-call support reacts; a dedicated operator prevents. Watching meters, catching a dying wireless battery before it dies, and having hands on the faders is what high-stakes events are paying for. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "Before a multilingual event begins, how do you verify the interpretation feeds?",
+    "options": [
+      "Check that each interpreter's microphone powers on and the transmitters show RF signal",
+      "Listen to each language channel on a receiver at the actual audience seats",
+      "Confirm the interpreter booth windows are clean so the interpreters can see the stage",
+      "Verify the main program audio is loud enough, since the interpreters listen to it"
+    ],
+    "correct": 1,
+    "explanation": "RF signal at the booth proves transmission, not reception where it matters. Listening to every language channel from audience seats confirms the full path: interpreter mic, transmitter, distribution, and receiver. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "The meeting recording sounds hollow and distant compared to how the room sounded live. What is the likely cause?",
+    "options": [
+      "The recording device's batteries are low, which degrades the audio quality",
+      "The room is too large for the recording device's built-in microphone",
+      "The recording is capturing the reinforced room mix instead of a dedicated, dry record mix",
+      "The file was saved in a compressed format, which always sounds hollow"
+    ],
+    "correct": 2,
+    "explanation": "A recording tapped from the room reinforcement mix inherits the room's acoustics, AEC processing, and reinforcement coloration. A dedicated record mix, dry and balanced for playback, is a separate mix bus for a reason. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: AVIXA Standards",
+    "cert": "CTS",
+    "duty": "C",
+    "task": "C1",
+    "q": "A client complains the projected image looks washed out even though the projector is new. Using AVIXA V201.01 as the framework, what do you check first?",
+    "options": [
+      "The projector's color temperature setting, since new projectors ship in the wrong mode",
+      "The HDMI cable length, because long cables wash out the image",
+      "The projector's warranty status, to arrange a replacement unit",
+      "Ambient light falling on the screen, since contrast ratio is about the difference between image black and room light"
+    ],
+    "correct": 3,
+    "explanation": "V201.01 defines contrast as the ratio the viewer actually sees, which includes ambient light on the screen. A bright room can destroy a 15:1 contrast target no matter how good the projector is. Measure the room light first; it is the cheapest variable to fix. CTS Duty C Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "For a 500-attendee general session with live audio, video, and streaming, which staffing mix is appropriate?",
+    "options": [
+      "A lead technician plus dedicated audio, video, and streaming operators with defined roles",
+      "One senior technician, since a well-designed system should run itself",
+      "Only a stage manager; the presenters can advance their own slides",
+      "Two interns supervised remotely by the lead technician over the phone"
+    ],
+    "correct": 0,
+    "explanation": "Supervising operations means matching crew to complexity: simultaneous audio, video, and streaming need simultaneous hands. Understaffing a general session guarantees that one failure cascades while the lone tech is busy elsewhere. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "A contracted service vendor repeatedly misses its SLA response times. What is the supervisor's correct first step?",
+    "options": [
+      "Immediately terminate the contract and bring all service in-house",
+      "Document the misses and issue a formal written notice citing the contract terms",
+      "Quietly hire a second vendor to cover the gaps without telling the first",
+      "Lower the SLA requirements so the vendor can meet them going forward"
+    ],
+    "correct": 1,
+    "explanation": "Vendor management runs on documentation and process: logged failures, formal notice, cure period, then replacement if nothing changes. Skipping straight to termination invites disputes; lowering the bar rewards failure. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "What belongs in the annual AV operations consumables budget?",
+    "options": [
+      "Salaries for the operations staff and the service contract fees",
+      "Capital funds for a full technology refresh of every room",
+      "Lamps, batteries, cables, adapters, and other items consumed or worn in normal use",
+      "The client's contingency fund for unplanned room renovations"
+    ],
+    "correct": 2,
+    "explanation": "Consumables are the predictable, recurring costs of keeping systems running: lamps age out, batteries cycle out, cables walk away. Budgeting them annually prevents the slow decay of 'we will order it when something breaks.' CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "Why do AV operations need written SOPs for routine room setups and event support?",
+    "options": [
+      "To satisfy the insurance company, which requires paperwork for every event",
+      "To give new hires something to read during their first week",
+      "To document the supervisor's personal preferences for room layouts",
+      "To make service consistent across staff and shifts, so any trained tech delivers the same result"
+    ],
+    "correct": 3,
+    "explanation": "SOPs turn individual expertise into team capability. The Tuesday night tech sets the room exactly like the Monday morning tech did, and new hires perform to standard on day one instead of month six. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Customer Relations",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "What is the value of tracking room and system utilization data across the facility?",
+    "options": [
+      "It provides evidence for upgrade, staffing, and replacement budgets instead of opinions",
+      "It lets the supervisor monitor which employees are using rooms the most",
+      "It satisfies a legal requirement that all AV usage be logged",
+      "It is mainly useful for marketing the AV department to other departments"
+    ],
+    "correct": 0,
+    "explanation": "Utilization data converts 'we need new projectors' into 'the town hall system ran 340 hours last quarter with 12 support calls.' Supervisors who manage with data win budgets; those who manage with anecdotes lose them. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "As operations supervisor, how do you triage the morning queue of service tickets?",
+    "options": [
+      "Strictly first-in, first-out, so no requester feels deprioritized",
+      "By business impact and urgency first, then by arrival order within each tier",
+      "By estimated repair cost, cheapest fixes first to clear the queue quickly",
+      "By which requester complains the loudest, since squeaky wheels need grease"
+    ],
+    "correct": 1,
+    "explanation": "Triage is a business decision, not a fairness ritual. A dead boardroom an hour before a meeting outranks three dead huddle rooms; within the same tier, FIFO keeps it fair. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D1",
+    "q": "Who owns the preventive maintenance calendar in an AV operations team?",
+    "options": [
+      "The equipment manufacturers, who schedule their own service visits",
+      "The client, who requests maintenance when they notice problems",
+      "The operations supervisor, who assigns the tasks and verifies completion",
+      "No one; preventive maintenance happens naturally during service calls"
+    ],
+    "correct": 2,
+    "explanation": "Maintenance that belongs to everyone belongs to no one. The supervisor assigns it, tracks it, and verifies it happened, because the calendar nobody owns is the calendar nobody follows. CTS Duty D Task 1."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Projectors in a dusty ballroom run 40 hours a week. How should their filters be maintained?",
+    "options": [
+      "Inspect and clean on the manufacturer's schedule, more often in harsh environments, since clogged filters cause overheating",
+      "Remove the filters permanently; they restrict airflow and modern projectors do not need them",
+      "Replace the filters only when the projector shuts down from overheating",
+      "Clean them once a year regardless of environment, which satisfies every warranty"
+    ],
+    "correct": 0,
+    "explanation": "Filters are the lungs of the projector. In a dusty room they load up fast, airflow drops, and heat builds until the projector protects itself by shutting down mid-event. Scheduled cleaning is cheap; emergency lamp replacements are not. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "The facility uses rechargeable batteries in all wireless microphones. What maintenance practice prevents mid-event battery failures?",
+    "options": [
+      "Recharge the batteries only when they are fully dead to preserve their memory",
+      "Track charge cycles and rotate batteries out on a schedule based on their rated cycle life",
+      "Store all batteries fully charged in a hot equipment room for quick deployment",
+      "Replace rechargeables with alkalines before every event to be safe"
+    ],
+    "correct": 1,
+    "explanation": "Rechargeables fade gradually: fewer cycles of useful life each year until one dies mid-speech. Cycle tracking and scheduled rotation retire them before they fail on stage. Heat storage accelerates the decline, and full-discharge 'memory' advice is decades out of date. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "The manufacturer releases new DSP firmware for the 40 rooms across campus. What is the correct rollout?",
+    "options": [
+      "Push it to all 40 rooms overnight so every system is current by morning",
+      "Wait a year; firmware updates are optional and the systems work fine today",
+      "Test it in one pilot room through real use, then roll out on a schedule with a rollback plan",
+      "Update only the rooms that have open service tickets, since the rest are stable"
+    ],
+    "correct": 2,
+    "explanation": "Fleet-wide firmware pushes are how one bad release becomes forty broken rooms. A pilot room proves the release in your environment, and a rollback plan proves you thought about failure. 'It worked on the bench' is not a rollout strategy. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "During preventive maintenance of installed cabling, what should be inspected?",
+    "options": [
+      "Only the cable jackets' color, to confirm they still match the room decor",
+      "The original purchase price of each cable, to update the asset depreciation log",
+      "The cable's data throughput with a speed test, since all AV cable degrades annually",
+      "Connector seating, strain relief, labeling legibility, and any physical cable damage"
+    ],
+    "correct": 3,
+    "explanation": "Cable failures announce themselves early to anyone who looks: a connector backing out, a tie-wrap crushing a jacket, a label faded unreadable. The inspection is visual and tactile, and it catches the failures that become 2 AM service calls. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "The UPS self-test reports a weak battery, but the UPS still powers the rack during tests. Why replace the battery now?",
+    "options": [
+      "A weak battery means shrinking ride-through time; when it fails completely there is zero protection",
+      "Weak batteries draw extra current, which will trip the branch circuit breaker",
+      "The UPS warranty requires battery replacement at the first warning or it is voided retroactively",
+      "Weak batteries emit gases that corrode the rack equipment above the UPS"
+    ],
+    "correct": 0,
+    "explanation": "UPS batteries do not fail gracefully; they fade until one outage reveals they hold nothing. The self-test warning is the scheduled replacement notice, and acting on it is the entire point of having a UPS. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: AVIXA Standards",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "What maintenance record does the next service technician need most when they open a rack they have never seen?",
+    "options": [
+      "The original sales proposal showing what the system cost",
+      "A dated log of maintenance performed, parts replaced, and current firmware versions",
+      "The resumes of the technicians who previously worked on the system",
+      "A copy of the building's floor plans from the architect"
+    ],
+    "correct": 1,
+    "explanation": "The service log is the system's medical chart: what was done, when, what changed, and what version everything runs. Without it, every visit starts with rediscovery. AVIXA's verification frameworks treat documented baselines the same way: you cannot maintain what you never recorded. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "When should preventive maintenance be scheduled in an occupied facility?",
+    "options": [
+      "During business hours, so the maintenance work is visible to the client",
+      "Whenever the technician has a gap between service calls",
+      "In off-hours windows coordinated with the room owners, so no meeting is disrupted",
+      "Only during the annual holiday shutdown, to minimize scheduling effort"
+    ],
+    "correct": 2,
+    "explanation": "Maintenance that interrupts meetings creates more complaints than the failures it prevents. Coordinated off-hours windows keep both the systems and the relationships healthy. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "System logs show a projector logged an over-temperature warning twice last month, but it is running fine today. What is the correct response?",
+    "options": [
+      "Clear the log so the warning does not confuse the next technician",
+      "Wait for a third warning, since two events could be a sensor glitch",
+      "Replace the projector immediately; any thermal warning means the unit is failing",
+      "Investigate now: check the filter, fans, and ventilation before it fails during an event"
+    ],
+    "correct": 3,
+    "explanation": "Logs are early warnings, not trivia. Two thermal warnings describe a cooling problem in progress: filter, fan, or blocked vent. Investigating today is a ten-minute maintenance task; ignoring it schedules a mid-event failure. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Why should equipment rooms be monitored for temperature and humidity?",
+    "options": [
+      "Heat and moisture shorten equipment life, so monitoring verifies the HVAC is protecting the investment",
+      "Insurance policies require hourly temperature logs for every equipment room",
+      "Monitoring is only needed in winter, when heating systems dry out the air",
+      "Equipment rooms must be kept at exactly 68 degrees to satisfy manufacturer warranties"
+    ],
+    "correct": 0,
+    "explanation": "Electronics age faster hot and corrode faster damp. A simple sensor that proves the room stays within spec protects both the equipment and any warranty claim that follows a failure. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Commissioning & Closeout",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "A two-year-old video wall's panels no longer match in color and brightness. What maintenance action applies?",
+    "options": [
+      "Replace the entire wall; panels that drift can never be brought back into alignment",
+      "Recalibrate the panels to the baseline settings recorded at commissioning",
+      "Increase the brightness of the dimmest panel until it visually matches the others",
+      "Swap the panels' positions so the mismatch is less noticeable from the seats"
+    ],
+    "correct": 1,
+    "explanation": "Panels drift with age and hours; that is expected, not fatal. The commissioning baseline exists for exactly this moment: recalibrate to the recorded targets and the wall is uniform again. This is why baselines get documented. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: AVIXA Standards",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Why does preventive maintenance include checking the spare-parts stock left at closeout?",
+    "options": [
+      "Spare parts expire after one year and must be thrown away on schedule",
+      "The auditor requires a monthly count of all attic stock for insurance purposes",
+      "Attic stock gets used over time; reordering before it runs out prevents the next failure from waiting on shipping",
+      "Spare parts must be returned to the manufacturer if they are not used within two years"
+    ],
+    "correct": 2,
+    "explanation": "Closeout spares are a consumable reserve, not a permanent fixture. Every used lamp, adapter, and battery depletes it, and the reorder has to happen before the stock hits zero, not after the next failure. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Project Management",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "The DSP and control system software licenses expire next quarter. Why is renewal a maintenance task rather than an IT afterthought?",
+    "options": [
+      "Expired licenses cause the equipment to shut down immediately at midnight on the expiry date",
+      "License renewals are required by law for all commercial AV installations",
+      "The manufacturer doubles the renewal price for every month past expiration",
+      "Expired licenses can block programming changes, updates, and manufacturer support when you need them"
+    ],
+    "correct": 3,
+    "explanation": "The system keeps running on expired licenses right up until you need to change something: a programming update, a firmware patch, a support call. Then the expired license becomes the emergency. Tracking renewals is maintenance because it preserves the ability to maintain. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Classroom touch panels have become unresponsive at the screen edges. What is the first maintenance step?",
+    "options": [
+      "Clean the touch surface and run the manufacturer's touch recalibration",
+      "Replace all the touch panels; edge failure means the digitizers are worn out",
+      "Reprogram the control system, since unresponsive edges are always a software bug",
+      "Increase the touch panel brightness, which improves touch sensitivity"
+    ],
+    "correct": 0,
+    "explanation": "Edges collect grime and calibration drifts with time and temperature; both are fixed in minutes with cleaning and recalibration. Replacing hardware before trying the maintenance step wastes money and the client's patience. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Electrical & Site Survey",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Projector lamps are rated for 3,000 hours and the maintenance log shows 2,700. What is the correct action?",
+    "options": [
+      "Run them to failure; rated life is conservative and lamps usually last twice as long",
+      "Order replacements now and schedule the swap before the rated life is reached",
+      "Reset the hour counter to extend the usable life of the current lamps",
+      "Reduce the projector brightness to half, which doubles the remaining lamp life"
+    ],
+    "correct": 1,
+    "explanation": "Rated life is a planning tool, not a challenge. Ordering and scheduling the swap before the lamps age out keeps replacements in a maintenance window instead of a dark room mid-presentation. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: AVIXA Standards",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D2",
+    "q": "Maintenance compares current system performance against the measurements recorded at commissioning. Which AVIXA framework supports those recorded baselines?",
+    "options": [
+      "The AVIXA cable labeling standard, which identifies every measured cable",
+      "The AVIXA rack building standard, which sets the measurement conditions",
+      "The AVIXA audiovisual systems performance verification standard, which defines how performance is measured and documented",
+      "The AVIXA control system programming guideline, which stores the measurements in the processor"
+    ],
+    "correct": 2,
+    "explanation": "Performance verification is not a one-time event; it creates the documented baseline that all future maintenance is judged against. Without measured, recorded targets from commissioning, 'it doesn't sound like it used to' is just an opinion. CTS Duty D Task 2."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "An audio channel cuts in and out whenever the rack door is opened or closed. What is the most likely cause and the first check?",
+    "options": [
+      "An intermittent connector disturbed by the door movement; reseat and inspect each connector in that channel's path",
+      "A failing amplifier channel; replace the amplifier before the fault becomes permanent",
+      "Corrupted DSP programming; reload the program file to the processor",
+      "A ground loop that only appears when the door changes the rack's grounding"
+    ],
+    "correct": 0,
+    "explanation": "Faults that follow physical movement are mechanical: a connector backing out, a cold solder joint, a cable stressed by the door swing. Reseat and inspect before replacing anything; the fault is telling you exactly where to look. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "A system with analog microphones, a digital DSP, and Dante outputs has distortion on every output. What does 'every output' tell you about where to look?",
+    "options": [
+      "The fault must be in the Dante network, since digital faults affect everything downstream",
+      "The fault is upstream of the split point: the analog front end or the DSP input stage, not any single output path",
+      "Every output device has failed simultaneously and all must be replaced",
+      "The fault is in the loudspeakers, since they are the only common element"
+    ],
+    "correct": 1,
+    "explanation": "Symptoms shared by all outputs point upstream of where the signal divides. Half-splitting from that insight, you test the common path first instead of chasing each output. One test at the split eliminates half the system. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "A two-month-old amplifier fails under warranty. Why should the technician process an RMA swap instead of opening the unit for component-level repair?",
+    "options": [
+      "Component-level repair is illegal on commercial AV equipment",
+      "RMA swaps are always faster than any in-house repair regardless of the fault",
+      "Opening the unit voids the warranty, and the manufacturer owes a working unit",
+      "Amplifiers contain no user-serviceable parts of any kind"
+    ],
+    "correct": 2,
+    "explanation": "Warranty is a financial instrument: the manufacturer owns the failure. Opening the chassis trades a free factory repair for a voided warranty and a parts bill. Document, swap, and ship it back; repair what you own, RMA what is covered. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "An amplifier runs for about 30 minutes, shuts down, and works again once it cools. What is the most likely cause?",
+    "options": [
+      "A blown output transistor, which fails only when the program material is loud",
+      "Corrupted firmware in the amplifier's control section causing a timed shutdown",
+      "An underrated circuit breaker that trips thermally and resets when cool",
+      "Thermal protection engaging: check fan operation, ventilation clearance, and load impedance"
+    ],
+    "correct": 3,
+    "explanation": "The cool-down-and-recover cycle is the signature of thermal protection doing its job. The fault is not the protection circuit but whatever is overheating the amp: blocked vents, dead fans, or a load impedance lower than rated. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "After a building power outage, a DSP boots with scrambled routing although the program file on the laptop is intact. What is the fix?",
+    "options": [
+      "Reload the known-good program and configuration backup to the DSP, then verify operation",
+      "Replace the DSP; scrambled routing after an outage means the processor is damaged",
+      "Leave it; DSPs rebuild their routing automatically within 24 hours of an outage",
+      "Rewire the rack to match the scrambled routing, since the DSP knows best"
+    ],
+    "correct": 0,
+    "explanation": "Power events can corrupt a running configuration without harming the hardware. The configuration backup exists for exactly this: reload, verify every route, and get the room back. Then add the DSP to a UPS so the next outage is a non-event. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "A 150-foot installed cable run in conduit is suspected of causing intermittent video dropouts. What is the fastest way to confirm the cable is the fault?",
+    "options": [
+      "Pull the cable out of the conduit for a visual inspection of the full length",
+      "Temporarily run a known-good cable alongside it; if the fault clears, the installed run is bad",
+      "Increase the source output level to overcome whatever the cable is doing",
+      "Replace every connector on the installed run and see if the problem stops"
+    ],
+    "correct": 1,
+    "explanation": "Substitution is the fastest proof in troubleshooting: bypass the suspect with a known-good path and watch the symptom. One test gives a definitive answer, while re-terminating or repulling first is labor spent on a guess. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "A ten-year-old powered speaker hums loudly with no input connected and the gain down. What is the most likely internal cause?",
+    "options": [
+      "A worn-out woofer voice coil rubbing from a decade of use",
+      "Dust in the amplifier heat sink causing the fan to vibrate",
+      "Dried-out power supply filter capacitors letting mains ripple into the audio path",
+      "A corrupted DSP preset boosting the 60 Hz band"
+    ],
+    "correct": 2,
+    "explanation": "Electrolytic capacitors age out, and when the power supply filters dry up, mains ripple rides straight into the audio as hum. No input needed, gain irrelevant: the symptom is textbook. On decade-old gear, the power supply is always a suspect. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS: Troubleshooting & Verification",
+    "cert": "CTS",
+    "duty": "D",
+    "task": "D3",
+    "q": "After completing a break/fix repair, what must the service report include?",
+    "options": [
+      "Only the total time spent, so the invoice can be generated",
+      "The technician's opinion of the client's equipment choices",
+      "A recommendation to replace the entire system regardless of the repair outcome",
+      "The reported symptoms, the root cause found, parts replaced, and the tests confirming the fix"
+    ],
+    "correct": 3,
+    "explanation": "A repair without documentation is a rumor. Symptoms, root cause, parts, and verification tests give the next tech the full story and prove to the client that the fix was real, not a reboot and a hope. CTS Duty D Task 3."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A3",
+    "q": "A design project kicks off and the client asks for an equipment list in week one. What is the designer's correct response regarding the program report?",
+    "options": [
+      "Provide the equipment list immediately to keep the project momentum going",
+      "Explain that the program report comes first: it documents agreed needs, requirements, and decisions before any equipment is selected",
+      "Send a preferred-brand list with a note that it may change later",
+      "Skip the report to save design fee and move straight to drawings"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 3: the program report is the written record of the needs analysis, capturing functional requirements, stakeholder decisions, and budget alignment. Equipment selected without it is designed to assumptions. The report is the baseline every later design phase references."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A3",
+    "q": "A completed program report for a training center includes user stories like \"As an instructor, I need to start a recorded session from the lectern in under 30 seconds.\" Why are user stories valuable in the report?",
+    "options": [
+      "They specify which control system brand to purchase",
+      "They describe successful outcomes from the user's perspective without locking in technology",
+      "They replace the project budget as the cost control document",
+      "They satisfy the building code documentation requirement"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 3: user stories capture what success feels like in plain language, so the design can be validated against real use rather than equipment lists. They keep the report technology-neutral while making requirements testable at commissioning."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A3",
+    "q": "During needs analysis the designer tours two similar facilities with the client and documents what worked and what failed. What does this benchmarking contribute to the program report?",
+    "options": [
+      "It lets the designer copy the other facility's drawings directly",
+      "It grounds expectations in real-world reference points the client has personally seen",
+      "It replaces the need for stakeholder interviews",
+      "It sets the AV equipment budget by industry regulation"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 3: benchmarking turns abstract requirements into shared reference experiences. The report can cite \"like the boardroom at Site X, but with better speech intelligibility,\" which aligns the client and the design team on a concrete, observable target."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A3",
+    "q": "Why should the client formally approve the program report before conceptual design begins?",
+    "options": [
+      "Approval is a legal formality with no real project impact",
+      "The approved report locks agreed scope, budget expectations, and success criteria, protecting both parties when scope pressure appears later",
+      "It transfers all design liability to the client",
+      "It is required before any building permits can be filed"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 3: the program report is the baseline everything else is measured against. Without written sign-off, \"we thought it included that\" disputes surface at the worst moment. Approved reports convert conversations into commitments the designer can design to."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
+    "q": "Which of the following is a functional requirement rather than a technical specification?",
+    "options": [
+      "Provide a 98-inch 4K display with 800 nits brightness",
+      "The room must support hybrid meetings with remote participants able to see content and hear every seated speaker",
+      "Install a 12x10 matrix switcher in the equipment rack",
+      "Use Dante for all audio transport in the facility"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 1: functional requirements describe what the system must do, not what it is made of. Technology-neutral requirements let the designer evaluate multiple solutions and keep the design valid as products evolve."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
+    "q": "The dean wants lecture capture in every classroom; the IT director says the network cannot support it and wants to defer. Both are key stakeholders. What is the designer's responsibility at the functional requirements stage?",
+    "options": [
+      "Side with IT, since network limits are absolute",
+      "Record both positions, quantify the implications of each, and get a documented decision before design proceeds",
+      "Design for the dean's request and let IT adapt afterward",
+      "Split the difference quietly without documenting anything"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 1: the designer does not pick winners between stakeholders. Surfacing the conflict with honest implications (cost, capability, risk) and capturing the decision in the requirements prevents the losing side from reopening the fight during construction."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A1",
+    "q": "A museum wants an interactive gallery, but the curators cannot articulate what visitors should experience. Which needs-analysis technique best helps them express requirements?",
+    "options": [
+      "Present a finished equipment list for approval",
+      "Facilitate a workshop with user stories and reference examples, then draft scenarios for the curators to react to",
+      "Ask for the budget and design to the number",
+      "Proceed with standard gallery templates and adjust later"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 1: stakeholders rarely speak in requirements; they react to concrete scenarios. Workshops that produce user stories (\"a school group of 30 gathers around the map table...\") turn vague desires into requirements the designer can actually design against."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A2",
+    "q": "A university publishes a five-year AV technology master plan. What is its primary purpose?",
+    "options": [
+      "To list every piece of AV equipment currently on campus",
+      "To define standards, refresh cycles, and a phased roadmap so individual projects align with institutional direction",
+      "To satisfy an accreditation documentation requirement",
+      "To lock the institution into a single vendor permanently"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 2: a technology master plan is a long-range strategy document. It sets standards, budgets refresh waves, and gives each project a frame so rooms built in year one still integrate with the platform in year five."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A2",
+    "q": "A campus master plan standardizes on one control platform and one soft codec. How does this constrain an individual classroom design?",
+    "options": [
+      "It has no effect on individual design choices",
+      "The designer must select products within the standards and ensure the design integrates with the existing monitoring and support model",
+      "It forces selection of the lowest-cost option in every category",
+      "It bans all third-party peripherals from the design"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 2: standards exist so support teams can actually support the fleet. The designer's job is to deliver the best room possible inside the standard, documenting any justified exception rather than freelancing around the plan."
+  },
+  {
+    "domain": "CTS-D: Needs Assessment",
+    "cert": "CTS-D",
+    "duty": "A",
+    "task": "A2",
+    "q": "A corporate client's master plan calls for a three-year refresh of all huddle rooms. During a year-one design, what refresh-related provision belongs in the project?",
+    "options": [
+      "None; refresh is a future problem for a future designer",
+      "Design for replaceability: standard rack layouts, documented as-builts, and conduit and cabling with headroom so year-three swaps do not require demolition",
+      "Specify the cheapest gear available since it will be replaced anyway",
+      "Promise the client the installed gear will last six years"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty A Task 2: master plans make refresh predictable, so the designer builds for it. Replaceable, documented, standards-based installs cut the cost of the next cycle. Designing as if the room will never change is how institutions end up ripping out ceilings."
+  },
+  {
+    "domain": "CTS-D: Design Documentation",
+    "cert": "CTS-D",
+    "duty": "C",
+    "task": "C2",
+    "q": "The architectural reflected ceiling plan shows a supply diffuser exactly where the concept placed the center ceiling speaker. What is the correct design action?",
+    "options": [
+      "Install the speaker anyway and have the mechanical contractor shift the diffuser",
+      "Revise the layout to relocate the speaker, recheck coverage, and coordinate the change with the A&E team on the drawings",
+      "Delete the speaker and hope coverage still holds",
+      "Leave both as drawn and let the field crew sort it out"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty C Task 2: revising the conceptual design to site and A&E conditions is a core design task. Clashes found on paper cost a redraw; clashes found in the ceiling cost a change order. Move the speaker, verify coverage still meets the design criteria, and document the revision."
+  },
+  {
+    "domain": "CTS-D: Design Calculations",
+    "cert": "CTS-D",
+    "duty": "C",
+    "task": "C2",
+    "q": "The concept called for a projector with a 1.5:1 to 2.5:1 zoom lens in a 24-foot-deep room, screen on the front wall. The site survey shows the actual mount position is only 14 feet from the screen. What must the designer do?",
+    "options": [
+      "Keep the lens and accept a smaller image than planned",
+      "Recalculate: at 14 feet a 1.5:1 minimum throw yields an image no wider than about 9.3 feet, so revise the concept (shorter-throw lens, different screen size, or repositioned mount) and update the drawings",
+      "Mount the projector 10 feet behind the rear wall to recover the throw distance",
+      "Ignore the survey and build to the concept dimensions"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty C Task 2: field conditions override concept assumptions. Throw ratio times throw distance sets the image width, so the designer reruns the math against real dimensions and revises the design on paper before anything is purchased or installed."
+  },
+  {
+    "domain": "CTS-D: Design Calculations",
+    "cert": "CTS-D",
+    "duty": "C",
+    "task": "C2",
+    "q": "The concept specified an 8,000-lumen projector based on 200 lux ambient at the screen, a 2 m2 screen, 15:1 contrast for presentations, screen gain 1, and 0.75 derating. The A&E package adds a glass wall and the measured ambient is now 500 lux. What does the recalculation show?",
+    "options": [
+      "About 20,000 lumens are now required, so the concept must be revised: brighter projector, smaller screen, higher gain, or window treatments coordinated with the architect",
+      "About 8,000 lumens still suffice, since derating covers ambient changes",
+      "Ambient light does not affect required projector lumens",
+      "Reduce the contrast target to 7:1 and keep the original projector"
+    ],
+    "correct": 0,
+    "explanation": "CTS-D Duty C Task 2: rerun the design math against real site conditions. 500 x 15 x 2 / (1 x 0.75) = 20,000 lumens. The concept's projector is now undersized by more than half, so the designer revises on paper and coordinates shading or screen changes with the A&E team."
+  },
+  {
+    "domain": "CTS-D: Design Documentation",
+    "cert": "CTS-D",
+    "duty": "C",
+    "task": "C2",
+    "q": "The concept placed in-wall speakers in a demising wall, but the structural drawings show it is a shear wall that cannot be cut. What is the correct revision?",
+    "options": [
+      "Cut the wall anyway; AV takes priority once drywall is up",
+      "Redesign with on-wall or ceiling speakers, recheck coverage and sightlines, and document the revision against the structural package",
+      "Ask the installer to decide in the field",
+      "Leave the concept unchanged and note it as a field issue"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty C Task 2: structural constraints are non-negotiable. The designer revises the concept to a buildable solution, verifies performance still meets the criteria, and records the change so the design package reflects reality instead of wishes."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B7",
+    "q": "A museum gallery design includes light-sensitive artifacts. Why must the AV designer coordinate with the exhibit designer, a specialty professional, rather than just the architect?",
+    "options": [
+      "The architect handles all lighting decisions on museum projects",
+      "Exhibit designers set conservation light levels (lux limits, UV and IR restrictions) and artifact placement that directly constrain display brightness, projector use, and interactive placement",
+      "Museums have no special requirements beyond standard galleries",
+      "Coordination with specialty professionals is the general contractor's job"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 7: specialty professionals own domains the general design team does not. Exhibit designers define what the artifacts can tolerate; the AV design must live inside those limits. Missing this coordination risks damaging the collection or a redesign after opening."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B7",
+    "q": "A performing arts venue design must interface with the theatrical consultant's systems. What AV design coordination is typically required?",
+    "options": [
+      "None; theatrical systems are entirely separate from AV",
+      "Coordinate fly and loft space, performance lighting control interfaces, production intercom, and show-control triggers so AV and theatrical systems share infrastructure without conflict",
+      "Let the theatrical consultant design the AV systems",
+      "Coordinate only the lobby displays and nothing else"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 7: theatrical consultants own rigging, performance lighting, and show control. The AV designer coordinates shared pathways, control interfaces, and scheduling of the fly space so a concert and a corporate event can both use the venue without rework."
+  },
+  {
+    "domain": "CTS-I: Pre-Installation Activities",
+    "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
+    "q": "Before mobilizing, the lead installer walks the site and finds the actual ceiling height is 10 feet, not the 12 feet on the drawings. Why does this matter for the install?",
+    "options": [
+      "It does not; speakers mount the same at any height",
+      "Coverage calculations, projector throw, screen viewing angles, and mount hardware all depend on real dimensions, so the installer documents the discrepancy and escalates before mounting",
+      "The installer can compensate by eyeballing the difference",
+      "Only the designer cares about drawing accuracy"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty A Task 2: the site survey verifies reality against the design documents. A two-foot ceiling difference changes speaker coverage circles, throw distances, and rigging hardware. Catching it at survey time is a phone call; catching it after mounts are drilled is a rework bill."
+  },
+  {
+    "domain": "CTS-I: Pre-Installation Activities",
+    "cert": "CTS-I",
+    "duty": "A",
+    "task": "A2",
+    "q": "During the site survey, what should the installer verify about electrical power for the AV racks?",
+    "options": [
+      "That outlets exist somewhere in the room",
+      "Circuit count, amperage, dedicated versus shared circuits, grounding, and whether the circuits are actually live, documented and matched to the design's power requirements",
+      "Nothing; the electrician handles everything related to power",
+      "That power is adequate, which it always is in commercial buildings"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty A Task 2: AV racks with amplifiers and displays draw real current with real grounding needs. The survey confirms the design's power assumptions: enough dedicated circuits, correct voltage, proper grounding, and live power before equipment arrives. Discovering a single shared 15A circuit on install day stalls the whole job."
+  },
+  {
+    "domain": "CTS-I: Pre-Installation Activities",
+    "cert": "CTS-I",
+    "duty": "A",
+    "task": "A3",
+    "q": "The GC says the space is \"ready,\" but the network switches are not installed, HVAC is not running, and there is no secure storage. What is the correct installer response?",
+    "options": [
+      "Start pulling cable anyway to stay on schedule",
+      "Perform a readiness assessment, document the missing items in writing to the GC and PM, and agree on a revised mobilization plan rather than working in an unready space",
+      "Bring the racks and store them in the hallway",
+      "Skip the assessment and trust the GC's word"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty A Task 3: facility readiness is a gate, not a wish. Installing into a space without network, climate control, or secure storage risks equipment damage, theft, and rework. The professional move is written documentation of what is missing and a plan, which also protects the schedule claim later."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B2",
+    "q": "The electrician is about to pull line voltage for the projector outlet. What coordination does the installer owe the electrician?",
+    "options": [
+      "None; trades work independently on a jobsite",
+      "Confirm the outlet location matches the design, verify the circuit is dedicated as specified, and agree on who provides and labels the disconnect, before the wire is pulled",
+      "Tell the electrician the location verbally and check back later",
+      "Wait until trim-out to verify anything electrical"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty B Task 2: allied trade coordination happens before the work, not after. A five-minute confirmation of location, circuiting, and labeling responsibility prevents the classic failure of a projector outlet on a switched lighting circuit discovered at commissioning."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B2",
+    "q": "Drywallers are scheduled to close the ceiling in three days. The speaker rough-in brackets are not installed yet. What should the installer do?",
+    "options": [
+      "Let the ceiling close and cut the speakers in afterward",
+      "Coordinate immediately with the GC to sequence the rough-in before close, or formally request a hold on the ceiling in the affected area",
+      "Install the brackets after drywall using toggle bolts",
+      "Accept the delay and blame the schedule"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty B Task 2: sequencing with allied trades is the installer's job to manage. Rough-in before ceiling close is a one-time window; missing it means destructive rework. Escalate through the GC now, in writing, with the specific area and the date needed."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B2",
+    "q": "The HVAC contractor's diffusers sit directly above the planned microphone positions in a conference room. Why does the installer need to coordinate this with the GC?",
+    "options": [
+      "Diffusers do not affect microphone performance",
+      "HVAC noise at the mic position raises the noise floor and kills intelligibility, so the installer flags it for diffuser relocation or mic repositioning before ceiling close",
+      "The AV system can filter out any amount of air noise",
+      "Only the mechanical engineer needs to know about diffuser placement"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty B Task 2: air noise is the enemy of open microphones, and no DSP fully rescues a mic sitting in a diffuser's airstream. This is a coordination issue resolved on the ceiling plan with the GC and the mechanical trade, not a problem to discover at the first noisy meeting."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
+    "q": "A beam blocks the designed cable pathway, and the only alternate route adds 60 feet to a Cat6A run that stays under the length limit. What is the correct process?",
+    "options": [
+      "Reroute and note it on the as-builts, since the design intent (signal integrity, capacity) is preserved",
+      "Reroute without telling anyone to keep the job moving",
+      "Stop work for a week until the designer redraws the pathway",
+      "Abandon the run and drop that device from the system"
+    ],
+    "correct": 0,
+    "explanation": "CTS-I Duty B Task 3: field modifications that preserve design intent and stay within engineering limits are normal installer judgment, but they must be documented on the as-builts immediately. The line is crossed when the change affects performance, capacity, or cost, which then needs PM and designer approval."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
+    "q": "A field condition forces the installer to substitute a different projector mount than specified. What documentation is required?",
+    "options": [
+      "None, as long as it holds the projector securely",
+      "Record the substitution on the as-built drawings and in the project records with the reason, so service and warranty know what is actually installed",
+      "Mention it verbally at closeout and move on",
+      "Only the purchase receipt needs to be kept"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty B Task 3: every field modification becomes part of the permanent record. The next technician, the warranty claim, and the service contract all depend on the as-builts reflecting reality. \"It works\" is not documentation."
+  },
+  {
+    "domain": "CTS-I: Jobsite Operations & Safety",
+    "cert": "CTS-I",
+    "duty": "B",
+    "task": "B3",
+    "q": "The only way to route cable to the lectern is across a fire-rated wall, and the design shows no rated penetration there. What must the installer do?",
+    "options": [
+      "Drill through and seal it with any caulk on the truck",
+      "Stop, because penetrating a fire-rated assembly without the specified firestop system violates code and the design, and escalate to the PM and GC for a code-compliant path",
+      "Run the cable over the top of the wall",
+      "Get verbal approval from the client and proceed"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty B Task 3: field modifications never override life safety or code. An unlisted penetration in a rated wall is a code violation and a liability. The installer stops and escalates so the design team and GC can provide a compliant route with the proper firestop assembly."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "E",
+    "task": "E2",
+    "q": "The same system will be used by executives (who just need to start a meeting) and by in-house techs (who will troubleshoot it). How should training be structured?",
+    "options": [
+      "One identical session for everyone in the room",
+      "Separate sessions matched to each audience: task-focused operation for end users, and system architecture, admin access, and troubleshooting for tech staff",
+      "Train only the techs; executives can figure it out",
+      "Hand over the manual instead of conducting training"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty E Task 2: training must match the audience's role. Executives need confidence in three buttons; tech staff need to know signal flow, where the backups live, and what to check first. One generic session serves neither and guarantees support calls."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "E",
+    "task": "E2",
+    "q": "At the end of a training session, what best confirms the training was effective?",
+    "options": [
+      "Every attendee signs the attendance sheet",
+      "Each operator performs the key workflows hands-on (start a meeting, share content, shut down) while the trainer observes, and gaps are retaught before sign-off",
+      "The trainer asks if there are any questions and hears none",
+      "The session lasted the full scheduled hour"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty E Task 2: attendance is not competence. Having users demonstrate the workflows proves they can operate the system when the trainer is gone, and it surfaces the confusing steps while there is still time to fix the training or simplify the interface."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F1",
+    "q": "What belongs in a preventive maintenance visit for a typical conference room AV system?",
+    "options": [
+      "Only dusting the equipment rack",
+      "Inspecting and cleaning filters and vents, checking lamp and laser hours against replacement thresholds, verifying control system operation, testing backup batteries, and confirming firmware is at the approved revision",
+      "Replacing all cables as a precaution",
+      "Repainting the room to refresh the space"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 1: maintenance is scheduled prevention, not repair. Filters, hours, batteries, and firmware are the predictable failure points. A checklist-driven visit catches them before they become a dead room on a Monday morning."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F1",
+    "q": "During a maintenance visit the technician finds a projector at 3,800 hours on a lamp rated for 4,000. What is the correct action?",
+    "options": [
+      "Leave it alone; it still works",
+      "Flag it in the maintenance report and recommend scheduled replacement before failure, since lamps dim gradually and fail unpredictably near end of life",
+      "Replace it immediately without telling the client",
+      "Reset the hour counter to buy more time"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 1: maintenance is about managing the failure curve, not reacting to it. Documenting the hours and recommending a planned swap during a maintenance window beats an emergency call when the lamp pops mid-presentation. Never reset a counter without replacing the lamp."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F1",
+    "q": "A client asks the maintenance tech to update all device firmware to the latest release during a routine visit. What is the prudent response?",
+    "options": [
+      "Update everything; the newest release is always the best",
+      "Verify the new firmware against the system's tested configuration, back up current configs first, and update only if the release is validated for the installed versions, since untested firmware can break control integrations",
+      "Refuse all firmware updates permanently",
+      "Update only the displays and leave everything else"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 1: AV systems are integrated systems, and firmware is a change to the system. The maintenance discipline is backup, validate compatibility (especially control system and DSP), then update in a controlled way. \"Latest\" without validation is how working rooms break on a Tuesday."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F2",
+    "q": "A six-month-old display has a failed power supply. Before processing a warranty claim, what must the technician establish?",
+    "options": [
+      "Nothing; just ship the unit back",
+      "Determine the failure cause: a manufacturing defect is a warranty claim, but damage from a power surge, improper ventilation, or misuse is not, and the distinction must be documented",
+      "Always blame the manufacturer to protect the client",
+      "Replace it with a different brand immediately"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 2: warranty covers defects, not damage or neglect. The technician's diagnosis determines whether the manufacturer pays or the client does. Documenting cause protects the integrator from eating costs that are not theirs and keeps the manufacturer relationship honest."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F2",
+    "q": "A DSP fails under warranty and the room is needed for an executive briefing tomorrow. What is the best repair strategy?",
+    "options": [
+      "Wait for the standard RMA turnaround and apologize for the downtime",
+      "Request advance replacement from the manufacturer (cross-ship) so the room is restored immediately, and return the failed unit per the RMA process",
+      "Buy a different DSP locally and bill it as warranty",
+      "Tell the client to reschedule the briefing"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 2: repair is also logistics. Advance replacement gets the client operational while the RMA runs its course. The technician manages both tracks: restore service now, and complete the warranty paperwork correctly so the replacement is not billed."
+  },
+  {
+    "domain": "CTS-I: Closeout & Training",
+    "cert": "CTS-I",
+    "duty": "F",
+    "task": "F2",
+    "q": "A control processor intermittently locks up. What documentation should the technician gather before calling manufacturer support?",
+    "options": [
+      "None; a verbal description is enough",
+      "Firmware versions, a log of when the failures occur and what was running, steps already tried, network conditions, and the as-built config, because support can only help with facts",
+      "Only the purchase receipt",
+      "Only the client's phone number"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty F Task 2: effective repair starts with evidence. Support engineers diagnose from data: versions, logs, and reproducible conditions. A technician who arrives with documented facts gets a useful answer; one who arrives with \"it sometimes freezes\" gets a callback queue."
+  },
+  {
+    "domain": "CTS-I: Testing & Calibration",
+    "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
+    "q": "When commissioning the audio system, the technician plays pink noise and adjusts the DSP's parametric EQ using a real-time analyzer. What is the goal of this calibration?",
+    "options": [
+      "To make the system as loud as possible",
+      "To achieve smooth, even frequency response at the listening positions, correcting for room modes and speaker anomalies within the limits of EQ",
+      "To match the client's favorite music",
+      "To maximize bass output for impact"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty D Task 9: calibration tunes the system to the room. Pink noise plus RTA shows what the room and speakers actually produce; careful EQ flattens the response so speech is intelligible and program material sounds correct. EQ cannot fix bad acoustics, but it corrects what electronics can correct."
+  },
+  {
+    "domain": "CTS-I: Testing & Calibration",
+    "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
+    "q": "An automixer in a boardroom feeds back when all microphones are open. What calibration step addresses gain-before-feedback?",
+    "options": [
+      "Turn everything down until the feedback stops",
+      "Set individual channel gains for equal loudness, then set the automixer's NOM (number of open mics) and last-mic behavior correctly, verifying stable gain with all mics open at operating level",
+      "Add more microphones to spread the load",
+      "Disable the automixer and leave all mics open"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty D Task 9: calibrating an automixer means setting gain structure so the system is stable with every mic open. Proper per-channel gain plus correct NOM attenuation gives the needed gain-before-feedback margin. Just turning it down trades the symptom for a system nobody can hear."
+  },
+  {
+    "domain": "CTS-I: Testing & Calibration",
+    "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
+    "q": "After installing a projector, the technician displays test patterns and measures the projected image. What is being verified beyond \"it looks bright\"?",
+    "options": [
+      "Nothing else matters once the image looks good",
+      "Focus uniformity, geometry, and that measured contrast and light output meet the design intent for the room's ambient conditions",
+      "The brand of the projection screen",
+      "That the remote control works from the back of the room"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty D Task 9: calibration verifies performance against the design criteria, not just a pleasing picture. Test patterns reveal focus, convergence, and geometry issues invisible in content, and measurements confirm the brightness and contrast the designer specified for that room's light levels."
+  },
+  {
+    "domain": "CTS-I: Testing & Calibration",
+    "cert": "CTS-I",
+    "duty": "D",
+    "task": "D9",
+    "q": "For a paging system in a transit facility, the specification requires 0.50 STI (Speech Transmission Index) minimum. What does calibration involve?",
+    "options": [
+      "Setting all speakers to maximum volume",
+      "Measuring STI at representative listener positions and adjusting levels, EQ, and zoning until intelligibility meets the specified minimum everywhere it is required",
+      "Asking staff whether announcements sound clear",
+      "Measuring once at the equipment rack"
+    ],
+    "correct": 1,
+    "explanation": "CTS-I Duty D Task 9: intelligibility is a measured quantity, not an opinion. STI measurements at real listener positions prove the system meets the performance the design promised, and adjustments to level, EQ, and zoning are what move the number."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
+    "q": "The architect issues a revised reflected ceiling plan that moves recessed light fixtures into the ceiling zones you reserved for loudspeakers and cameras. What is the correct coordination step?",
+    "options": [
+      "Redraw your AV device locations on site during installation and hope nothing else moved on the revised plan",
+      "Issue an updated AV ceiling plan overlay, flag the clashes in writing, and resolve them in the next coordination meeting before rough-in",
+      "Delete the loudspeakers from the design, since lighting positions always take priority over AV device locations",
+      "Wait until commissioning to address the clash, since final ceiling device positions are settled at the end of the project"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 1: the RCP is a living coordination document, and every revision can create new clashes. The designer keeps a current AV ceiling plan, issues it as an overlay against each RCP revision, and resolves conflicts on paper in coordination meetings. Discovering a clash after rough-in means cutting open a finished ceiling."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
+    "q": "The millwork detail shows your in-wall loudspeakers concealed behind solid laminate panels in a wood feature wall. What do you coordinate with the millworker and interior designer?",
+    "options": [
+      "Nothing, since solid laminate is acoustically transparent and speakers perform as designed behind any panel",
+      "Specify larger amplifiers to push the sound through the solid laminate panels",
+      "Require acoustically transparent grille fabric over the speaker openings, with finish samples reviewed before fabrication",
+      "Move the speakers to the floor in front of the wall, since concealed speakers can never be coordinated with millwork"
+    ],
+    "correct": 2,
+    "explanation": "CTS-D Duty B Task 1: finish materials chosen for looks can destroy speaker performance. Solid laminate over a driver kills high frequencies. The designer coordinates acoustically transparent grille cloth with the millworker, gets finish samples approved before fabrication, and documents the requirement so the shop does not substitute a solid panel."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B1",
+    "q": "The architect's interior elevation shows a decorative soffit dropping 18 inches across the front of the room, directly in the projector's throw path to the screen. What is your coordination responsibility?",
+    "options": [
+      "Provide a throw and sightline analysis showing the conflict, and coordinate a soffit height or projector position change before construction",
+      "Accept the soffit as drawn, since projection brightness can simply be increased to compensate for a partially blocked throw path",
+      "Lower the screen until it clears the soffit, even if the back rows can no longer see over the front rows",
+      "Relocate the projector to the side wall, since off-axis projection never affects image geometry"
+    ],
+    "correct": 0,
+    "explanation": "CTS-D Duty B Task 1: architectural features and AV sightlines share the same three-dimensional space. The designer produces the throw and sightline analysis that proves the conflict, then works with the architect on a fix (raise the soffit, move the projector, rethink the screen) while changes are still lines on a drawing."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B2",
+    "q": "In a renovation, the client says you can hang the new flown loudspeakers from the existing rigging points left by the previous tenant. What must happen first?",
+    "options": [
+      "A structural engineer verifies the points: existing points carry no automatic certification, and the building owner must provide load ratings and history before reuse",
+      "Reuse them as-is, since any point that held a previous tenant's equipment is proven adequate for the new loudspeakers",
+      "Double the number of hang points to add a 2:1 safety factor, which certifies the existing points for the new load",
+      "Skip engineering review for loads under 1,000 lbs, since building code exempts lighter AV rigging from structural approval"
+    ],
+    "correct": 0,
+    "explanation": "CTS-D Duty B Task 2: old rigging points are guilty until proven innocent. Ratings, installation method, corrosion, and prior overloads are all unknown. The designer requests the point certifications from the building owner and routes them through a structural engineer. Hanging from unverified steel is how rigging failures happen."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B2",
+    "q": "The project is in a high seismic design category. Your design includes ceiling-suspended loudspeakers and 7-foot equipment racks. What do you coordinate with the structural engineer?",
+    "options": [
+      "Nothing, since seismic bracing applies only to the building structure itself and never to AV equipment",
+      "Provide equipment weights, dimensions, and locations so the structural engineer can detail seismic restraint and anchorage per code",
+      "Specify heavier racks, since added mass alone satisfies seismic restraint requirements",
+      "Restrain only the racks, since suspended loudspeakers are exempt from seismic bracing in all jurisdictions"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 2: in seismic zones, suspended equipment and tall racks need engineered restraint so they do not become falling hazards. The AV designer's deliverable is accurate weights and locations; the structural engineer owns the bracing details and code compliance. This coordination belongs in the construction documents, not in the field."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B3",
+    "q": "The architect places the AV rack in a small closet with no dedicated cooling, and the building HVAC shuts down overnight. What do you coordinate with the mechanical engineer?",
+    "options": [
+      "Nothing, since equipment racks generate negligible heat and an unventilated closet is acceptable for any AV system",
+      "Open the closet door during occupied hours, which provides sufficient cooling for rack equipment",
+      "Dedicated 24-hour cooling sized to the rack heat load, with supply and exhaust or a split system, and the thermostat located away from equipment exhaust",
+      "Specify only fanless equipment for the closet, which eliminates the need for any mechanical coordination"
+    ],
+    "correct": 2,
+    "explanation": "CTS-D Duty B Task 3: a rack closet on building HVAC that shuts down at night will cook equipment during unoccupied hours. The designer gives the mechanical engineer the heat load and requires dedicated 24-hour cooling, with the sensor placed where it reads room air rather than hot exhaust. Thermal shutdowns at 2 AM are a coordination failure, not an equipment failure."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B3",
+    "q": "The local AHJ requires all low-voltage cable above the ceiling to be in conduit; open plenum-rated cable is not permitted in this jurisdiction. What is the key coordination item?",
+    "options": [
+      "Ignore the AHJ, since national code always permits plenum-rated cable without conduit and the local rule does not apply",
+      "Define in the bid documents who furnishes and installs the conduit (typically the electrical contractor per AV drawings), and confirm pathway sizing with the electrical engineer",
+      "Run the cable inside the return-air duct itself, which satisfies the conduit requirement without extra material",
+      "Switch the entire AV system to wireless, which eliminates the conduit coordination entirely"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 3: the AHJ has the final word, and conduit means real material and labor that someone must price. The designer confirms the requirement early, sizes the pathways on the AV drawings, and makes sure the bid documents assign furnishing and installation (usually Division 26 electrical) so the conduit is not left out of every bid."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B3",
+    "q": "The client's operations center must keep critical AV running through a utility outage. What do you coordinate with the electrical engineer?",
+    "options": [
+      "Which AV loads go on UPS and generator power, the required UPS runtime, and the power-up sequencing after transfer",
+      "Nothing, since standard building power automatically rides through outages and no AV coordination is needed",
+      "Put every AV device on the generator, including non-critical displays, since generator capacity is unlimited",
+      "Specify a larger main breaker, which provides outage ride-through for the AV racks"
+    ],
+    "correct": 0,
+    "explanation": "CTS-D Duty B Task 3: emergency power is a shared design problem. The AV designer identifies which loads are truly critical, the runtime the UPS must bridge, and the start-up sequence so everything does not inrush at once on transfer. The electrical engineer sizes the UPS and generator feed from that input. Projectors and control processors need a plan; digital signage usually does not."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B4",
+    "q": "The design puts AV-over-IP video, Dante audio, and control on the client's corporate network. What do you coordinate with the client's network engineer during design?",
+    "options": [
+      "Nothing, since AV-over-IP devices self-configure on any network and IT involvement is unnecessary",
+      "A dedicated AV VLAN with DHCP scope, IGMP snooping and querier for multicast, and QoS or DSCP markings for audio traffic",
+      "A single flat network with no VLANs, since segmentation always breaks AV-over-IP device discovery",
+      "Static public IP addresses for every AV endpoint, so the devices are reachable from the internet for remote support"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 4: converged AV lives or dies on network configuration. Multicast video floods a network without IGMP snooping and a querier, and Dante audio needs QoS to survive congestion. The designer coordinates the VLAN, addressing, multicast, and QoS requirements with the network engineer during design, plus who configures and owns the switch."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B4",
+    "q": "The client's InfoSec team sends a security questionnaire asking about default passwords, encryption, firmware updates, and remote access for the AV system. When and how do you handle it?",
+    "options": [
+      "Ignore it, since AV systems are exempt from corporate IT security policy",
+      "File it as a punch-list item to answer after installation, since security questionnaires are handled at project closeout",
+      "Complete it during design coordination with IT, selecting devices that support the policy: changed credentials, disabled unused services, and a documented update process",
+      "Fill it out using the installer's personal credentials, since shared AV admin accounts satisfy every security policy"
+    ],
+    "correct": 2,
+    "explanation": "CTS-D Duty B Task 4: InfoSec review discovered at commissioning can stall a project for weeks while non-compliant devices are swapped. The designer answers the questionnaire during design, picks devices that meet the client's password, encryption, and update policies, and confirms who owns switch configuration and ongoing patching before anything is purchased."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B5",
+    "q": "The mechanical drawings show a fan-powered VAV box directly above the boardroom table, and the acoustician's NC-30 target governs the room. What do you coordinate?",
+    "options": [
+      "Request the manufacturer's sound data at the diffusers, and coordinate relocating the unit, adding duct lining, or selecting a quieter unit so the room can meet NC-30",
+      "Nothing, since VAV boxes are silent by design and the unit cannot affect the NC rating",
+      "Raise the NC target to NC-50, since background noise requirements are flexible suggestions",
+      "Specify louder ceiling speakers to mask the VAV noise, which brings the room into NC-30 compliance"
+    ],
+    "correct": 0,
+    "explanation": "CTS-D Duty B Task 5: the NC rating is only as good as the noisiest device in the room, and a fan-powered box over the table can easily blow past NC-30. The designer coordinates with the mechanical engineer and acoustician: get octave-band sound data, relocate the unit away from the table, add lining or attenuators, or pick quieter equipment. Masking noise with louder speakers is not compliance."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B5",
+    "q": "The acoustician's design targets RT60 of 0.8 to 1.2 seconds for speech in the multipurpose hall, based on a specific area of absorptive treatment. The interior designer then value-engineers the treatment out. What is your coordination role?",
+    "options": [
+      "Accept the change, since RT60 targets are advisory and the sound system can fully compensate for a highly reverberant room",
+      "Add more loudspeakers, since increased speaker count reduces reverberation time",
+      "Treat the room after opening with portable panels, since acoustic treatment is always an owner-furnished afterthought",
+      "Document that removing the treatment voids the RT60 target, and resolve it with the architect and acoustician before finishes are finalized: restore coverage, substitute finishes with known NRC data, or reset intelligibility expectations in writing"
+    ],
+    "correct": 3,
+    "explanation": "CTS-D Duty B Task 5: RT60 is a property of the room's finishes, and deleting absorptive treatment deletes the acoustic design with it. No loudspeaker fixes a 2.5-second room for speech. The designer flags the conflict in writing, brings the architect and acoustician together, and gets a documented resolution (restored treatment, tested substitute finishes, or revised expectations) before finishes are locked."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B6",
+    "q": "Your AV cable penetrates a 2-hour fire-rated corridor wall. What life-safety coordination is required?",
+    "options": [
+      "No coordination, since low-voltage cable is exempt from fire-rating requirements in all jurisdictions",
+      "A listed firestop system matching the wall's 2-hour rating, proper sleeve and annular space, and a clear bid-document assignment of who provides the firestopping",
+      "Seal the penetration with expanding spray foam, which is an approved firestop for any rated assembly",
+      "Route the cable under the door instead, which avoids the rated wall entirely and needs no firestopping"
+    ],
+    "correct": 1,
+    "explanation": "CTS-D Duty B Task 6: every penetration of a rated assembly must be sealed with a listed firestop system rated for that assembly, installed with the right sleeve and annular space. Unsealed AV penetrations void the rating and fail inspection. The designer coordinates the requirement with the fire protection engineer and makes sure the bid documents say who provides the firestopping."
+  },
+  {
+    "domain": "CTS-D: Allied Trade Coordination",
+    "cert": "CTS-D",
+    "duty": "B",
+    "task": "B6",
+    "q": "The building has a voice evacuation fire alarm system, and your design includes distributed program audio with local volume controls in each zone. What must you coordinate with the fire protection engineer?",
+    "options": [
+      "Nothing, since program audio and fire alarm are separate systems that never interact",
+      "Leave the local volume controls as the override method, since occupants will turn the volume up to hear evacuation messages",
+      "A fire alarm priority override that mutes or ducks program audio (typically a contact closure or priority input to the DSP), the override hierarchy, and AHJ acceptance testing",
+      "Disconnect the program audio system entirely in buildings with voice evacuation, since the two systems cannot coexist"
+    ],
+    "correct": 2,
+    "explanation": "CTS-D Duty B Task 6: in a voice evacuation building, program audio must yield to life-safety messages automatically, regardless of local volume settings. The designer coordinates the override interface (contact closure or priority DSP input), the muting hierarchy, and the acceptance test with the fire protection engineer and the AHJ. A volume knob is not a life-safety interface."
   }
 ];

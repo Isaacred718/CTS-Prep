@@ -39,9 +39,9 @@ All notable changes to this project are documented here.
 - Service worker caching scoped by topic.id to prevent cross-app conflicts
 
 **Question Bank Expansion**
-- 392 total questions across three certifications:
-  - CTS (Certified Technology Specialist): 185 questions
-  - CTS-D (Design): 104 questions
+- 530 total questions across three certifications:
+  - CTS (Certified Technology Specialist): 272 questions
+  - CTS-D (Design): 134 questions
   - CTS-I (Installation): 103 questions
 - 29 distinct domains covering AV design, networking, troubleshooting, and more
 - Full explanations on every question
@@ -145,7 +145,7 @@ All notable changes to this project are documented here.
 **Question Structure**
 - All questions now include domain, cert (certification/track), question text, options (2–6), correct index, explanation
 - Optional difficulty field (1–5) for Endless mode level-based filtering
-- Consistent formatting: standardized across all 392 questions
+- Consistent formatting: standardized across all 530 questions
 - Answer shuffling: on-screen display randomizes option order, correct field is content index
 
 **Testing & Validation**

@@ -306,6 +306,7 @@ function showTab(tab) {
   });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + tab));
   if (tab === 'overview') { try { renderReadiness(); } catch (e) {} }
+  if (tab === 'roadmap') { try { renderRoadmap(); } catch (e) {} }
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('nav.tabs button').forEach(b => {
@@ -384,13 +385,44 @@ function renderHistory() {
   ).join('');
 }
 
+/* ---------- official AVIXA duty weights (percent of each exam) ----------
+   Source: the exam content outline PDFs in data/docs/. ANP has no questions
+   in the bank yet, so every ANP duty reports "No data yet". */
+const DUTY_WEIGHTS = {
+  'CTS':   { A: 35, B: 30, C: 15, D: 20 },
+  'CTS-D': { A: 20, B: 28, C: 38, D: 14 },
+  'CTS-I': { A: 17, B: 12, C: 12, D: 39, E: 12, F: 8 },
+  'ANP':   { A: 16, B: 19, C: 15, D: 27, E: 13, F: 10 }
+};
+const DUTY_NAMES = {
+  'CTS': { A: 'Creating AV Solutions', B: 'Implementing AV Solutions',
+    C: 'Supporting AV System Operation', D: 'Servicing AV Solutions' },
+  'CTS-D': { A: 'Conduct a Needs Assessment', B: 'Coordinate with Other Professionals',
+    C: 'Develop and Document AV Designs', D: 'Deploy AV Designs' },
+  'CTS-I': { A: 'Implement Pre-Installation Activities', B: 'Practice Ongoing Project Responsibilities',
+    C: 'Conduct Site Rough-In/First-Fix', D: 'Install AV Systems',
+    E: 'Perform AV Systems Closeout', F: 'Conduct Post Project Activities' },
+  'ANP': { A: 'Conduct a Needs Analysis', B: 'Design Hardware Network Topology',
+    C: 'Design Software Network Topology', D: 'Perform System Deployment',
+    E: 'Verify System Performance', F: 'Conduct Project Closeout' }
+};
+
 /* ---------- exam readiness ----------
-   Per-domain score = practice performance (pooled correct/answered across
+   Per-domain rows: practice performance (pooled correct/answered across
    history entries that carry a per-domain breakdown) weighted against
    flashcard mastery (% of the domain's cards in Leitner box 4 or 5). The
    weighting is a setting (default 60/40). With only one signal available,
    that signal carries full weight; with none, the domain reports "No data
-   yet". Overall = mean of domains with data. Bands key off the pass mark. */
+   yet".
+   Per-duty rows: for tracks with official duty weights, each duty's test
+   score is pooled from h.duties (recorded at quiz/test/endless completion;
+   old entries without h.duties are treated as no duty data and never crash).
+   Flashcards have no duty tags, so the track's overall flashcard mastery
+   applies uniformly to every duty: dutyScore = wT*dutyTest + (1-wT)*mastery.
+   Duties with neither signal report "No data yet".
+   OVERALL: Σ(dutyScore × officialWeight), renormalized over the duties that
+   have data. For track sets without official weights (All tracks) the old
+   mean-of-domains overall is kept. Bands key off the pass mark. */
 function computeReadiness(track) {
   const hist = readJSON(LS.hist, []);
   const boxes = readJSON(LS.boxes, {});
@@ -415,10 +447,45 @@ function computeReadiness(track) {
     else if (mastery !== null) score = mastery;
     return { domain: d, test, mastery, score: score === null ? null : Math.round(score) };
   });
-  const scored = per.filter(p => p.score !== null);
-  const overall = scored.length
-    ? Math.round(scored.reduce((a, p) => a + p.score, 0) / scored.length) : null;
-  return { per, overall };
+  const weights = DUTY_WEIGHTS[track];
+  let duties = [], overall = null;
+  if (weights) {
+    // overall flashcard mastery for the track, applied uniformly to every duty
+    const trackDoms = new Set(per.map(p => p.domain));
+    const cards = DECK.filter(x => trackDoms.has(x.domain));
+    let mastered = 0, touched = 0;
+    cards.forEach(x => {
+      const b = +boxes[x.domain + '|' + x.front] || 0;
+      if (b > 0) { touched++; if (b >= 4) mastered++; }
+    });
+    const overallMastery = touched ? 100 * mastered / cards.length : null;
+    duties = Object.keys(weights).map(duty => {
+      let c = 0, t = 0; // pooled practice performance for this duty, this track only
+      hist.forEach(h => {
+        if (h.cert && h.cert !== '__all' && h.cert !== track) return;
+        const hd = h && h.duties && h.duties[duty];
+        if (hd) { c += (+hd.c || 0); t += (+hd.t || 0); }
+      });
+      const test = t > 0 ? 100 * c / t : null;
+      let score = null;
+      if (test !== null && overallMastery !== null) score = wT * test + (1 - wT) * overallMastery;
+      else if (test !== null) score = test;
+      else if (overallMastery !== null) score = overallMastery;
+      return { duty, name: (DUTY_NAMES[track] || {})[duty] || 'Duty ' + duty,
+        weight: weights[duty], test, mastery: overallMastery,
+        score: score === null ? null : Math.round(score) };
+    });
+    const scored = duties.filter(p => p.score !== null);
+    if (scored.length) {
+      const wsum = scored.reduce((a, p) => a + p.weight, 0);
+      overall = Math.round(scored.reduce((a, p) => a + p.score * p.weight, 0) / wsum);
+    }
+  } else {
+    const scored = per.filter(p => p.score !== null);
+    overall = scored.length
+      ? Math.round(scored.reduce((a, p) => a + p.score, 0) / scored.length) : null;
+  }
+  return { per, duties, overall };
 }
 function readyBand(score) {
   const t = TH();
@@ -440,12 +507,13 @@ function renderReadiness() {
   if (!el) return;
   const rc = $('r-cert');
   const track = rc && rc.value ? rc.value : '__all';
-  const { per, overall } = computeReadiness(track);
+  const { per, duties, overall } = computeReadiness(track);
   const b = readyBand(overall);
   const w = S.get('testWeight');
   const rows = per.slice().sort((a, c) =>
     (a.score === null ? 9999 : a.score) - (c.score === null ? 9999 : c.score));
-  const basis = DECK.length ? `Practice ${w}% · flashcards ${100 - w}%. ` : '';
+  let basis = DECK.length ? `Practice ${w}% · flashcards ${100 - w}%. ` : '';
+  if (duties.length) basis += 'Overall is weighted by the official exam duty weights. ';
   el.innerHTML =
     `<div class="ready-head"><div class="ready-score ${b.cls}">${overall === null ? '—' : overall + '%'}</div>` +
     `<div><div class="ready-band ${b.cls}">${b.label}</div>` +
@@ -458,7 +526,20 @@ function renderReadiness() {
       return `<div class="dbar"><div class="dlbl"><span>${esc(p.domain)}</span>` +
         `<span class="${pb.cls}">${p.score}% · ${pb.label}</span></div>` +
         `<div class="dtrack"><div class="dfill" style="width:${p.score}%;background:${readyColor(p.score)}"></div></div></div>`;
-    }).join('');
+    }).join('') +
+    (duties.length
+      ? `<h3 class="duty-h">Duty breakdown, by official exam weight</h3>` +
+        duties.map(p => {
+          const lbl = `Duty ${p.duty}: ${p.name}, ${p.weight}% of exam`;
+          if (p.score === null)
+            return `<div class="dbar"><div class="dlbl"><span>${esc(lbl)}</span>` +
+              `<span class="muted">No data yet</span></div></div>`;
+          const pb = readyBand(p.score);
+          return `<div class="dbar"><div class="dlbl"><span>${esc(lbl)}</span>` +
+            `<span class="${pb.cls}">${p.score}% · ${pb.label}</span></div>` +
+            `<div class="dtrack"><div class="dfill" style="width:${p.score}%;background:${readyColor(p.score)}"></div></div></div>`;
+        }).join('')
+      : '');
   renderCareers(per);
 }
 
@@ -486,6 +567,94 @@ function renderCareers(per) {
       `<div class="career-domains">${c.domains.map(esc).join(' · ')}</div>` +
       `<p class="muted small career-why">${esc(c.why || '')}</p></div>`;
   }).join('');
+}
+
+/* ---------- document library ----------
+   Official AVIXA PDFs shipped in data/docs/ and cached offline by sw.js.
+   Relative hrefs so the library works from the local copy with no network. */
+const DOC_GROUPS = [
+  { cert: 'CTS', docs: [
+    ['cts_handbook_august_2026.pdf', 'CTS Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+    ['cts_exam_content_outline_2024.pdf', 'CTS Exam Content Outline 2024', 'Official duty/task weights'],
+    ['code_of_ethics.pdf', 'CTS Code of Ethics and Conduct', 'Professional conduct requirements']
+  ]},
+  { cert: 'CTS-D', docs: [
+    ['cts-d_handbook_august_2026.pdf', 'CTS-D Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+    ['cts-d_exam_content_outline.pdf', 'CTS-D Exam Content Outline', 'Official duty/task weights'],
+    ['ctsd_math_formulas_2024.pdf', 'CTS-D Math Formulas 2024', 'The official formula sheet']
+  ]},
+  { cert: 'CTS-I', docs: [
+    ['cts-i_handbook_august_2026.pdf', 'CTS-I Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+    ['cts-i_exam_content_outline.pdf', 'CTS-I Exam Content Outline', 'Official duty/task weights']
+  ]},
+  { cert: 'ANP', docs: [
+    ['anp_handbook_2026.pdf', 'ANP Candidate Handbook 2026', 'Eligibility, scheduling, policies'],
+    ['anp-exam-content-outline-october-2023.pdf', 'ANP Exam Content Outline (Oct 2023)', 'Official duty/task weights']
+  ]},
+  { cert: 'Shared', docs: [
+    ['certification_fee_schedule_2025.pdf', 'Certification Fee Schedule 2025 (USD)', 'Exam, application and retest fees'],
+    ['ru_options_chart_2023.pdf', 'Renewal Unit (RU) Options Chart', 'How to earn renewal units']
+  ]}
+];
+(function library() {
+  const el = $('doc-library');
+  if (!el) return;
+  el.innerHTML = DOC_GROUPS.map(g =>
+    `<div class="dgroup"><h3>${esc(g.cert)}</h3>` +
+    g.docs.map(([file, title, desc]) =>
+      `<a href="data/docs/${esc(file)}" target="_blank" rel="noopener">` +
+      `<div class="gt">${esc(title)}</div><div class="gd">${esc(desc)}</div></a>`).join('') +
+    `</div>`).join('');
+})();
+
+/* ---------- certification roadmap ----------
+   One checklist per cert track, in the forced order: CTS first (CTS-D and
+   CTS-I require a current general CTS), ANP standalone with no prerequisite.
+   One boolean per item, persisted as cts_roadmap_v1: { CTS: [bool,...], ... }. */
+const ROADMAP = [
+  { id: 'CTS', status: 'Exam booked: Friday, October 9, 2026, 3:45 PM ET, Pearson Professional Centers, 2 Teleport Dr, Suite 100, Staten Island, NY 10311.',
+    note: null,
+    items: ['Handbook read', 'Application approved', 'Fee paid ($490 non-member)', 'Pearson VUE scheduled', 'Exam taken', 'Pass'] },
+  { id: 'CTS-D', status: null,
+    note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
+    items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
+  { id: 'CTS-I', status: null,
+    note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
+    items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
+  { id: 'ANP', status: null,
+    note: 'No CTS required. 115 questions (15 pilot), 150 minutes.',
+    items: ['Handbook read', 'Application submitted', 'Fee paid ($350)', 'Scheduled', 'Exam taken', 'Pass'] }
+];
+const RM_KEY = P + 'roadmap_v1';
+function renderRoadmap() {
+  const el = $('roadmap-tracks');
+  if (!el) return;
+  const state = readJSON(RM_KEY, {});
+  el.innerHTML = ROADMAP.map((r, ri) => {
+    const done = (state[r.id] || []).map(Boolean);
+    const n = done.filter(Boolean).length;
+    const pct = r.items.length ? Math.round(100 * n / r.items.length) : 0;
+    return `<div class="rm-track"><h3>${ri + 1}. ${esc(r.id)}</h3>` +
+      (r.status ? `<p class="small">${esc(r.status)}</p>` : '') +
+      (r.note ? `<p class="rm-note2">${esc(r.note)}</p>` : '') +
+      `<div class="rm-prog"><div class="dbar"><div class="dlbl"><span class="muted">Progress</span>` +
+      `<span>${n}/${r.items.length}</span></div>` +
+      `<div class="dtrack"><div class="dfill" style="width:${pct}%;background:var(--accent)"></div></div></div></div>` +
+      r.items.map((item, ii) =>
+        `<label class="checkline"><input type="checkbox" data-rm="${ri}" data-ii="${ii}"${done[ii] ? ' checked' : ''}> ${esc(item)}</label>`
+      ).join('') + `</div>`;
+  }).join('');
+  el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const s = readJSON(RM_KEY, {});
+      const id = ROADMAP[+cb.dataset.rm].id;
+      const arr = Array.isArray(s[id]) ? s[id].slice() : [];
+      arr[+cb.dataset.ii] = cb.checked;
+      s[id] = arr;
+      writeJSON(RM_KEY, s);
+      renderRoadmap();
+    });
+  });
 }
 
 /* ---------- guides ---------- */
@@ -758,13 +927,20 @@ const Quiz = (function () {
     $('qr-note').textContent = (expired ? 'Time expired. ' : '') +
       (answered < total ? `Scored on the ${answered} of ${total} questions you answered.` : '');
     const byDom = tally(results, k => results[k].ok, r => r.q.domain);
+    const byDuty = {}; // per-duty breakdown (questions without a duty tag are skipped)
+    results.forEach(r => {
+      const d = r.q && r.q.duty;
+      if (!d) return;
+      byDuty[d] = byDuty[d] || { c: 0, t: 0 };
+      byDuty[d].t++; if (r.ok) byDuty[d].c++;
+    });
     $('qr-domains').innerHTML = Object.entries(byDom).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
     $('qr-review-list').style.display = 'none';
     $('qr-review-list').innerHTML = results.map(r => reviewItem(r.q, r.picked)).join('');
     releaseFocus();
     if (answered) {
       const certs = [...new Set(results.map(r => certOf(r.q)))];
-      pushHistory({ date: today(), n: answered, score: pct, mode: 'quiz', cert: certs.length === 1 ? certs[0] : '__all', domains: byDom });
+      pushHistory({ date: today(), n: answered, score: pct, mode: 'quiz', cert: certs.length === 1 ? certs[0] : '__all', domains: byDom, duties: byDuty });
       notifyProgress();
       renderHistory();
     }
@@ -890,6 +1066,13 @@ const PTest = (function () {
     const okAt = idx => answers[idx] === qs[idx].correct;
     const correct = qs.filter((q, idx) => okAt(idx)).length;
     const byDom = tally(qs, okAt, q => q.domain);
+    const byDuty = {}; // per-duty breakdown (questions without a duty tag are skipped)
+    qs.forEach((q, idx) => {
+      const d = q && q.duty;
+      if (!d) return;
+      byDuty[d] = byDuty[d] || { c: 0, t: 0 };
+      byDuty[d].t++; if (okAt(idx)) byDuty[d].c++;
+    });
     const pct = Math.round(100 * correct / qs.length);
     const t = TH();
     $('test-run').style.display = 'none';
@@ -908,7 +1091,7 @@ const PTest = (function () {
     $('tr-review-list').innerHTML = qs.map((q, idx) => reviewItem(q, answers[idx])).join('');
     releaseFocus();
     // history — entries carry the track; old entries without `cert` keep working
-    pushHistory({ date: today(), n: qs.length, score: pct, mode: meta.mode, cert: meta.cert, domains: byDom });
+    pushHistory({ date: today(), n: qs.length, score: pct, mode: meta.mode, cert: meta.cert, domains: byDom, duties: byDuty });
     notifyProgress();
     renderHistory();
     window.scrollTo(0, 0);
@@ -1082,7 +1265,7 @@ const Endless = (function () {
   setSeg('e-src-seg', 's', eSource);
   bindSeg('e-src-seg', 's', v => { eSource = v; renderSetup(); });
   let level = 1, peak = 1, streak = 0, bestStreak = 0;
-  let correct = 0, total = 0, win = [], cur = null, byDom = {};
+  let correct = 0, total = 0, win = [], cur = null, byDom = {}, byDuty = {};
   // timer + lightning-round state
   let eTimerOn = false, eLightning = false, locked = false, past = [];
   let timerSecs = 150, timeLeft = 150, timerId = null, runTrack = DEFAULT_TRACK, ramp = RAMPS.normal;
@@ -1240,6 +1423,11 @@ const Endless = (function () {
     const d = cur.domain;
     byDom[d] = byDom[d] || { c: 0, t: 0 };
     byDom[d].t++; if (okFinal) byDom[d].c++;
+    if (cur.duty) { // per-duty breakdown (forged questions carry no duty tag)
+      const du = cur.duty;
+      byDuty[du] = byDuty[du] || { c: 0, t: 0 };
+      byDuty[du].t++; if (okFinal) byDuty[du].c++;
+    }
     let moved;
     if (okFinal) {
       correct++; streak++; bestStreak = Math.max(bestStreak, streak);
@@ -1289,7 +1477,7 @@ const Endless = (function () {
     ramp = RAMPS[S.get('endlessRamp')] || RAMPS.normal;
     level = S.get('endlessStart'); peak = Math.round(level);
     recent = []; streak = 0; bestStreak = 0;
-    correct = 0; total = 0; win = []; past = []; byDom = {};
+    correct = 0; total = 0; win = []; past = []; byDom = {}; byDuty = {};
     for (const k in seen) delete seen[k];
     $('endless-setup').style.display = 'none';
     $('endless-results').style.display = 'none';
@@ -1312,7 +1500,7 @@ const Endless = (function () {
     $('er-domains').innerHTML = Object.entries(byDom).sort(byWorst).map(([d, v]) => domainBar(d, v.c, v.t)).join('');
     releaseFocus();
     if (total > 0) {
-      pushHistory({ date: today(), n: total, score: pct, mode: 'endless', cert: runTrack, domains: byDom });
+      pushHistory({ date: today(), n: total, score: pct, mode: 'endless', cert: runTrack, domains: byDom, duties: byDuty });
       const bb = getBest();
       if (!bb[runTrack] || peak > bb[runTrack]) { bb[runTrack] = peak; writeJSON(LS.best, bb); }
       notifyProgress();

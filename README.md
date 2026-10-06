@@ -12,9 +12,10 @@ for any other subject. See **[TEMPLATE.md](TEMPLATE.md)**.
 
 | Content | Count |
 |---|---|
-| Questions, every one with a full explanation | **392** |
-| — CTS | 185 |
-| — CTS-D (design) | 104 |
+| Questions, every one with a full explanation | **530** |
+| — CTS | 272 |
+| — CTS-D (design) | 134 |
+| — CTS-I (installation) | 124 |
 | — CTS-I (installation) | 103 |
 | Flashcards (Leitner spaced repetition) | 131 |
 | Study guides (incl. the Exam Cram quick reference) | 7 |
@@ -165,7 +166,7 @@ forge.js          question-generator engine
 auth.js           Google sign-in + Firestore sync (offline-first)
 sw.js             offline service worker
 data/
-  questions.js    392 questions: { domain, cert, q, options[4], correct, explanation }
+  questions.js    530 questions: { domain, cert, duty, task, q, options[4], correct, explanation }
   cards.js        131 flashcards: { domain, front, back }
   guides.js       7 guides: { title, domain, body }
   drills.js       24 drills: { duty, task, scenario, question, options, correct, explanation }
