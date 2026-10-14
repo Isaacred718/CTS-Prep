@@ -303,7 +303,9 @@ window.CTS = Study; // pre-v6 name, kept so a cached older auth.js still finds t
 /* ---------- tabs ---------- */
 const HAS = {
   guides: GUIDE_LIST.length > 0, cards: DECK.length > 0, drills: DRILL_LIST.length > 0,
-  quiz: BANK.length > 0, test: BANK.length > 0, endless: BANK.length > 0 || HAS_FORGE
+  quiz: BANK.length > 0, test: BANK.length > 0, endless: BANK.length > 0 || HAS_FORGE,
+  library: !!(((T.library || {}).groups) || []).length,
+  roadmap: !!(((T.roadmap || {}).tracks) || []).length
 };
 let currentTab = 'overview';
 function showTab(tab) {
@@ -334,27 +336,17 @@ const CAREERS = Array.isArray(T.careers) ? T.careers : [];
 
 /* ---------- overview ---------- */
 const MODE_NAMES = { balanced: 'practice', random: 'practice · random', quiz: 'quiz', drill: 'drills', endless: 'endless' };
-/* ---------- official AVIXA duty weights (percent of each exam) ----------
-   Source: the exam content outline PDFs in data/docs/. ANP has no questions
-   in the bank yet, so every ANP duty reports "No data yet". */
-const DUTY_WEIGHTS = {
-  'CTS':   { A: 35, B: 30, C: 15, D: 20 },
-  'CTS-D': { A: 20, B: 28, C: 38, D: 14 },
-  'CTS-I': { A: 17, B: 12, C: 12, D: 39, E: 12, F: 8 },
-  'ANP':   { A: 16, B: 19, C: 15, D: 27, E: 13, F: 10 }
-};
-const DUTY_NAMES = {
-  'CTS': { A: 'Creating AV Solutions', B: 'Implementing AV Solutions',
-    C: 'Supporting AV System Operation', D: 'Servicing AV Solutions' },
-  'CTS-D': { A: 'Conduct a Needs Assessment', B: 'Coordinate with Other Professionals',
-    C: 'Develop and Document AV Designs', D: 'Deploy AV Designs' },
-  'CTS-I': { A: 'Implement Pre-Installation Activities', B: 'Practice Ongoing Project Responsibilities',
-    C: 'Conduct Site Rough-In/First-Fix', D: 'Install AV Systems',
-    E: 'Perform AV Systems Closeout', F: 'Conduct Post Project Activities' },
-  'ANP': { A: 'Conduct a Needs Analysis', B: 'Design Hardware Network Topology',
-    C: 'Design Software Network Topology', D: 'Perform System Deployment',
-    E: 'Verify System Performance', F: 'Conduct Project Closeout' }
-};
+/* ---------- official duty weights (percent of each exam) ----------
+   From topic.js `duties`: { <trackId>: { weights: { A: 35, ... },
+   names: { A: '...', ... } } }, researched from the topic's official
+   outline (see pipeline/RESEARCH.md). A track with no duties entry, or a
+   duty with no questions yet, reports "No data yet". */
+const DUTY_WEIGHTS = {};
+const DUTY_NAMES = {};
+Object.entries(T.duties || {}).forEach(([track, d]) => {
+  DUTY_WEIGHTS[track] = (d && d.weights) || {};
+  DUTY_NAMES[track] = (d && d.names) || {};
+});
 
 (function overview() {
   const parts = MULTI ? TRACKS.map(t => `${countForTrack(t.id)} ${t.label}`) : [`${BANK.length} questions`];
@@ -579,35 +571,17 @@ function renderCareers(per) {
 }
 
 /* ---------- document library ----------
-   Official AVIXA PDFs shipped in data/docs/ and cached offline by sw.js.
-   Relative hrefs so the library works from the local copy with no network. */
-const DOC_GROUPS = [
-  { cert: 'CTS', docs: [
-    ['cts_handbook_august_2026.pdf', 'CTS Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
-    ['cts_exam_content_outline_2024.pdf', 'CTS Exam Content Outline 2024', 'Official duty/task weights'],
-    ['code_of_ethics.pdf', 'CTS Code of Ethics and Conduct', 'Professional conduct requirements']
-  ]},
-  { cert: 'CTS-D', docs: [
-    ['cts-d_handbook_august_2026.pdf', 'CTS-D Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
-    ['cts-d_exam_content_outline.pdf', 'CTS-D Exam Content Outline', 'Official duty/task weights'],
-    ['ctsd_math_formulas_2024.pdf', 'CTS-D Math Formulas 2024', 'The official formula sheet']
-  ]},
-  { cert: 'CTS-I', docs: [
-    ['cts-i_handbook_august_2026.pdf', 'CTS-I Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
-    ['cts-i_exam_content_outline.pdf', 'CTS-I Exam Content Outline', 'Official duty/task weights']
-  ]},
-  { cert: 'ANP', docs: [
-    ['anp_handbook_2026.pdf', 'ANP Candidate Handbook 2026', 'Eligibility, scheduling, policies'],
-    ['anp-exam-content-outline-october-2023.pdf', 'ANP Exam Content Outline (Oct 2023)', 'Official duty/task weights']
-  ]},
-  { cert: 'Shared', docs: [
-    ['certification_fee_schedule_2025.pdf', 'Certification Fee Schedule 2025 (USD)', 'Exam, application and retest fees'],
-    ['ru_options_chart_2023.pdf', 'Renewal Unit (RU) Options Chart', 'How to earn renewal units']
-  ]}
-];
+   From topic.js `library`: { title, intro, groups: [{ cert, docs:
+   [[file, title, desc], ...] }] }. PDFs ship in data/docs/ and are cached
+   offline by sw.js. Relative hrefs so the library works from a local copy. */
+const DOC_GROUPS = (T.library && T.library.groups) || [];
 (function library() {
   const el = $('doc-library');
   if (!el) return;
+  if (T.library) {
+    if (T.library.title && $('lib-title')) $('lib-title').textContent = T.library.title;
+    if (T.library.intro && $('lib-intro')) $('lib-intro').textContent = T.library.intro;
+  }
   el.innerHTML = DOC_GROUPS.map(g =>
     `<div class="dgroup"><h3>${esc(g.cert)}</h3>` +
     g.docs.map(([file, title, desc]) =>
@@ -616,28 +590,25 @@ const DOC_GROUPS = [
     `</div>`).join('');
 })();
 
-/* ---------- certification roadmap ----------
-   One checklist per cert track, in the forced order: CTS first (CTS-D and
-   CTS-I require a current general CTS), ANP standalone with no prerequisite.
-   One boolean per item, persisted as cts_roadmap_v1: { CTS: [bool,...], ... }. */
-const ROADMAP = [
-  { id: 'CTS', status: 'Exam booked: Friday, October 9, 2026, 3:45 PM ET, Pearson Professional Centers, 2 Teleport Dr, Suite 100, Staten Island, NY 10311.',
-    note: null,
-    items: ['Handbook read', 'Application approved', 'Fee paid ($490 non-member)', 'Pearson VUE scheduled', 'Exam taken', 'Pass'] },
-  { id: 'CTS-D', status: null,
-    note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
-    items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
-  { id: 'CTS-I', status: null,
-    note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
-    items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
-  { id: 'ANP', status: null,
-    note: 'No CTS required. 115 questions (15 pilot), 150 minutes.',
-    items: ['Handbook read', 'Application submitted', 'Fee paid ($350)', 'Scheduled', 'Exam taken', 'Pass'] }
-];
+/* ---------- roadmap ----------
+   From topic.js `roadmap`: { title, intro, footer (HTML), tracks:
+   [{ id, status, note, items: [...] }] }. One checklist per track, in the
+   order the topic defines. One boolean per item, persisted per topic as
+   <topic id>_roadmap_v1. */
+const ROADMAP = (T.roadmap && T.roadmap.tracks) || [];
 const RM_KEY = P + 'roadmap_v1';
 function renderRoadmap() {
   const el = $('roadmap-tracks');
   if (!el) return;
+  if (T.roadmap) {
+    if (T.roadmap.title && $('rm-title')) $('rm-title').textContent = T.roadmap.title;
+    if (T.roadmap.intro && $('rm-intro')) $('rm-intro').textContent = T.roadmap.intro;
+    const note = $('rm-note');
+    if (note) {
+      if (T.roadmap.footer) note.innerHTML = T.roadmap.footer;
+      else note.style.display = 'none';
+    }
+  }
   const state = readJSON(RM_KEY, {});
   el.innerHTML = ROADMAP.map((r, ri) => {
     const done = (state[r.id] || []).map(Boolean);

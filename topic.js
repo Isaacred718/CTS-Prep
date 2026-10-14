@@ -15,7 +15,7 @@ var TOPIC = {
 
   name: 'CTS Prep',
   title: 'CTS Prep — AVIXA CTS, CTS-D & CTS-I study app',
-  version: '6.0',
+  version: '6.1',
 
   // Default accent color: sky | violet | emerald | amber | rose | indigo.
   // People can pick their own in Settings; this is what a new visitor sees.
@@ -110,6 +110,88 @@ var TOPIC = {
 
   // Endless mode brings repeats back rephrased; these lead-ins are rotated in.
   rephrasePrefixes: ['Quick check: ', 'On a real project, ', 'Think it through: ', 'You are on site and '],
+
+
+  // Official duty/task structure per track, from the AVIXA exam content
+  // outlines (PDFs in data/docs/). Weights are percent of the exam.
+  // Drives the duty-weighted readiness on the home page.
+  duties: {
+    'CTS': {
+      weights: { A: 35, B: 30, C: 15, D: 20 },
+      names: { A: 'Creating AV Solutions', B: 'Implementing AV Solutions',
+        C: 'Supporting AV System Operation', D: 'Servicing AV Solutions' }
+    },
+    'CTS-D': {
+      weights: { A: 20, B: 28, C: 38, D: 14 },
+      names: { A: 'Conduct a Needs Assessment', B: 'Coordinate with Other Professionals',
+        C: 'Develop and Document AV Designs', D: 'Deploy AV Designs' }
+    },
+    'CTS-I': {
+      weights: { A: 17, B: 12, C: 12, D: 39, E: 12, F: 8 },
+      names: { A: 'Implement Pre-Installation Activities', B: 'Practice Ongoing Project Responsibilities',
+        C: 'Conduct Site Rough-In/First-Fix', D: 'Install AV Systems',
+        E: 'Perform AV Systems Closeout', F: 'Conduct Post Project Activities' }
+    },
+    'ANP': {
+      weights: { A: 16, B: 19, C: 15, D: 27, E: 13, F: 10 },
+      names: { A: 'Conduct a Needs Analysis', B: 'Design Hardware Network Topology',
+        C: 'Design Software Network Topology', D: 'Perform System Deployment',
+        E: 'Verify System Performance', F: 'Conduct Project Closeout' }
+    }
+  },
+
+  // Document library tab: official AVIXA PDFs in data/docs/, grouped by cert.
+  library: {
+    title: 'Document Library',
+    intro: 'Official AVIXA references, organized by certification. Saved on this device, so they open even offline.',
+    groups: [
+      { cert: 'CTS', docs: [
+        ['cts_handbook_august_2026.pdf', 'CTS Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+        ['cts_exam_content_outline_2024.pdf', 'CTS Exam Content Outline 2024', 'Official duty/task weights'],
+        ['code_of_ethics.pdf', 'CTS Code of Ethics and Conduct', 'Professional conduct requirements']
+      ]},
+      { cert: 'CTS-D', docs: [
+        ['cts-d_handbook_august_2026.pdf', 'CTS-D Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+        ['cts-d_exam_content_outline.pdf', 'CTS-D Exam Content Outline', 'Official duty/task weights'],
+        ['ctsd_math_formulas_2024.pdf', 'CTS-D Math Formulas 2024', 'The official formula sheet']
+      ]},
+      { cert: 'CTS-I', docs: [
+        ['cts-i_handbook_august_2026.pdf', 'CTS-I Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
+        ['cts-i_exam_content_outline.pdf', 'CTS-I Exam Content Outline', 'Official duty/task weights']
+      ]},
+      { cert: 'ANP', docs: [
+        ['anp_handbook_2026.pdf', 'ANP Candidate Handbook 2026', 'Eligibility, scheduling, policies'],
+        ['anp-exam-content-outline-october-2023.pdf', 'ANP Exam Content Outline (Oct 2023)', 'Official duty/task weights']
+      ]},
+      { cert: 'Shared', docs: [
+        ['certification_fee_schedule_2025.pdf', 'Certification Fee Schedule 2025 (USD)', 'Exam, application and retest fees'],
+        ['ru_options_chart_2023.pdf', 'Renewal Unit (RU) Options Chart', 'How to earn renewal units']
+      ]}
+    ]
+  },
+
+  // Roadmap tab: one checklist per cert, in the forced order. CTS-D and
+  // CTS-I require a current general CTS; ANP stands alone.
+  roadmap: {
+    title: 'Certification Roadmap',
+    intro: 'The path from CTS to CTS-D, CTS-I and ANP, in order. CTS-D and CTS-I require holding a current general CTS. ANP stands alone and has no prerequisite.',
+    footer: '<p class="small"><strong>Retest fee:</strong> $150 if you do not pass and need to retake any of these exams.</p>' +
+      '<p class="small"><a href="https://www.pearsonvue.com/us/en/avixa.html" target="_blank" rel="noopener">Find a test center / schedule at Pearson VUE</a></p>',
+    tracks: [
+      { id: 'CTS', status: 'Exam booked: Friday, October 9, 2026, 3:45 PM ET, Pearson Professional Centers, 2 Teleport Dr, Suite 100, Staten Island, NY 10311.',
+        note: null,
+        items: ['Handbook read', 'Application approved', 'Fee paid ($490 non-member)', 'Pearson VUE scheduled', 'Exam taken', 'Pass'] },
+      { id: 'CTS-D', status: null,
+        note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
+        items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
+      { id: 'CTS-I', status: null,
+        note: 'Requires holding a current general CTS. 110 questions (10 pilot), 150 minutes.',
+        items: ['Hold current CTS', 'Handbook read', 'Application submitted', 'Fee paid ($590)', 'Scheduled', 'Exam taken', 'Pass'] },
+      { id: 'ANP', status: null,
+        note: 'No CTS required. 115 questions (15 pilot), 150 minutes.',
+        items: ['Handbook read', 'Application submitted', 'Fee paid ($350)', 'Scheduled', 'Exam taken', 'Pass'] }
+    ]
+  },
 
   // Google sign-in + cloud progress sync (Firebase). Set to null to run
   // purely on this device and hide the sign-in button.

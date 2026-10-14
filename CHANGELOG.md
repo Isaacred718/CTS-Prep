@@ -181,3 +181,11 @@ All notable changes to this project are documented here.
 
 - Claude Haiku 4.5
 - Isaac Walton (user testing, content review)
+
+## 6.1 (2026-10-13)
+- Engine refactor for the Prep Hub Template: the AVIXA duty tables,
+  document library and certification roadmap moved from app.js into
+  topic.js (duties / library / roadmap); sw.js derives its offline
+  document cache from topic.js. No behavior change — same readiness,
+  library and roadmap, now fully configuration-driven. Template:
+  github.com/Isaacred718/prep-hub-template
