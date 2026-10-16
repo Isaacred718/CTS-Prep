@@ -189,3 +189,11 @@ All notable changes to this project are documented here.
   document cache from topic.js. No behavior change — same readiness,
   library and roadmap, now fully configuration-driven. Template:
   github.com/Isaacred718/prep-hub-template
+
+## 6.2 (2026-10-16)
+- Installable on any device: real web app manifest + generated icon files
+  (tools/make-icons.mjs in the template), an "Install app" button in
+  Settings → About, and persistent-storage request so the offline copy
+  (app, 530 questions, official PDFs) survives on the device. Once
+  installed it opens full-screen and works fully offline; progress made
+  offline syncs when a connection returns.
