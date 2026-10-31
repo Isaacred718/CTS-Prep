@@ -15,7 +15,7 @@ var TOPIC = {
 
   name: 'CTS Prep',
   title: 'CTS Prep — AVIXA CTS, CTS-D & CTS-I study app',
-  version: '6.2',
+  version: '6.3',
 
   // Default accent color: sky | violet | emerald | amber | rose | indigo.
   // People can pick their own in Settings; this is what a new visitor sees.
@@ -143,7 +143,7 @@ var TOPIC = {
   // Document library tab: official AVIXA PDFs in data/docs/, grouped by cert.
   library: {
     title: 'Document Library',
-    intro: 'Official AVIXA references, organized by certification. Saved on this device, so they open even offline.',
+    intro: 'Official AVIXA references, organized by certification, plus free advanced-topic documents. Saved on this device, so they open even offline.',
     groups: [
       { cert: 'CTS', docs: [
         ['cts_handbook_august_2026.pdf', 'CTS Candidate Handbook (Aug 2026)', 'Eligibility, scheduling, policies'],
@@ -166,6 +166,11 @@ var TOPIC = {
       { cert: 'Shared', docs: [
         ['certification_fee_schedule_2025.pdf', 'Certification Fee Schedule 2025 (USD)', 'Exam, application and retest fees'],
         ['ru_options_chart_2023.pdf', 'Renewal Unit (RU) Options Chart', 'How to earn renewal units']
+      ]},
+      { cert: 'Advanced', docs: [
+        ['aes67_practical_guide.pdf', 'AES67 Practical Guide (ALC NetworX)', 'The free RAVENNA guide: sync, multicast, QoS, sessions, configuration'],
+        ['ravenna_aes67_vad_guide.pdf', 'RAVENNA/AES67 Virtual Audio Device Guide (Merging)', 'Set up the free RAVENNA/AES67 software device on Mac or PC'],
+        ['ravenna_intro_resolution.pdf', 'RAVENNA Explained (Resolution Magazine)', 'Introductory feature on RAVENNA from Merging Technologies']
       ]}
     ]
   },

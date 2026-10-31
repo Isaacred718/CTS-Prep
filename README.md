@@ -12,7 +12,7 @@ for any other subject. See **[TEMPLATE.md](TEMPLATE.md)**.
 
 | Content | Count |
 |---|---|
-| Questions, every one with a full explanation | **530** |
+| Questions, every one with a full explanation | **546** |
 | — CTS | 272 |
 | — CTS-D (design) | 134 |
 | — CTS-I (installation) | 124 |
@@ -166,9 +166,9 @@ forge.js          question-generator engine
 auth.js           Google sign-in + Firestore sync (offline-first)
 sw.js             offline service worker
 data/
-  questions.js    530 questions: { domain, cert, duty, task, q, options[4], correct, explanation }
-  cards.js        131 flashcards: { domain, front, back }
-  guides.js       7 guides: { title, domain, body }
+  questions.js    546 questions: { domain, cert, duty, task, q, options[4], correct, explanation }
+  cards.js        143 flashcards: { domain, front, back }
+  guides.js       9 guides: { title, domain, body }
   drills.js       24 drills: { duty, task, scenario, question, options, correct, explanation }
   forge.js        CTS generators: calculations, concept tables, trick tables
 template/         starter topic for new apps (astronomy sample)

@@ -655,5 +655,65 @@ const CARDS = [
     "domain": "CTS: Commissioning & Closeout",
     "front": "As-built drawings",
     "back": "Design drawings updated to reflect what was ACTUALLY installed — the record for all future service."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "RAVENNA",
+    "back": "Open audio-over-IP technology from ALC NetworX. Natively AES67-compliant; the audio basis of SMPTE ST 2110."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "ALC NetworX",
+    "back": "Munich R&D company (Lawo group) that created RAVENNA and published its operating principles in 2011. No proprietary licensing."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "AES67",
+    "back": "AES interoperability standard (2013). A common subset of RTP, PTP, SDP and L16/L24 multicast audio that lets Dante, RAVENNA, Livewire+ and Q-LAN exchange streams."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "PTP Media profile",
+    "back": "AES67's own profile of IEEE 1588-2008 PTP v2, with faster sync messaging than the Default profile. ST 2110 uses the ST 2059-2 profile instead."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "DNS-SD",
+    "back": "RAVENNA's discovery method: streams are announced and found via DNS Service Discovery over mDNS (Bonjour)."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "RTSP",
+    "back": "In RAVENNA, the protocol that transfers SDP stream descriptions when a receiver connects to a sender."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "SAP",
+    "back": "Session Announcement Protocol. How Dante devices in AES67 mode announce flows; RAVENNA gear needs SAP support or RAV2SAP to see them."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "RAV2SAP",
+    "back": "Free ALC NetworX converter that translates RAVENNA announcements into SAP (and back) so the Dante and RAVENNA worlds can discover each other."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "SDP",
+    "back": "Session Description Protocol (RFC 4566): the text block describing a stream: multicast address, port, codec, channel count and clock source."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "ANEMAN",
+    "back": "Merging Technologies' Audio Network Manager: patchbay and monitor for RAVENNA/AES67 networks."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "ST 2022-7",
+    "back": "Seamless protection switching: the same stream duplicated on two networks, merged hitlessly at the receiver."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "front": "Dante AES67 mode",
+    "back": "48 kHz only. AES67 flows are multicast, up to 8 channels, and appear in blue in Dante Controller; patch them from the receiver side."
   }
 ];

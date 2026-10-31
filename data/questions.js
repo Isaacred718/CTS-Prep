@@ -7952,5 +7952,245 @@ const QUESTIONS = [
     ],
     "correct": 2,
     "explanation": "CTS-D Duty B Task 6: in a voice evacuation building, program audio must yield to life-safety messages automatically, regardless of local volume settings. The designer coordinates the override interface (contact closure or priority DSP input), the muting hierarchy, and the acceptance test with the fire protection engineer and the AHJ. A volume knob is not a life-safety interface."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "RAVENNA audio networking technology was developed by which company?",
+    "options": [
+      "Audinate",
+      "ALC NetworX",
+      "QSC",
+      "Riedel Communications"
+    ],
+    "correct": 1,
+    "explanation": "RAVENNA was created by ALC NetworX GmbH of Munich (part of the Lawo group) and announced at IBC 2010."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "The name RAVENNA is an acronym for:",
+    "options": [
+      "Rapid Audio Video Exchange over Networked Nodes, Advanced Edition",
+      "Remote AV Endpoint Networking Architecture",
+      "Real-time Audio & Video Enhanced Next-generation Network Architecture",
+      "Reliable Audio Via Ethernet, Network Native Access"
+    ],
+    "correct": 2,
+    "explanation": "RAVENNA expands to Real-time Audio & Video Enhanced Next-generation Network Architecture (R-A-V-E-N-N-A), and is named after the Italian city."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "What makes RAVENNA an 'open technology' compared with proprietary audio-over-IP systems?",
+    "options": [
+      "Its source code is maintained by the AES as a public interoperability standard",
+      "Its design is published openly and it carries no proprietary per-channel licensing",
+      "It runs only on open-source operating systems and hardware",
+      "It is free of charge because it needs no network hardware"
+    ],
+    "correct": 1,
+    "explanation": "ALC NetworX published the RAVENNA operating principles in 2011. Implementation is open, built entirely on standard protocols, with no proprietary licensing policy or per-channel cost."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "RAVENNA devices stay sample-synchronized across the network using:",
+    "options": [
+      "Word clock embedded in the audio stream itself",
+      "PTP v2 (IEEE 1588-2008), using the AES67 Media profile",
+      "NTP disciplined by a local GPS stratum server",
+      "Audinate's proprietary clock election and media profile"
+    ],
+    "correct": 1,
+    "explanation": "RAVENNA and AES67 use Precision Time Protocol v2. AES67 defines a Media profile of IEEE 1588-2008 with faster sync messaging than the Default profile; ST 2110 systems use the ST 2059-2 profile instead."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "By default, a RAVENNA device announces and discovers streams using:",
+    "options": [
+      "SAP announcements",
+      "Dante's proprietary discovery",
+      "LLDP advertisements",
+      "DNS-SD over mDNS (Bonjour)"
+    ],
+    "correct": 3,
+    "explanation": "Native RAVENNA discovery is DNS Service Discovery over multicast DNS (Bonjour). SAP is used by Dante devices in AES67 mode, which is why a bridge between the two methods is sometimes needed."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "In a native RAVENNA setup, SDP stream descriptions are exchanged using:",
+    "options": [
+      "HTTP REST only",
+      "SNMP",
+      "RTSP",
+      "FTP"
+    ],
+    "correct": 2,
+    "explanation": "RAVENNA uses DNS-SD for discovery and RTSP to transfer the SDP (Session Description Protocol) data that describes each stream's address, codec, channel count and clock."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "A Dante device running in AES67 mode announces its flows using which protocol?",
+    "options": [
+      "SAP (Session Announcement Protocol)",
+      "DNS-SD (DNS Service Discovery)",
+      "RTSP (Real-Time Streaming Protocol)",
+      "mDNS (multicast DNS) announcements"
+    ],
+    "correct": 0,
+    "explanation": "Dante devices in AES67 mode rely on SAP announcements. RAVENNA devices natively use DNS-SD, so the two camps cannot see each other until announcements are translated."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "What does the free ALC NetworX tool RAV2SAP do?",
+    "options": [
+      "Converts RAVENNA audio streams into Dante audio streams in real time, acting as a gateway",
+      "Translates RAVENNA announcements into SAP for discovery by Dante devices in AES67 mode",
+      "Upgrades RAVENNA device firmware across the network automatically",
+      "Measures PTP clock offset between two separate audio networks"
+    ],
+    "correct": 1,
+    "explanation": "RAV2SAP is a freeware converter that monitors RAVENNA announcements and re-publishes them as SAP announcements (and vice versa). It carries only discovery and SDP data, no audio."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "The AES67 interoperability baseline fixes the packet time at:",
+    "options": [
+      "125 microseconds (6 samples per packet)",
+      "250 microseconds (12 samples per packet at 48 kHz)",
+      "1 millisecond (48 samples per packet at 48 kHz)",
+      "5 milliseconds (240 samples per packet)"
+    ],
+    "correct": 2,
+    "explanation": "AES67 mandates support for a 1 ms packet time: 48 samples per channel per packet at 48 kHz. RAVENNA additionally supports smaller and larger frame sizes for lower latency or higher efficiency."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "AES67 defines a common interoperability subset: 48 kHz, 1 to 8 channels, L16/L24 audio, one fixed packet time. Which capability is RAVENNA-native and goes beyond that baseline?",
+    "options": [
+      "RTP transport with RTCP monitoring",
+      "Sample rates up to 384 kHz, plus DSD audio",
+      "IP multicast with IGMP snooping",
+      "PTP synchronization with grandmaster election"
+    ],
+    "correct": 1,
+    "explanation": "RAVENNA covers the full AES67 subset and extends it: 44.1 to 384 kHz sample rates, DSD64/128/256, AM824 (AES3) payloads, more channels per stream and adjustable packet times and QoS classes."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "You enable AES67 mode on a Dante device that normally runs at 96 kHz. What happens?",
+    "options": [
+      "It keeps running at 96 kHz, AES67 active on both network ports",
+      "AES67 works at any rate the device supports",
+      "Only the redundant port drops to 48 kHz",
+      "The device is restricted to 48 kHz while AES67 mode is on"
+    ],
+    "correct": 3,
+    "explanation": "Dante's AES67 implementation only operates at 48 kHz. Enabling AES67 mode locks the device to 48 kHz for as long as the mode is active."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "To send audio from a Dante device to a RAVENNA/AES67 receiver, the Dante transmit flow must be:",
+    "options": [
+      "A multicast AES67 flow of up to 8 channels",
+      "A unicast flow with an unrestricted channel count",
+      "A 1 ms standard Dante flow",
+      "Sent through Dante Domain Manager"
+    ],
+    "correct": 0,
+    "explanation": "In Dante Controller you create a dedicated AES67 flow on the device's Transmit tab. AES67 flows are always multicast and carry up to 8 channels; ordinary Dante flows stay invisible to AES67 receivers."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "B",
+    "task": "B1",
+    "q": "An AES67 device shows up in Dante Controller. What can you do with it there?",
+    "options": [
+      "Route and rename it like any native Dante device",
+      "Open it by double-clicking and edit its stream, clock and device settings",
+      "See it listed in blue, but patching happens at the receiver (web page or ANEMAN)",
+      "Nothing at all; AES67 devices never appear in the list"
+    ],
+    "correct": 2,
+    "explanation": "Dante Controller displays AES67 transmitters in blue but offers no routing or configuration for them. Subscriptions are made at the AES67 receiver, through its web interface or a manager such as ANEMAN."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "How does AES67 handle quality of service on a shared network?",
+    "options": [
+      "Layer 2 priority only, using 802.1p VLAN tags",
+      "DiffServ with three traffic classes (DSCP), PTP recommended at EF (46)",
+      "Bandwidth reservation on every hop using RSVP",
+      "A physically separate, audio-only network with its own switches and cabling"
+    ],
+    "correct": 1,
+    "explanation": "AES67 mandates DiffServ support with three traffic classes. The standard recommends DSCP EF (46), expedited forwarding, for PTP clock traffic so switches always prioritize synchronization."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "SMPTE ST 2110-30 audio relates to AES67 in that it is:",
+    "options": [
+      "A replacement that retires AES67 across broadcast plants worldwide",
+      "A codec that compresses AES67 streams for WAN links",
+      "A gateway protocol bridging AES67 and MADI hardware",
+      "AES67 with tighter constraints: 24-bit PCM, ST 2059-2 PTP profile"
+    ],
+    "correct": 3,
+    "explanation": "ST 2110-30 builds directly on AES67 and narrows it for broadcast plants: 24-bit PCM payloads and SMPTE's ST 2059-2 PTP profile, so AES67 and ST 2110-30 devices interoperate when profiles are aligned."
+  },
+  {
+    "domain": "Advanced: Ravenna & AES67",
+    "cert": "CTS",
+    "duty": "A",
+    "task": "A4",
+    "q": "Hitless redundancy in RAVENNA and ST 2110 plants, sending identical streams over two independent networks with seamless failover at the receiver, follows:",
+    "options": [
+      "SMPTE ST 2022-7 seamless protection switching",
+      "Spanning Tree Protocol (IEEE 802.1D)",
+      "Link aggregation across both ports (LACP)",
+      "The redundant-port mode Audinate builds into Dante"
+    ],
+    "correct": 0,
+    "explanation": "ST 2022-7 sends the same RTP stream over two diverse paths; the receiver merges them and switches without a glitch if one path fails. It is the standard redundancy mechanism for RAVENNA and ST 2110 systems."
   }
 ];

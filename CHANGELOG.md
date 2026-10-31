@@ -197,3 +197,13 @@ All notable changes to this project are documented here.
   (app, 530 questions, official PDFs) survives on the device. Once
   installed it opens full-screen and works fully offline; progress made
   offline syncs when a connection returns.
+
+## 6.3 (2026-10-31)
+- New Advanced section: RAVENNA & AES67. 16 practice questions, 12
+  flashcards and 2 study guides (RAVENNA Fundamentals; AES67
+  Interoperability: RAVENNA Meets Dante), tagged Advanced so they never
+  affect CTS readiness scores.
+- Document Library gains an Advanced group with three free documents,
+  saved for offline reading: the AES67 Practical Guide (ALC NetworX),
+  Merging's RAVENNA/AES67 Virtual Audio Device Guide, and the Resolution
+  Magazine RAVENNA feature.
