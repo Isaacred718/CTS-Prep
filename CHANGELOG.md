@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented here.
 
+## [7.0] – 2026-11-11
+
+### Changed
+
+**Friendlier look and simpler navigation**
+
+- New visual style: rounded Nunito type (bundled, works offline), solid cards, and big pressable buttons and answer options
+- Tab bar reduced from nine small tabs to five large ones: Home, Guides, Cards, Quiz and More. Practice, Drills, Endless, Library and Roadmap open from the More sheet
+- Bottom sheets (More and Settings) can be dragged down to close, and close on Escape or the Android Back button
+- Home opens with a day-streak card, a seven-day activity strip and one-tap starts for a quick quiz, flashcards and Endless
+- Two-column Home and larger controls on wide screens
+
+### Added
+
+**Android and Meta Quest apps**
+
+- `android/` holds a small Android shell that packages the web app as an APK that works with no connection. `./gradlew assemblePhoneRelease assembleQuestRelease` builds a phone APK and a Meta Quest 2/3 panel APK
+- Library PDFs open in a built-in viewer inside the app; backups save to the Downloads folder
+- CTS Prep Hub was merged into this repository: this is now the single home of the app
+
+### Notes
+
+- Google sign-in cannot run inside the Android app, so the app shows "Saved on device" instead. Use Settings > Export to move progress between devices
+
 ## [6.1] – 2026-10-02
 
 ### Added

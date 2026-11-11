@@ -194,3 +194,11 @@ firestore.rules   reference Firestore security rules
   expansion, fiber bend radius, image system contrast ratios (analytical decision
   making 50:1, full-motion video 80:1), PAG/NAG, line level, Hi-Z impedance, phantom current,
   PoE switch-port vs device power, and HDMI passive length at 1080p vs 4K60.
+
+## Android and Meta Quest
+
+`android/` packages this app as an APK that works with no connection, in two
+builds: one for Android phones and tablets and one that opens as a flat,
+resizable panel on Meta Quest 2 / 3 / Pro. See
+[android/README.md](android/README.md) to build and install. The
+**Android APKs** workflow builds both on every push.
