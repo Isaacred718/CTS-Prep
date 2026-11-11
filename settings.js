@@ -28,6 +28,7 @@ var DEFAULTS = {
   shortcuts: true,
   // study (synced)
   track: T.defaultTrack || TRACKS[0].id,
+  dailyGoal: 20,            // XP per day: 10 | 20 | 40 | 60
   passMark: EXAM.passMark || 70,
   testWeight: 60,           // readiness: % practice performance (rest = flashcards)
   quizLength: 25,           // 0 = all
@@ -67,6 +68,7 @@ function sanitize(v) {
     if (typeof v[k] !== typeof DEFAULTS[k]) v[k] = DEFAULTS[k];
   });
   if (v.track !== '__all' && !TRACKS.some(function (t) { return t.id === v.track; })) v.track = DEFAULTS.track;
+  if ([10, 20, 40, 60].indexOf(v.dailyGoal) === -1) v.dailyGoal = DEFAULTS.dailyGoal;
   v.passMark = clamp(v.passMark, 30, 100);
   v.testWeight = clamp(v.testWeight, 0, 100);
   v.mixedShare = clamp(v.mixedShare, 5, 95);
@@ -221,7 +223,9 @@ function schema() {
     ] },
     { title: 'Study', note: 'Syncs with your progress when you are signed in.', items: [
       { key: 'track', label: 'Default ' + (T.trackLabel || 'track').toLowerCase(), type: 'seg', options: trackOpts,
-        hint: 'Preselected in Readiness, Quiz, Practice and Endless.', when: function () { return TRACKS.length > 1; } },
+        hint: 'Sets your lesson path and is preselected in Progress, Quiz, Practice test and Endless.', when: function () { return TRACKS.length > 1; } },
+      { key: 'dailyGoal', label: 'Daily goal', type: 'seg', options: [[10, 'Casual · 10 XP'], [20, 'Regular · 20'], [40, 'Serious · 40'], [60, 'Intense · 60']],
+        hint: 'A lesson earns 10 XP, or 15 with no mistakes. Any XP in a day keeps your streak alive.' },
       { key: 'passMark', label: 'Pass mark', type: 'range', min: 50, max: 90, step: 5, fmt: function (v) { return v + '%'; },
         hint: 'Drives pass/fail verdicts, score colors and readiness bands.' },
       { key: 'testWeight', label: 'Readiness weighting', type: 'range', min: 0, max: 100, step: 10,
@@ -258,7 +262,7 @@ function schema() {
 
 var KEY_HELP = [
   ['1–4 or A–D', 'Choose an answer'],
-  ['Enter or →', 'Next question'],
+  ['Enter or →', 'Next question / continue a lesson'],
   ['← →', 'Move through a practice test'],
   ['Space', 'Flip a flashcard'],
   ['← / →', 'Flashcard missed / got it'],
@@ -335,6 +339,7 @@ function render() {
     '<button class="btn sec" type="button" data-act="import">Import progress</button></div>' +
     '<input type="file" id="set-import-file" accept="application/json,.json" hidden>' +
     '<div class="set-danger">' +
+    '<button class="btn ghost" type="button" data-act="reset-path">Restart the lesson path</button>' +
     '<button class="btn ghost" type="button" data-act="reset-cards">Reset flashcard progress</button>' +
     '<button class="btn ghost" type="button" data-act="clear-history">Clear session history</button>' +
     '<button class="btn ghost" type="button" data-act="reset-best">Reset Endless personal bests</button>' +
@@ -468,6 +473,10 @@ function runAction(act) {
   var cloudNote = signedIn ? '\n\nYou are signed in, so your synced copy will match.' : '';
   if (act === 'export') return a.exportData();
   if (act === 'import') { var f = $('set-import-file'); if (f) { f.value = ''; f.click(); } return; }
+  if (act === 'reset-path') {
+    if (confirm('Restart the lesson path? Every unit goes back to lesson 1. Your XP and streak stay.' + cloudNote)) { a.reset('path'); toast('Lesson path restarted.'); }
+    return;
+  }
   if (act === 'reset-cards') {
     if (confirm('Reset all flashcard progress? Every card goes back to Box 1.' + cloudNote)) { a.reset('cards'); toast('Flashcard progress reset.'); }
     return;
@@ -485,7 +494,7 @@ function runAction(act) {
     return;
   }
   if (act === 'erase') {
-    if (confirm('Erase ALL progress — flashcards, session history and personal bests? This cannot be undone. Export a backup first if unsure.' + cloudNote)) {
+    if (confirm('Erase ALL progress — lessons, XP and streak, flashcards, session history and personal bests? This cannot be undone. Export a backup first if unsure.' + cloudNote)) {
       a.reset('all'); toast('All progress erased.');
     }
     return;

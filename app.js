@@ -1,5 +1,6 @@
-/* app.js — study app engine: tabs, overview, readiness, guides, flashcards,
-   quiz, practice tests, scenario drills and endless adaptive mode.
+/* app.js — study app engine: tabs, the Learn path and lesson player (XP,
+   streak, daily goal), readiness, guides, flashcards, quiz, practice tests,
+   scenario drills and endless adaptive mode.
 
    Topic-agnostic engine file. Topic specifics come from topic.js (TOPIC),
    content from data/*.js (QUESTIONS, CARDS, GUIDES, DRILLS + forge content),
@@ -134,7 +135,7 @@ function selectQuestions(pool, selected, tLen, tMix) {
    Keys are namespaced by topic id ("cts_leitner_v1", ...) so several study
    apps can share one site (e.g. username.github.io) without colliding. */
 const P = (T.id || 'study') + '_';
-const LS = { boxes: P + 'leitner_v1', hist: P + 'test_history', meta: P + 'sync_meta_v1', best: P + 'endless_best' };
+const LS = { boxes: P + 'leitner_v1', hist: P + 'test_history', meta: P + 'sync_meta_v1', best: P + 'endless_best', game: P + 'game_v1' };
 const HIST_MAX = 40;
 function readJSON(key, fallback) {
   try { const v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; } catch (e) { return fallback; }
@@ -144,7 +145,93 @@ function pushHistory(entry) {
   const hist = readJSON(LS.hist, []);
   hist.unshift(entry);
   writeJSON(LS.hist, hist.slice(0, HIST_MAX));
+  // every finished session earns 1 XP per correct answer and keeps the streak alive
+  Game.addXP(Math.round((+entry.n || 0) * (+entry.score || 0) / 100));
 }
+
+/* ---------- game state: XP, daily goal, streak, lesson path ----------
+   One object per topic in <topic id>_game_v1, synced with the rest of the
+   progress:
+     xp       lifetime XP
+     days     { 'YYYY-MM-DD': XP earned that day } (last 60 days)
+     streak   { n, last } — consecutive days with any XP; `last` is the most
+              recent day that counted
+     best     longest streak
+     done     { domain: lessons completed } — the Learn path position
+     missed   keys of questions answered wrong, newest first (for review)
+     onboarded  the welcome screen has been seen */
+const Game = (function () {
+  const pad = n => String(n).padStart(2, '0');
+  const dayKey = d => { d = d || new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+  const dayAdd = n => { const d = new Date(); d.setDate(d.getDate() + n); return dayKey(d); };
+  const obj = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+  function clean(v) {
+    v = obj(v);
+    const st = obj(v.streak);
+    return {
+      xp: Math.max(0, +v.xp || 0), days: obj(v.days),
+      streak: { n: Math.max(0, +st.n || 0), last: typeof st.last === 'string' ? st.last : '' },
+      best: Math.max(0, +v.best || 0), done: obj(v.done),
+      missed: Array.isArray(v.missed) ? v.missed.filter(k => typeof k === 'string').slice(0, 50) : [],
+      onboarded: !!v.onboarded
+    };
+  }
+  let g = clean(readJSON(LS.game, null));
+  const save = () => writeJSON(LS.game, g);
+  const qKey = q => { // stable across bank reorders: a short hash of the question text
+    let h = 5381;
+    const t = String(q.q);
+    for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) >>> 0;
+    return h.toString(36);
+  };
+  return {
+    dayKey, dayAdd, qKey,
+    get: () => g,
+    raw: () => JSON.parse(JSON.stringify(g)),
+    replace(v) { g = clean(v); save(); },
+    reload() { g = clean(readJSON(LS.game, null)); },
+    save,
+    goal: () => S.get('dailyGoal'),
+    today: () => +g.days[dayKey()] || 0,
+    // the streak is alive if the last counted day is today or yesterday
+    streak() {
+      const last = g.streak.last;
+      if (last === dayKey()) return { n: g.streak.n, lit: true };
+      if (last === dayAdd(-1)) return { n: g.streak.n, lit: false };
+      return { n: 0, lit: false };
+    },
+    addXP(n) {
+      n = Math.max(0, Math.round(n));
+      if (!n) return { goalHit: false, streakUp: false };
+      const k = dayKey(), before = +g.days[k] || 0, goal = S.get('dailyGoal');
+      g.xp += n;
+      g.days[k] = before + n;
+      let streakUp = false;
+      if (g.streak.last !== k) {
+        g.streak = { n: g.streak.last === dayAdd(-1) ? g.streak.n + 1 : 1, last: k };
+        g.best = Math.max(g.best, g.streak.n);
+        streakUp = true;
+      }
+      const floor = dayAdd(-60);
+      Object.keys(g.days).forEach(d => { if (d < floor) delete g.days[d]; });
+      save();
+      try { Learn.renderHeader(); } catch (e) {}
+      return { goalHit: before < goal && before + n >= goal, streakUp };
+    },
+    miss(q) {
+      if (!q || q._forged || q._qi === undefined) return; // bank questions only
+      const k = qKey(q);
+      g.missed = [k].concat(g.missed.filter(x => x !== k)).slice(0, 50);
+      save();
+    },
+    fix(q) {
+      if (!q || !g.missed.length) return;
+      const k = qKey(q), n = g.missed.length;
+      g.missed = g.missed.filter(x => x !== k);
+      if (g.missed.length !== n) save();
+    }
+  };
+})();
 
 /* ---------- score thresholds ----------
    Everything keys off the pass mark (Settings, default 70):
@@ -244,7 +331,7 @@ const Study = {
   getState() {
     return {
       boxes: readJSON(LS.boxes, {}), hist: readJSON(LS.hist, []), best: readJSON(LS.best, {}),
-      settings: S.synced(), updatedAt: readMetaTs()
+      game: Game.raw(), settings: S.synced(), updatedAt: readMetaTs()
     };
   },
   applyState(s) {
@@ -252,11 +339,13 @@ const Study = {
     if (s.boxes) writeJSON(LS.boxes, s.boxes);
     if (s.hist) writeJSON(LS.hist, s.hist.slice(0, HIST_MAX));
     if (s.best) writeJSON(LS.best, s.best);
+    if (s.game) Game.replace(s.game); // absent in docs written before v7: keep the local path
     if (s.settings) { adoptingCloud = true; try { S.adopt(s.settings); } finally { adoptingCloud = false; } }
     setMetaTs(s.updatedAt); // adopt the cloud timestamp so we don't push straight back
   },
   refreshUI() {
     try { FC.reload(); } catch (e) {}
+    try { Game.reload(); Learn.render(); Learn.syncWelcome(); } catch (e) {}
     renderHistory();
     try { renderReadiness(); } catch (e) {}
     try { Endless.renderBest(); } catch (e) {}
@@ -266,7 +355,7 @@ const Study = {
     const st = Study.getState();
     const data = {
       app: T.id, name: T.name, version: T.version, exportedAt: new Date().toISOString(),
-      progress: { boxes: st.boxes, hist: st.hist, best: st.best, updatedAt: st.updatedAt },
+      progress: { boxes: st.boxes, hist: st.hist, best: st.best, game: st.game, updatedAt: st.updatedAt },
       settings: S.all()
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -284,6 +373,7 @@ const Study = {
     writeJSON(LS.boxes, p.boxes && typeof p.boxes === 'object' ? p.boxes : {});
     writeJSON(LS.hist, Array.isArray(p.hist) ? p.hist.slice(0, HIST_MAX) : []);
     writeJSON(LS.best, p.best && typeof p.best === 'object' ? p.best : {});
+    if (p.game && typeof p.game === 'object') Game.replace(p.game); // backups from before v7 have none
     if (data.settings && typeof data.settings === 'object') S.replaceAll(data.settings);
     notifyProgress(); // the restore is the newest change, so it syncs up when signed in
     Study.refreshUI();
@@ -293,6 +383,9 @@ const Study = {
     if (kind === 'cards' || kind === 'all') writeJSON(LS.boxes, {});
     if (kind === 'history' || kind === 'all') writeJSON(LS.hist, []);
     if (kind === 'best' || kind === 'all') writeJSON(LS.best, {});
+    // 'path' restarts the lessons; XP and streak go only with a full erase
+    if (kind === 'path') Game.replace(Object.assign(Game.raw(), { done: {}, missed: [] }));
+    if (kind === 'all') Game.replace({ onboarded: true });
     notifyProgress();
     Study.refreshUI();
   }
@@ -300,26 +393,37 @@ const Study = {
 window.Study = Study;
 window.CTS = Study; // pre-v6 name, kept so a cached older auth.js still finds the bridge
 
-/* ---------- tabs ---------- */
+/* ---------- tabs ----------
+   Five tabs in the bar: Learn, Practice, Cards, Progress, More. Practice and
+   More are hubs; the panes they open (quiz, test, drills, endless, guides,
+   library, roadmap) keep their hub highlighted and get a back link. */
 const HAS = {
+  learn: BANK.length > 0,
   guides: GUIDE_LIST.length > 0, cards: DECK.length > 0, drills: DRILL_LIST.length > 0,
   quiz: BANK.length > 0, test: BANK.length > 0, endless: BANK.length > 0 || HAS_FORGE,
   library: !!(((T.library || {}).groups) || []).length,
   roadmap: !!(((T.roadmap || {}).tracks) || []).length
 };
-let currentTab = 'overview';
+const PARENT = { quiz: 'practice', test: 'practice', drills: 'practice', endless: 'practice',
+  guides: 'more', library: 'more', roadmap: 'more' };
+const HUB_NAMES = { practice: 'Practice', more: 'More' };
+let currentTab = 'learn';
 function showTab(tab) {
+  if (!$('pane-' + tab)) return;
   currentTab = tab;
+  const top = PARENT[tab] || tab;
   document.querySelectorAll('nav.tabs button').forEach(x => {
-    const on = x.dataset.tab === tab;
+    const on = x.dataset.tab === top;
     x.classList.toggle('active', on);
     if (on) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
   });
   document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('active', p.id === 'pane-' + tab));
+  if (tab === 'learn') { try { Learn.render(); } catch (e) {} }
   if (tab === 'overview') { try { renderReadiness(); } catch (e) {} }
   if (tab === 'roadmap') { try { renderRoadmap(); } catch (e) {} }
   window.scrollTo(0, 0);
 }
+HAS.practice = ['quiz', 'test', 'drills', 'endless'].some(t => HAS[t]);
 document.querySelectorAll('nav.tabs button').forEach(b => {
   const tab = b.dataset.tab;
   if (HAS[tab] === false) b.hidden = true;
@@ -327,6 +431,25 @@ document.querySelectorAll('nav.tabs button').forEach(b => {
   if (custom) b.querySelector('.lbl').textContent = custom;
   b.addEventListener('click', () => showTab(tab));
 });
+// hub tiles, and a back link on every pane a hub opens
+document.querySelectorAll('[data-go]').forEach(b => {
+  const tab = b.dataset.go;
+  if (HAS[tab] === false) b.hidden = true;
+  const custom = T.labels && T.labels[tab];
+  if (custom && b.querySelector('.lbl')) b.querySelector('.lbl').textContent = custom;
+  b.addEventListener('click', () => showTab(tab));
+});
+Object.keys(PARENT).forEach(tab => {
+  const pane = $('pane-' + tab);
+  if (!pane) return;
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'back-link';
+  back.textContent = '← ' + HUB_NAMES[PARENT[tab]];
+  back.addEventListener('click', () => showTab(PARENT[tab]));
+  pane.insertBefore(back, pane.firstChild);
+});
+if ($('more-settings')) $('more-settings').addEventListener('click', () => S.open());
 
 /* ---------- career targets ----------
    Each role maps to the 1–3 domains it leans on (topic.js). Roles are ranked
@@ -335,7 +458,7 @@ document.querySelectorAll('nav.tabs button').forEach(b => {
 const CAREERS = Array.isArray(T.careers) ? T.careers : [];
 
 /* ---------- overview ---------- */
-const MODE_NAMES = { balanced: 'practice', random: 'practice · random', quiz: 'quiz', drill: 'drills', endless: 'endless' };
+const MODE_NAMES = { balanced: 'practice', random: 'practice · random', quiz: 'quiz', drill: 'drills', endless: 'endless', lesson: 'lessons' };
 /* ---------- official duty weights (percent of each exam) ----------
    From topic.js `duties`: { <trackId>: { weights: { A: 35, ... },
    names: { A: '...', ... } } }, researched from the topic's official
@@ -384,6 +507,7 @@ function renderStudyLoop() {
     return;
   }
   const steps = [];
+  if (BANK.length) steps.push('Do a <b>lesson</b> or two on the Learn path every day to keep your streak.');
   if (GUIDE_LIST.length) steps.push('Read a <b>Study Guide</b> for your weakest domain.');
   if (DECK.length) steps.push('Drill its <b>Flashcards</b> until most reach Box 4+.');
   steps.push('Take a <b>Quiz</b> filtered to that domain.');
@@ -397,7 +521,7 @@ function renderHistory() {
   const el = $('ov-history');
   const hist = readJSON(LS.hist, []);
   if (!hist.length) {
-    el.innerHTML = '<p class="muted">No sessions yet — generate one in the Practice tab.</p>';
+    el.innerHTML = '<p class="muted">No sessions yet. Finish a lesson and it shows up here.</p>';
     return;
   }
   const m = S.get('passMark');
@@ -517,7 +641,7 @@ function renderReadiness() {
   if (duties.length) basis += 'Overall is weighted by the official exam duty weights. ';
   el.innerHTML =
     `<div class="ready-head"><div class="ready-score ${b.cls}">${overall === null ? '—' : overall + '%'}</div>` +
-    `<div><div class="ready-band ${b.cls}">${b.label}</div>` +
+    `<div><div class="ready-band ${b.cls}">${overall === null ? 'Finish a lesson to see your readiness' : b.label}</div>` +
     `<p class="muted small" style="margin:4px 0 0">${basis}Pass heuristic: ${S.get('passMark')}% — ${esc(lcfirst(DISCLAIMER))}</p></div></div>` +
     rows.map(p => {
       if (p.score === null)
@@ -638,18 +762,19 @@ function renderRoadmap() {
 }
 
 /* ---------- guides ---------- */
+function openGuide(g) {
+  $('guide-list').parentElement.style.display = 'none';
+  $('guide-view').style.display = '';
+  $('guide-body').innerHTML = md(g.body);
+  window.scrollTo(0, 0);
+}
 (function guides() {
   const list = $('guide-list');
   list.innerHTML = '';
   GUIDE_LIST.forEach(g => {
     const b = document.createElement('button');
     b.innerHTML = `<div class="gt">${esc(g.title)}</div><div class="gd">${esc(g.domain || '')}</div>`;
-    b.addEventListener('click', () => {
-      list.parentElement.style.display = 'none';
-      $('guide-view').style.display = '';
-      $('guide-body').innerHTML = md(g.body);
-      window.scrollTo(0, 0);
-    });
+    b.addEventListener('click', () => openGuide(g));
     list.appendChild(b);
   });
   $('guide-back').addEventListener('click', () => {
@@ -719,6 +844,7 @@ const FC = (function () {
     const c = deck[idx];
     boxes[key(c)] = ok ? Math.min(5, boxOf(c) + 1) : 1;
     Sound.play(ok ? 'ok' : 'no');
+    if (ok) Game.addXP(1);
     save();
     idx++;
     if (idx >= deck.length) {
@@ -863,6 +989,7 @@ const Quiz = (function () {
     if (results.length > i) return; // already answered
     const ok = oi === q.correct;
     results.push({ q, picked: oi, ok });
+    if (!ok) Game.miss(q);
     markAnswered($('quiz-opts'), q.correct, oi);
     Sound.play(ok ? 'ok' : 'no');
     const ex = $('quiz-explain');
@@ -1055,6 +1182,7 @@ const PTest = (function () {
     });
     const pct = Math.round(100 * correct / qs.length);
     const t = TH();
+    qs.forEach((q, idx) => { if (answers[idx] !== null && !okAt(idx)) Game.miss(q); });
     $('test-run').style.display = 'none';
     $('test-results').style.display = '';
     const sc = $('tr-score');
@@ -1423,6 +1551,7 @@ const Endless = (function () {
       moved = 'up';
     } else {
       streak = 0;
+      Game.miss(cur);
       level = Math.max(1, level - ramp.down);
       moved = 'down';
     }
@@ -1532,6 +1661,460 @@ const Endless = (function () {
   };
 })();
 
+/* ---------- Learn: the lesson path and the lesson player ----------
+   Each domain of the chosen track is a unit; its questions, easiest first,
+   are cut into short lessons (about five questions). Where the domain has
+   flashcards, a lesson opens with a "which term?" warm-up and has a
+   tap-the-pairs round in the middle. Lessons unlock in order inside a unit;
+   every unit is open from the start.
+   In a lesson, an answer gets instant feedback with the explanation; a
+   missed item comes back once at the end. Finishing earns 10 XP (+5 with no
+   mistakes; 5 for replaying a finished lesson), moves the path forward and
+   feeds readiness: first-try results are merged into one 'lesson' history
+   entry per day and track, so lessons never crowd full tests out of the
+   history. */
+const Learn = (function () {
+  const none = { render() {}, renderHeader() {}, syncWelcome() {}, isOpen: () => false, key: () => false };
+  if (!BANK.length || !$('pane-learn')) return none;
+  const LESSON_Q = 5, XP_LESSON = 10, XP_PERFECT = 5, XP_REPLAY = 5, REVIEW_MAX = 7;
+  const PRAISE = ['Nice!', 'Correct!', 'Nailed it!', 'Exactly right.', 'You got it!'];
+  const NOPE = ['Not quite.', 'Almost.', 'Good try.'];
+  const any = a => a[Math.floor(Math.random() * a.length)];
+  const g = () => Game.get();
+
+  const pathTrack = () => {
+    const t = S.get('track');
+    return TRACKS.some(x => x.id === t) ? t : DEFAULT_TRACK;
+  };
+  const unitName = d => { const i = d.indexOf(': '); return i > 0 ? d.slice(i + 2) : d; };
+
+  /* --- units and lessons (built once per track) --- */
+  const cache = {};
+  function unitsFor(track) {
+    if (cache[track]) return cache[track];
+    const doms = [];
+    BANK.forEach(q => { if (inTrack(q, track) && doms.indexOf(q.domain) === -1) doms.push(q.domain); });
+    const pref = (T.pathOrder && T.pathOrder[track]) || [];
+    const rank = d => {
+      const i = pref.indexOf(d);
+      return i !== -1 ? i : pref.length + (isAdv(d) ? 1000 : 0) + doms.indexOf(d);
+    };
+    cache[track] = doms.slice().sort((a, b) => rank(a) - rank(b)).map(d => {
+      const qs = BANK.filter(q => inTrack(q, track) && q.domain === d)
+        .sort((a, b) => (a._diff - b._diff) || (a._qi - b._qi));
+      const lessons = [];
+      for (let i = 0; i < qs.length; i += LESSON_Q) lessons.push(qs.slice(i, i + LESSON_Q));
+      if (lessons.length > 1 && lessons[lessons.length - 1].length < 3) {
+        const tail = lessons.pop();
+        lessons[lessons.length - 1] = lessons[lessons.length - 1].concat(tail);
+      }
+      // a card whose definition contains its own term would give the answer away
+      const cards = DECK.filter(c => c.domain === d && c.back.toLowerCase().indexOf(c.front.toLowerCase()) === -1);
+      return { domain: d, name: unitName(d), adv: isAdv(d), lessons, cards,
+        guide: GUIDE_LIST.find(x => x.domain === d) || null };
+    });
+    return cache[track];
+  }
+  const doneIn = u => Math.min(+g().done[u.domain] || 0, u.lessons.length);
+  function nextUp(units) { // the first unfinished lesson on the path
+    for (let ui = 0; ui < units.length; ui++) {
+      const n = doneIn(units[ui]);
+      if (n < units[ui].lessons.length) return { ui, li: n };
+    }
+    return null;
+  }
+
+  function termItem(card, pool) {
+    const wrong = sampleNoRepeat(pool.filter(c => c.front !== card.front), 3).map(c => c.front);
+    return { type: 'mc', lead: 'Which term matches this?', domain: card.domain,
+      q: { q: card.back, options: [card.front].concat(wrong), correct: 0, explanation: card.front + ': ' + card.back } };
+  }
+  function buildLesson(u, li) {
+    const items = u.lessons[li].map(q => ({ type: 'mc', lead: 'Choose the best answer', domain: q.domain, q, scored: true }));
+    const cs = u.cards;
+    if (cs.length >= 4) {
+      const short = cs.filter(c => c.back.length <= 70);
+      if (short.length >= 3) {
+        const pairs = [0, 1, 2].map(k => short[(li * 3 + k) % short.length]);
+        items.splice(Math.min(3, items.length), 0, { type: 'match', lead: 'Tap the matching pairs', domain: u.domain, pairs });
+      }
+      items.unshift(termItem(cs[(li * 2) % cs.length], cs));
+    }
+    return items;
+  }
+
+  /* --- header chip, hero card, path --- */
+  function renderHeader() {
+    const chip = $('hdr-streak');
+    if (!chip) return;
+    const st = Game.streak();
+    chip.hidden = false;
+    chip.classList.toggle('lit', st.lit);
+    $('hdr-streak-n').textContent = st.n;
+    chip.title = st.n ? `${st.n} day streak${st.lit ? '' : ' — finish a lesson today to keep it'}` : 'No streak yet';
+    chip.setAttribute('aria-label', chip.title);
+  }
+  function ring(pct) {
+    const r = 26, c = 2 * Math.PI * r;
+    return `<svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" class="ring-bg"/>` +
+      `<circle cx="32" cy="32" r="${r}" class="ring-fg" stroke-dasharray="${c.toFixed(1)}" ` +
+      `stroke-dashoffset="${(c * (1 - Math.min(1, pct))).toFixed(1)}" transform="rotate(-90 32 32)"/></svg>`;
+  }
+  function weekStrip() {
+    const now = new Date(), dow = (now.getDay() + 6) % 7; // Monday first
+    return '<div class="week" aria-label="This week">' + ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((l, i) => {
+      const hit = (+g().days[Game.dayAdd(i - dow)] || 0) > 0;
+      return `<div class="wd${hit ? ' hit' : ''}${i === dow ? ' now' : ''}"><span>${hit ? '✓' : ''}</span>${l}</div>`;
+    }).join('') + '</div>';
+  }
+  function renderHero(units) {
+    const st = Game.streak(), goal = Game.goal(), xpToday = Game.today();
+    const h = new Date().getHours();
+    const hello = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    const nu = nextUp(units);
+    let line;
+    if (xpToday >= goal) line = `Daily goal done. ${st.n > 1 ? st.n + ' days in a row!' : 'Come back tomorrow to start a streak.'}`;
+    else if (st.n && !st.lit) line = `One lesson keeps your ${st.n}-day streak alive.`;
+    else if (xpToday > 0) line = `${goal - xpToday} XP to go for today's goal.`;
+    else line = 'A few minutes a day is all it takes.';
+    let cta, sub;
+    if (nu) {
+      const u = units[nu.ui], fresh = !Object.keys(g().done).length;
+      cta = fresh && !g().xp ? 'Start your first lesson' : 'Continue learning';
+      sub = `Unit ${nu.ui + 1} · ${u.name} · Lesson ${nu.li + 1} of ${u.lessons.length}`;
+    } else {
+      cta = 'Practice a lesson';
+      sub = 'Path complete. Replay any lesson to stay sharp.';
+    }
+    $('learn-hero').innerHTML =
+      (MULTI ? `<div class="seg hero-tracks" role="group" aria-label="${esc(TRACK_WORD)}">` + TRACKS.map(t =>
+        `<button type="button" data-track="${esc(t.id)}" class="${t.id === pathTrack() ? 'on' : ''}" aria-pressed="${t.id === pathTrack()}">${esc(t.label)}</button>`).join('') + '</div>' : '') +
+      `<div class="hero-top"><div class="hero-ring">${ring(xpToday / goal)}<div class="ring-txt"><b>${Math.min(xpToday, 999)}</b><span>/ ${goal} XP</span></div></div>` +
+      `<div class="hero-txt"><div class="hero-hello">${hello}!</div><p class="muted">${esc(line)}</p>` +
+      `<div class="hero-stats"><span class="${st.lit ? 'lit' : ''}">🔥 <b>${st.n}</b> day streak</span><span>⚡ <b>${g().xp}</b> XP</span></div></div></div>` +
+      weekStrip() +
+      `<button class="btn big" type="button" id="learn-cta">${cta}<small>${esc(sub)}</small></button>`;
+    $('learn-cta').addEventListener('click', () => {
+      if (nu) startLesson(units[nu.ui], nu.li);
+      else { const u = any(units); startLesson(u, Math.floor(Math.random() * u.lessons.length)); }
+    });
+    $('learn-hero').querySelectorAll('[data-track]').forEach(b =>
+      b.addEventListener('click', () => { S.set('track', b.dataset.track); render(); }));
+  }
+  const bank = {}; // question key -> question, for the mistakes review
+  function missedQs() {
+    if (!Object.keys(bank).length) BANK.forEach(q => { bank[Game.qKey(q)] = q; });
+    return g().missed.map(k => bank[k]).filter(Boolean);
+  }
+  function renderExtras() {
+    const n = missedQs().length;
+    $('learn-extras').innerHTML = n
+      ? `<button class="tile" type="button" id="learn-review"><span class="tile-ico" aria-hidden="true">🩹</span>` +
+        `<span class="tile-txt"><b>Fix your mistakes</b><span>${n} question${n > 1 ? 's' : ''} you missed, ready for another go</span></span></button>`
+      : '';
+    if (n) $('learn-review').addEventListener('click', startReview);
+  }
+  const ZIG = [0, 46, 66, 46, 0, -46, -66, -46];
+  function renderPath(units) {
+    const nu = nextUp(units);
+    $('learn-path').innerHTML = units.map((u, ui) => {
+      const n = doneIn(u), total = u.lessons.length, complete = n >= total;
+      const nodes = u.lessons.map((_, li) => {
+        const state = li < n ? 'done' : li === n ? 'cur' : 'lock';
+        const label = `Unit ${ui + 1}, lesson ${li + 1} of ${total}` +
+          (state === 'done' ? ', done. Practice again' : state === 'lock' ? ', locked' : ', start');
+        const bubble = state === 'cur' && nu && nu.ui === ui ? '<span class="node-bubble">START</span>' : '';
+        return `<div class="node-row" style="--x:${ZIG[li % ZIG.length]}px">${bubble}` +
+          `<button type="button" class="node ${state}" data-u="${ui}" data-l="${li}" aria-label="${label}">` +
+          `${state === 'done' ? '✓' : state === 'cur' ? '★' : '🔒'}</button></div>`;
+      }).join('');
+      return `<section class="unit${complete ? ' complete' : ''}">` +
+        `<div class="unit-head"><div class="unit-meta"><div class="unit-k">Unit ${ui + 1}${u.adv ? ' · beyond the exam' : ''}</div>` +
+        `<h3>${esc(u.name)}</h3><div class="unit-prog"><div class="dtrack"><div class="dfill" style="width:${Math.round(100 * n / total)}%"></div></div>` +
+        `<span>${complete ? 'Complete 🏆' : n + ' / ' + total}</span></div></div>` +
+        (u.guide ? `<button type="button" class="unit-guide" data-guide="${ui}" aria-label="Read the guide for ${esc(u.name)}">📖<span>Guide</span></button>` : '') +
+        `</div><div class="unit-path">${nodes}</div></section>`;
+    }).join('');
+  }
+  function render() {
+    const units = unitsFor(pathTrack());
+    renderHeader();
+    renderHero(units);
+    renderExtras();
+    renderPath(units);
+  }
+  $('learn-path').addEventListener('click', e => {
+    const units = unitsFor(pathTrack());
+    const gb = e.target.closest('[data-guide]');
+    if (gb) { showTab('guides'); openGuide(units[+gb.dataset.guide].guide); return; }
+    const nb = e.target.closest('.node');
+    if (!nb) return;
+    if (nb.classList.contains('lock')) { toast('Finish the lesson before it to unlock this one.'); return; }
+    startLesson(units[+nb.dataset.u], +nb.dataset.l);
+  });
+  if ($('hdr-streak')) $('hdr-streak').addEventListener('click', () => showTab('learn'));
+
+  /* --- lesson player --- */
+  const el = $('lesson'), body = $('ls-body'), foot = $('ls-foot');
+  let run = null;
+  const isOpen = () => !el.hidden;
+  function open() {
+    el.hidden = false;
+    document.body.classList.add('lesson-open');
+  }
+  function close() {
+    el.hidden = true;
+    run = null;
+    document.body.classList.remove('lesson-open');
+    foot.className = 'ls-foot';
+    foot.innerHTML = '';
+    render();
+  }
+  function startLesson(u, li) {
+    begin({ kind: 'lesson', unit: u, li, replay: li < doneIn(u), items: buildLesson(u, li),
+      title: `${u.name} · Lesson ${li + 1}` });
+  }
+  function startReview() {
+    const qs = missedQs().slice(0, REVIEW_MAX);
+    if (!qs.length) return;
+    begin({ kind: 'review', title: 'Fix your mistakes',
+      items: qs.map(q => ({ type: 'mc', lead: 'You missed this one before', domain: q.domain, q, scored: true })) });
+  }
+  function begin(r) {
+    run = Object.assign(r, { queue: r.items.slice(), at: 0, total: r.items.length, solved: 0, clean: 0,
+      combo: 0, byDom: {}, byDuty: {}, nQ: 0, cQ: 0, answered: false, picking: null });
+    open();
+    showItem();
+  }
+  function bar() {
+    $('ls-bar').style.width = Math.round(100 * run.solved / run.total) + '%';
+    $('ls-combo').textContent = run.combo >= 2 ? '🔥 ' + run.combo : '';
+  }
+  function showItem() {
+    const it = run.queue[run.at];
+    run.answered = false;
+    foot.className = 'ls-foot';
+    foot.innerHTML = '';
+    bar();
+    const lead = `<div class="ls-lead">${it.retry ? '↻ Let’s try that one again' : esc(it.lead)}</div>`;
+    if (it.type === 'match') { showMatch(it, lead); return; }
+    body.innerHTML = lead + `<span class="${tagCls(it.domain)}">${esc(unitName(it.domain))}</span>` +
+      `<div class="q-text">${esc(it.q.q)}</div><div id="ls-opts"></div>`;
+    renderOptions($('ls-opts'), it.q, indexOrder(it.q), oi => answer(it, oi));
+    body.parentElement.scrollTop = 0;
+  }
+  function answer(it, oi) {
+    if (run.answered) return;
+    const q = it.q, ok = oi === q.correct;
+    markAnswered($('ls-opts'), q.correct, oi);
+    if (it.scored && !it.retry) { // first tries feed readiness and the mistakes list
+      const add = (by, k) => { by[k] = by[k] || { c: 0, t: 0 }; by[k].t++; if (ok) by[k].c++; };
+      add(run.byDom, q.domain);
+      if (q.duty) add(run.byDuty, q.duty);
+      run.nQ++; if (ok) run.cQ++;
+      if (ok) Game.fix(q); else Game.miss(q);
+    }
+    settle(it, ok, ok ? '' : q.options[q.correct], q.explanation);
+  }
+  function showMatch(it, lead) {
+    const left = shuffle(it.pairs.map((c, i) => ({ i, text: c.front })));
+    const right = shuffle(it.pairs.map((c, i) => ({ i, text: c.back })));
+    const col = (list, side) => `<div class="match-col">` + list.map(x =>
+      `<button type="button" class="option pair" data-side="${side}" data-i="${x.i}">${esc(x.text)}</button>`).join('') + '</div>';
+    body.innerHTML = lead + `<span class="${tagCls(it.domain)}">${esc(unitName(it.domain))}</span>` +
+      `<div class="match-grid" id="ls-match">${col(left, 'l')}${col(right, 'r')}</div>`;
+    body.parentElement.scrollTop = 0;
+    let sel = null, left_ = it.pairs.length, slips = 0;
+    $('ls-match').addEventListener('click', e => {
+      const b = e.target.closest(".pair");
+      if (!b || b.disabled || run.answered) return;
+      if (!sel || sel.dataset.side === b.dataset.side) {
+        if (sel) sel.classList.remove('selected');
+        sel = sel === b ? null : b;
+        if (sel) sel.classList.add('selected');
+        return;
+      }
+      const a = sel;
+      sel = null;
+      a.classList.remove('selected');
+      if (a.dataset.i === b.dataset.i) {
+        [a, b].forEach(x => { x.classList.add('correct'); x.disabled = true; });
+        Sound.play('ok');
+        if (--left_ === 0) settle(it, slips === 0, '', slips ? 'A slip or two on the way, but you got there.' : 'Every pair on the first try.', true);
+      } else {
+        slips++;
+        [a, b].forEach(x => { x.classList.add('wrong'); setTimeout(() => x.classList.remove('wrong'), 450); });
+        Sound.play('no');
+      }
+    });
+  }
+  // an item is finished: show the feedback bar, queue a retry for a first miss
+  function settle(it, ok, correctText, explanation, quiet) {
+    run.answered = true;
+    if (!quiet) Sound.play(ok ? 'ok' : 'no');
+    if (ok && !it.retry) run.clean++;
+    run.combo = ok ? run.combo + 1 : 0;
+    const again = !ok && !it.retry && it.type !== 'match';
+    if (again) run.queue.push(Object.assign({}, it, { retry: true }));
+    else run.solved++;
+    bar();
+    const last = run.at === run.queue.length - 1;
+    const good = ok || it.type === 'match'; // a finished match is never shown as a miss
+    foot.className = 'ls-foot show ' + (good ? 'ok' : 'no');
+    foot.innerHTML = `<div class="ls-inner"><div class="ls-fb"><div class="ls-fb-t">${ok ? '✓ ' + any(PRAISE) : good ? '✓ All matched' : '✗ ' + any(NOPE)}` +
+      `${ok && run.combo >= 3 ? ` <span class="ls-fb-combo">${run.combo} in a row</span>` : ''}</div>` +
+      (correctText ? `<div class="ls-fb-a"><span>Correct answer</span>${esc(correctText)}</div>` : '') +
+      `<div class="ls-fb-x">${esc(explanation || '')}</div></div>` +
+      `<button class="btn big" type="button" id="ls-next">${last ? 'Finish' : 'Continue'}</button></div>`;
+    $('ls-next').addEventListener('click', next);
+    const a = document.activeElement;
+    if (a && a.blur && a !== document.body) a.blur(); // so Enter reaches the shortcut handler
+  }
+  function next() {
+    if (!run || !run.answered) return;
+    run.at++;
+    if (run.at < run.queue.length) showItem(); else complete();
+  }
+  function recordLesson(cert) {
+    if (!run.nQ) return;
+    const hist = readJSON(LS.hist, []), d = today();
+    let h = hist.find(x => x && x.mode === 'lesson' && x.date === d && x.cert === cert);
+    if (!h) { h = { date: d, n: 0, c: 0, score: 0, mode: 'lesson', cert, domains: {}, duties: {} }; hist.unshift(h); }
+    const merge = (into, from) => Object.keys(from).forEach(k => {
+      into[k] = into[k] || { c: 0, t: 0 };
+      into[k].c += from[k].c; into[k].t += from[k].t;
+    });
+    h.domains = h.domains || {}; h.duties = h.duties || {};
+    merge(h.domains, run.byDom);
+    merge(h.duties, run.byDuty);
+    h.n = (+h.n || 0) + run.nQ;
+    h.c = (+h.c || 0) + run.cQ;
+    h.score = Math.round(100 * h.c / h.n);
+    writeJSON(LS.hist, hist.slice(0, HIST_MAX));
+  }
+  function complete() {
+    const perfect = run.clean === run.total;
+    let xp = XP_LESSON + (perfect ? XP_PERFECT : 0), unitDone = false;
+    if (run.kind === 'lesson') {
+      const u = run.unit;
+      if (run.replay) xp = XP_REPLAY + (perfect ? XP_PERFECT : 0);
+      else if (run.li === doneIn(u)) {
+        g().done[u.domain] = run.li + 1;
+        unitDone = run.li + 1 === u.lessons.length;
+      }
+      recordLesson(certOf(u.lessons[run.li][0]));
+    } else {
+      const certs = [...new Set(run.items.map(it => certOf(it.q)))];
+      recordLesson(certs.length === 1 ? certs[0] : '__all');
+    }
+    const res = Game.addXP(xp); // saves the game state, path step included
+    notifyProgress();
+    renderHistory();
+    const st = Game.streak(), acc = Math.round(100 * run.clean / run.total);
+    Sound.play('up');
+    foot.className = 'ls-foot show';
+    foot.innerHTML = '<div class="ls-inner"><button class="btn big" type="button" id="ls-next">Continue</button></div>';
+    $('ls-next').addEventListener('click', close);
+    $('ls-bar').style.width = '100%';
+    $('ls-combo').textContent = '';
+    const notes = [];
+    if (unitDone) notes.push(`🏆 Unit complete: ${esc(run.unit.name)}`);
+    if (res.goalHit) notes.push('🎯 Daily goal reached');
+    if (res.streakUp) notes.push(st.n > 1 ? `🔥 ${st.n} day streak` : '🔥 Streak started. Come back tomorrow to grow it');
+    body.innerHTML = `<div class="ls-done">${confetti()}<div class="ls-done-emoji" aria-hidden="true">${unitDone ? '🏆' : perfect ? '🌟' : '🎉'}</div>` +
+      `<h2>${perfect ? 'Perfect lesson!' : run.kind === 'review' ? 'Mistakes reviewed!' : 'Lesson complete!'}</h2>` +
+      `<p class="muted">${esc(run.title)}</p>` +
+      `<div class="ls-stats"><div class="ls-stat xp"><b>+${xp}</b><span>XP earned</span></div>` +
+      `<div class="ls-stat acc"><b>${acc}%</b><span>First try</span></div>` +
+      `<div class="ls-stat fire"><b>${st.n}</b><span>Day streak</span></div></div>` +
+      notes.map(n => `<div class="ls-note">${n}</div>`).join('') + '</div>';
+    body.parentElement.scrollTop = 0;
+    run.answered = false; // Enter now closes via the Continue button below
+    run.finished = true;
+  }
+  function confetti() {
+    const colors = ['var(--accent)', 'var(--green)', 'var(--amber)', 'var(--violet)', 'var(--red)'];
+    let out = '<div class="confetti" aria-hidden="true">';
+    for (let i = 0; i < 28; i++) {
+      out += `<i style="left:${Math.round(Math.random() * 100)}%;background:${colors[i % colors.length]};` +
+        `animation-delay:${(Math.random() * 0.5).toFixed(2)}s;animation-duration:${(1.6 + Math.random() * 1.2).toFixed(2)}s"></i>`;
+    }
+    return out + '</div>';
+  }
+  $('ls-quit').addEventListener('click', () => {
+    if (!run || run.finished || (!run.at && !run.answered) || confirm('Quit this lesson? It only takes a minute to finish.')) close();
+  });
+  // keyboard: 1–4 / A–D answer, Enter or → continue
+  function key(e) {
+    if (!run) return false;
+    const k = e.key;
+    const ctl = e.target && e.target.closest ? e.target.closest('button') : null;
+    if ((k === 'Enter' || k === ' ') && ctl && shown(ctl) && !ctl.disabled) return false; // native click
+    if (k === 'Enter' || k === 'ArrowRight') {
+      const b = $('ls-next');
+      if (b) { b.click(); return true; }
+      return false;
+    }
+    const opt = /^[1-6]$/.test(k) ? +k - 1 : /^[a-f]$/i.test(k) ? k.toLowerCase().charCodeAt(0) - 97 : -1;
+    const box = $('ls-opts'), b = opt >= 0 && box ? box.children[opt] : null;
+    if (b && !b.disabled) { b.click(); return true; }
+    return false;
+  }
+
+  /* --- first-run welcome: pick a track and a daily goal, then lesson one --- */
+  const GOALS = [[10, 'Casual', '1 lesson a day'], [20, 'Regular', '2 lessons a day'], [40, 'Serious', '3–4 lessons a day'], [60, 'Intense', '5+ lessons a day']];
+  function welcome() {
+    const ob = $('onboard');
+    let track = pathTrack(), goal = S.get('dailyGoal');
+    const draw = () => {
+      $('onboard-body').innerHTML = `<div class="ob"><div class="ls-done-emoji" aria-hidden="true">👋</div>` +
+        `<h2>Welcome to ${esc(T.name || 'your study app')}</h2>` +
+        `<p class="muted">Short lessons, instant feedback, a few minutes a day. Two quick choices and you’re in.</p>` +
+        (MULTI ? `<h3>What are you studying for?</h3><div class="ob-list">` + TRACKS.map(t =>
+          `<button type="button" class="option${t.id === track ? ' selected' : ''}" data-track="${esc(t.id)}" aria-pressed="${t.id === track}">` +
+          `<b>${esc(t.label)}</b><span>${unitsFor(t.id).length} units · ${unitsFor(t.id).reduce((a, u) => a + u.lessons.length, 0)} lessons</span></button>`).join('') + '</div>' : '') +
+        `<h3>Pick a daily goal</h3><div class="ob-list">` + GOALS.map(o =>
+          `<button type="button" class="option${o[0] === goal ? ' selected' : ''}" data-goal="${o[0]}" aria-pressed="${o[0] === goal}">` +
+          `<b>${o[1]}</b><span>${o[2]} · ${o[0]} XP</span></button>`).join('') + '</div>' +
+        `<button class="btn big" type="button" id="ob-go">Start my first lesson</button>` +
+        `<button class="btn ghost" type="button" id="ob-skip">Just look around</button></div>`;
+    };
+    const finish = start => {
+      S.set('track', track);
+      S.set('dailyGoal', goal);
+      g().onboarded = true;
+      Game.save();
+      notifyProgress();
+      ob.hidden = true;
+      document.body.classList.remove('lesson-open');
+      render();
+      if (start) { const units = unitsFor(pathTrack()), nu = nextUp(units); if (nu) startLesson(units[nu.ui], nu.li); }
+    };
+    $('onboard-body').onclick = e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      if (b.dataset.track) { track = b.dataset.track; draw(); }
+      else if (b.dataset.goal) { goal = +b.dataset.goal; draw(); }
+      else if (b.id === 'ob-go') finish(true);
+      else if (b.id === 'ob-skip') finish(false);
+    };
+    draw();
+    ob.hidden = false;
+    document.body.classList.add('lesson-open');
+  }
+  // show the welcome until it has been seen; hide it if synced progress says it has
+  function syncWelcome() {
+    const ob = $('onboard');
+    if (!g().onboarded) { if (ob.hidden) welcome(); }
+    else if (!ob.hidden) { ob.hidden = true; if (!isOpen()) document.body.classList.remove('lesson-open'); }
+  }
+
+  render();
+  syncWelcome();
+  return { render, renderHeader, syncWelcome, isOpen, key };
+})();
+if (!HAS.learn) showTab(HAS.practice ? 'practice' : 'overview');
+
 /* ---------- settings → live UI ---------- */
 S.onChange(key => {
   const all = key === '*';
@@ -1540,6 +2123,7 @@ S.onChange(key => {
     renderHistory();
     renderStudyLoop();
   }
+  if (all || key === 'track' || key === 'dailyGoal') { try { Learn.render(); } catch (e) {} }
   if (all || key === 'track') {
     const tr = S.get('track');
     fillTrackSelect($('r-cert'), tr);
@@ -1563,6 +2147,8 @@ document.addEventListener('keydown', e => {
   if (!S.get('shortcuts') || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
   const sheet = $('settings');
   if (sheet && !sheet.hidden) return;
+  if (!$('onboard').hidden) return;
+  if (Learn.isOpen()) { if (Learn.key(e)) e.preventDefault(); return; }
   const tgt = e.target;
   if (tgt && tgt.closest && tgt.closest('input, select, textarea, [contenteditable="true"]')) return;
   const k = e.key;

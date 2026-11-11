@@ -303,6 +303,9 @@ function toCloudPayload(state) {
   };
   if (state && state.best) out.endlessBest = state.best;       // v6+
   if (state && state.settings) out.settings = state.settings;   // v6+: study preferences only
+  // v7+: lesson path, XP, streak. Stored as one JSON string so a reset
+  // replaces it whole ({ merge: true } would keep stale keys of a nested map).
+  if (state && state.game) { try { out.game = JSON.stringify(state.game); } catch (e) {} }
   return out;
 }
 function fromCloudPayload(doc) {
@@ -314,6 +317,7 @@ function fromCloudPayload(doc) {
   // docs written before v6 have neither field; leave local values alone then
   if (doc && doc.endlessBest) out.best = doc.endlessBest;
   if (doc && doc.settings) out.settings = doc.settings;
+  if (doc && typeof doc.game === 'string') { try { out.game = JSON.parse(doc.game); } catch (e) {} }
   return out;
 }
 

@@ -1,9 +1,10 @@
 # CTS Prep
 
-An offline-first study app for the **AVIXA CTS, CTS-D and CTS-I** certifications:
-study guides, spaced-repetition flashcards, quizzes, a practice-test generator,
-scenario drills and an endless adaptive mode, with Google sign-in to sync
-progress across devices.
+An offline-first study app for the **AVIXA CTS, CTS-D and CTS-I** certifications.
+Open it, tap **Continue learning**, and work through a path of short lessons with
+instant feedback, XP, a daily goal and a streak. Behind that sit study guides,
+spaced-repetition flashcards, quizzes, a practice-test generator, scenario drills
+and an endless adaptive mode, with Google sign-in to sync progress across devices.
 
 The app runs on a topic-agnostic engine, so the same experience can be cloned
 for any other subject. See **[TEMPLATE.md](TEMPLATE.md)**.
@@ -41,8 +42,20 @@ longest answer scores about 23%, no better than guessing.
 
 ## Features
 
-- **Overview** — dashboard with content stats, Exam Readiness by domain (weakest first),
-  career targets ranked by readiness, domain coverage, recent sessions and a study loop.
+The bottom bar has five tabs: **Learn**, **Practice** (Quiz, Practice test, Drills,
+Endless), **Cards**, **Progress** and **More** (Guides, Library, Roadmap, Settings).
+
+- **Learn** — the lesson path. Each domain is a unit of short lessons (about five
+  questions, easiest first). Answers get instant feedback with the explanation, and a
+  missed question comes back once at the end. Units with flashcards add a "which term?"
+  warm-up and a tap-the-pairs round. Lessons unlock in order inside a unit; every unit is
+  open from the start.
+- **XP, daily goal and streak** — a lesson earns 10 XP (15 with no mistakes, 5 for a
+  replay); everything else earns 1 XP per correct answer. Any XP in a day keeps the streak.
+- **Fix your mistakes** — replays questions missed in lessons, quizzes, practice tests
+  and Endless until you get them right.
+- **Progress** — Exam Readiness by domain (weakest first), recent sessions, career
+  targets ranked by readiness, domain coverage and a study loop.
 - **Study Guides** — concise domain guides and the *Exam Cram* (formulas, numbers to
   memorize, memory aids, common mistakes).
 - **Flashcards** — Leitner 5-box spaced repetition with category filters; Box 4+ counts as mastered.
@@ -66,11 +79,11 @@ longest answer scores about 23%, no better than guessing.
 | Section | Settings |
 |---|---|
 | Appearance (this device) | Theme (dark / light / auto) · accent color · text size · reduce motion |
-| Study (syncs) | Default certification · pass mark · readiness weighting (practice vs. flashcards) · default quiz and test length · auto-advance on correct answers · flashcard side shown first |
+| Study (syncs) | Default certification · daily goal · pass mark · readiness weighting (practice vs. flashcards) · default quiz and test length · auto-advance on correct answers · flashcard side shown first |
 | Timers (syncs) | Practice-test pace (off / exam / 1.5× / 2×) · Endless question timer · lightning speed |
 | Endless (syncs) | Starting level · difficulty ramp · generated share in Mixed |
 | Sound & keyboard (this device) | Sound effects · keyboard shortcuts |
-| Your data | Export / import a backup · reset flashcards, history or personal bests · restore defaults · erase all |
+| Your data | Export / import a backup · restart the lesson path · reset flashcards, history or personal bests · restore defaults · erase all |
 | About | Version · check for updates · repair the offline copy |
 
 ## How Exam Readiness is computed
@@ -78,7 +91,8 @@ longest answer scores about 23%, no better than guessing.
 Per domain:
 
 - **Practice performance** — pooled correct ÷ answered across saved sessions that carry a
-  per-domain breakdown (quizzes, practice tests and Endless runs).
+  per-domain breakdown (lessons, quizzes, practice tests and Endless runs). Lessons count
+  first tries only and are merged into one entry per day and certification.
 - **Flashcard mastery** — share of the domain's cards in Leitner box 4 or 5.
 - The two are blended by the *readiness weighting* setting (default 60% practice / 40% cards).
   With only one signal, it carries full weight; with neither, the domain shows "No data yet"
@@ -107,6 +121,7 @@ The app works fully without an account. **Sign in with Google** syncs progress a
 | `testHistory` | last 40 sessions: `{ date, n, score, mode, cert, domains: { [domain]: { c, t } } }` |
 | `endlessBest` | Endless personal best level per certification |
 | `settings` | study settings (appearance settings stay on each device) |
+| `game` | lesson path position, XP, streak and missed questions (one JSON string) |
 
 - **Merge rule:** on sign-in the newer side wins by `updatedAt`. Local changes push about
   2 seconds after you make them. Signing out leaves local progress on the device.
@@ -161,7 +176,8 @@ index.html        app shell; loads topic.js first and applies saved theme before
 topic.js          everything CTS-specific: tracks, copy, careers, exam pace, sync config
 styles.css        dark/light themes, accents, text sizes
 settings.js       settings store and sheet, export/import, update check
-app.js            tabs, readiness, guides, flashcards, quiz, practice tests, drills, Endless
+app.js            tabs, Learn path and lesson player, XP and streak, readiness, guides,
+                  flashcards, quiz, practice tests, drills, Endless
 forge.js          question-generator engine
 auth.js           Google sign-in + Firestore sync (offline-first)
 sw.js             offline service worker
