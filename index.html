@@ -62,6 +62,7 @@ try {
     <span class="sync-label" id="sync-label"></span>
     <span class="sync-label" id="app-ver" style="opacity:.45"></span>
     <span class="badge" id="offline-badge" style="display:none">Offline</span>
+    <button class="streak-chip" id="hdr-streak" type="button" hidden aria-label="Day streak"><span aria-hidden="true">🔥</span><b id="hdr-streak-n">0</b></button>
     <div id="auth-out">
       <button class="btn sm google-btn" id="btn-signin">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.3H12v4.5h6.5c-.1 1.1-.8 2.7-2.4 3.8l-.1.1 3.5 2.7.2.1c2.2-2 3.8-5 3.8-8.9z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.8-2.9c-1 .7-2.4 1.2-4.1 1.2-3.1 0-5.8-2.1-6.8-5l-.1.1-3.7 2.9v.1C3.4 21.5 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.2 14.4c-.2-.7-.4-1.5-.4-2.4s.1-1.7.4-2.4l-.1-.1-3.6-2.8-.1.1C.5 8.3 0 10.1 0 12s.5 3.7 1.4 5.2l3.8-2.8z"/><path fill="#EA4335" d="M12 4.7c1.8 0 3 .8 3.7 1.4l3.3-3.2C17.9 1.1 15.2 0 12 0 7.4 0 3.4 2.5 1.4 6.8l3.8 2.9c1-2.9 3.7-5 6.8-5z"/></svg>
@@ -87,13 +88,38 @@ try {
 </script>
 
 <div class="container">
-  <!-- OVERVIEW -->
-  <section class="tabpane active" id="pane-overview">
-    <div class="card">
-      <h2>Study Dashboard</h2>
-      <div class="stats-grid" id="ov-stats"></div>
-      <p class="muted" style="margin-top:12px" id="ov-blurb"></p>
+  <!-- LEARN: the guided path of bite-sized lessons (rendered by app.js) -->
+  <section class="tabpane active" id="pane-learn">
+    <div class="card hero" id="learn-hero"></div>
+    <div id="learn-extras"></div>
+    <div id="learn-path"></div>
+  </section>
+
+  <!-- PRACTICE HUB -->
+  <section class="tabpane" id="pane-practice">
+    <h2 class="pane-h">Practice</h2>
+    <p class="muted pane-sub">Free practice, any time. Everything here earns XP and counts toward your streak.</p>
+    <div class="tiles">
+      <button class="tile" type="button" data-go="quiz"><span class="tile-ico" aria-hidden="true">✏️</span><span class="tile-txt"><b class="lbl">Quiz</b><span>Pick a domain, get an explanation after every answer</span></span></button>
+      <button class="tile" type="button" data-go="test"><span class="tile-ico" aria-hidden="true">🎯</span><span class="tile-txt"><b class="lbl">Practice test</b><span>A fresh mock exam, graded at the end</span></span></button>
+      <button class="tile" type="button" data-go="drills"><span class="tile-ico" aria-hidden="true">🎛️</span><span class="tile-txt"><b class="lbl">Scenario drills</b><span>Real situations that end in a decision</span></span></button>
+      <button class="tile" type="button" data-go="endless"><span class="tile-ico" aria-hidden="true">♾️</span><span class="tile-txt"><b class="lbl">Endless</b><span>Adapts to you as you go, with no finish line</span></span></button>
     </div>
+  </section>
+
+  <!-- MORE HUB -->
+  <section class="tabpane" id="pane-more">
+    <h2 class="pane-h">More</h2>
+    <div class="tiles">
+      <button class="tile" type="button" data-go="guides"><span class="tile-ico" aria-hidden="true">📖</span><span class="tile-txt"><b class="lbl">Study guides</b><span>Short reads and the Exam Cram sheet</span></span></button>
+      <button class="tile" type="button" data-go="library"><span class="tile-ico" aria-hidden="true">📚</span><span class="tile-txt"><b class="lbl">Library</b><span>Official handbooks and outlines, saved offline</span></span></button>
+      <button class="tile" type="button" data-go="roadmap"><span class="tile-ico" aria-hidden="true">🗺️</span><span class="tile-txt"><b class="lbl">Roadmap</b><span>Your checklist from application to pass</span></span></button>
+      <button class="tile" type="button" id="more-settings"><span class="tile-ico" aria-hidden="true">⚙️</span><span class="tile-txt"><b>Settings</b><span>Daily goal, theme, timers and your data</span></span></button>
+    </div>
+  </section>
+
+  <!-- PROGRESS (readiness dashboard) -->
+  <section class="tabpane" id="pane-overview">
     <div class="card">
       <h2 id="readiness-title">Exam Readiness</h2>
       <div class="track-pick">
@@ -113,7 +139,12 @@ try {
     </div>
     <div class="card">
       <h2>Recent sessions</h2>
-      <div id="ov-history"><p class="muted">No sessions yet — generate one in the Practice tab.</p></div>
+      <div id="ov-history"><p class="muted">No sessions yet. Finish a lesson and it shows up here.</p></div>
+    </div>
+    <div class="card">
+      <h2>What's inside</h2>
+      <div class="stats-grid" id="ov-stats"></div>
+      <p class="muted" style="margin-top:12px" id="ov-blurb"></p>
     </div>
     <div class="card">
       <h2>Suggested study loop</h2>
@@ -380,16 +411,28 @@ try {
 </div>
 
 <nav class="tabs" aria-label="Sections">
-  <button data-tab="overview" class="active" aria-current="page"><span class="ico" aria-hidden="true">🏠</span><span class="lbl">Overview</span></button>
-  <button data-tab="guides"><span class="ico" aria-hidden="true">📖</span><span class="lbl">Guides</span></button>
+  <button data-tab="learn" class="active" aria-current="page"><span class="ico" aria-hidden="true">🧭</span><span class="lbl">Learn</span></button>
+  <button data-tab="practice"><span class="ico" aria-hidden="true">🎯</span><span class="lbl">Practice</span></button>
   <button data-tab="cards"><span class="ico" aria-hidden="true">🃏</span><span class="lbl">Cards</span></button>
-  <button data-tab="quiz"><span class="ico" aria-hidden="true">✏️</span><span class="lbl">Quiz</span></button>
-  <button data-tab="test"><span class="ico" aria-hidden="true">🎯</span><span class="lbl">Practice</span></button>
-  <button data-tab="drills"><span class="ico" aria-hidden="true">🎛️</span><span class="lbl">Drills</span></button>
-  <button data-tab="endless"><span class="ico" aria-hidden="true">♾️</span><span class="lbl">Endless</span></button>
-  <button data-tab="library"><span class="ico" aria-hidden="true">📚</span><span class="lbl">Library</span></button>
-  <button data-tab="roadmap"><span class="ico" aria-hidden="true">🗺️</span><span class="lbl">Roadmap</span></button>
+  <button data-tab="overview"><span class="ico" aria-hidden="true">📈</span><span class="lbl">Progress</span></button>
+  <button data-tab="more"><span class="ico" aria-hidden="true">☰</span><span class="lbl">More</span></button>
 </nav>
+
+<!-- LESSON PLAYER (full screen; rendered by app.js) -->
+<div class="lesson" id="lesson" hidden role="dialog" aria-modal="true" aria-label="Lesson">
+  <div class="ls-top">
+    <button class="icon-btn" id="ls-quit" type="button" aria-label="Quit lesson">✕</button>
+    <div class="progressbar ls-bar" role="progressbar" aria-label="Lesson progress"><div id="ls-bar"></div></div>
+    <span class="ls-combo" id="ls-combo" aria-live="polite"></span>
+  </div>
+  <div class="ls-body"><div class="ls-inner" id="ls-body"></div></div>
+  <div class="ls-foot" id="ls-foot" aria-live="polite"></div>
+</div>
+
+<!-- FIRST-RUN WELCOME (rendered by app.js) -->
+<div class="lesson" id="onboard" hidden role="dialog" aria-modal="true" aria-label="Welcome">
+  <div class="ls-body"><div class="ls-inner" id="onboard-body"></div></div>
+</div>
 
 <!-- SETTINGS (rendered by settings.js) -->
 <div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="settings-title">
@@ -409,7 +452,7 @@ try {
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <!-- auth.js first (not deferred): Safari must complete the redirect sign-in ASAP.
      The heavy question-bank scripts are deferred so they don't block it. -->
-<script src="auth.js?v=6"></script>
+<script src="auth.js?v=7"></script>
 <script src="data/questions.js" defer></script>
 <script src="data/cards.js" defer></script>
 <script src="data/guides.js" defer></script>

@@ -2,6 +2,32 @@
 
 All notable changes to this project are documented here.
 
+## [7.0] – 2026-11-11
+
+### Added
+
+**Learn path: short guided lessons**
+
+- New **Learn** home tab. Each domain of the chosen certification is a unit, cut into lessons of about five questions, easiest first (59 CTS, 27 CTS-D and 25 CTS-I lessons). One **Continue learning** button always starts the next lesson
+- Full-screen lesson player: tap an answer for instant feedback and the explanation; a missed question comes back once at the end
+- Units with flashcards add a "which term?" warm-up and a tap-the-pairs round
+- XP (10 per lesson, 15 with no mistakes), a daily goal ring, a day streak with a week strip, and a streak chip in the header. Quizzes, practice tests, drills, Endless and flashcards earn XP too
+- **Fix your mistakes**: replays questions missed in lessons, quizzes, practice tests and Endless
+- First-run welcome: pick a certification and a daily goal, then straight into lesson one
+- Lesson results feed Exam Readiness (one merged history entry per day and certification)
+- Daily goal setting, and "Restart the lesson path" under Your data
+- `pathOrder` in `topic.js` sets the unit order
+
+### Changed
+
+- Bottom bar reduced from nine tabs to five: Learn, Practice, Cards, Progress, More. Quiz, Practice test, Drills and Endless sit under Practice; Guides, Library, Roadmap and Settings under More
+- Larger, more tactile buttons and answer options
+- Lesson path, XP and streak are included in cloud sync and in export / import
+
+### Fixed
+
+- Progress: the readiness percentage no longer overlaps its label on narrow screens
+
 ## [6.1] – 2026-10-02
 
 ### Added

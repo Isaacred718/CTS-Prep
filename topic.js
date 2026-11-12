@@ -15,7 +15,7 @@ var TOPIC = {
 
   name: 'CTS Prep',
   title: 'CTS Prep — AVIXA CTS, CTS-D & CTS-I study app',
-  version: '6.3',
+  version: '7.0',
 
   // Default accent color: sky | violet | emerald | amber | rose | indigo.
   // People can pick their own in Settings; this is what a new visitor sees.
@@ -96,6 +96,16 @@ var TOPIC = {
       domains: ['CTS-I: Rack Build & Wiring', 'CTS-I: Configuration & Networking', 'CTS-I: Testing & Calibration'],
       why: 'Leads installation crews: racks, termination, configuration and system verification. (CTS-I track)' }
   ],
+
+  // Learn tab: the order units appear on the lesson path, per track. Each
+  // domain is one unit. Domains left out follow in question-bank order,
+  // with "Advanced:" domains last. Optional.
+  pathOrder: {
+    'CTS': ['CTS: Needs Analysis', 'CTS: Sound & Physics', 'CTS: Video & Signal', 'CTS: AV Design',
+      'CTS: Electrical & Site Survey', 'CTS: AV Networking', 'CTS: Control Systems', 'CTS: AVIXA Standards',
+      'CTS: Project Management', 'CTS: Customer Relations', 'CTS: Commissioning & Closeout',
+      'CTS: Troubleshooting & Verification']
+  },
 
   // Endless mode level names, easiest first (five levels).
   levels: ['Foundations', 'Core Knowledge', 'Proficient', 'Advanced', 'Expert'],

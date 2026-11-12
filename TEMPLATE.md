@@ -51,7 +51,8 @@ and `template/data/` into a new folder, and edit `id` and `name` in `topic.js`.
 | `levels` | Five Endless-mode level names, easiest first. |
 | `difficulty.hard`, `difficulty.easy` | Regular-expression words that push a question's auto-tagged Endless difficulty up or down (a question can set `diff: 1..5` instead). |
 | `rephrasePrefixes` | Lead-ins rotated onto repeated questions in Endless mode. |
-| `labels` | Optional tab renames, e.g. `{ drills: 'Cases', test: 'Mock exam' }`. Tabs with no content (no guides, cards or drills) hide themselves. |
+| `pathOrder` | Optional unit order for the Learn path, per track: `{ TRACK_ID: ['Domain A', 'Domain B'] }`. Each domain is one unit of short lessons. Domains left out follow in question-bank order, with advanced domains last. |
+| `labels` | Optional renames for the bottom tabs and the Practice / More tiles, e.g. `{ drills: 'Cases', test: 'Mock exam' }`. Sections with no content (no guides, cards or drills) hide themselves. |
 | `sync` | `null` for this-device-only, or `{ collection, firebase: {...} }` for Google sign-in (section 7). |
 
 ## 3. Write the content
