@@ -13,7 +13,7 @@
 importScripts('topic.js');
 var ID = (self.TOPIC && self.TOPIC.id) || 'study';
 var PREFIX = ID + '-prep-';
-var CACHE = PREFIX + 'v6';
+var CACHE = PREFIX + 'v6.4';
 var NET_TIMEOUT_MS = 4000;
 var ASSETS = [
   './',

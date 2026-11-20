@@ -409,14 +409,51 @@ function renderAuth() {
   }
 }
 
+/* v6.4: the home-screen app signs in with a POPUP first, like the browser.
+   The old standalone path went straight to signInWithRedirect, which cannot
+   complete here: authDomain (*.firebaseapp.com) is a different site from
+   the app (*.github.io), and Safari ITP / Chrome storage partitioning block
+   the cross-site storage getRedirectResult() needs — and iOS home-screen
+   apps don't share storage with Safari, so the handoff could never land.
+   A popup returns the result by postMessage and needs neither. Redirect is
+   now only a fallback if the popup can't open at all. */
 function signIn() {
   if (!auth || !window.firebase) return;
   var provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
   setStatus('busy', 'Signing in…');
   if (isStandalone()) {
-    // iOS home-screen web apps: popups don't work — redirect straight away.
-    // iOS will bounce the OAuth into Safari; mark the handoff so the return
-    // trip waits for the session Safari creates.
+    // Must run synchronously inside the tap handler so iOS allows the popup.
+    auth.signInWithPopup(provider).then(function () {
+      clearHandoff(); clearHandoffReloaded();
+    }, function (e) {
+      var code = e && e.code;
+      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+        setStatus('', 'Signed out'); // user backed out: don't bounce them into a redirect
+      } else if (code === 'auth/popup-blocked' || code === 'auth/operation-not-supported-in-this-environment') {
+        standaloneRedirect(provider); // last resort
+      } else {
+        setStatus('err', 'Sign-in failed' + (code ? ' (' + code + ')' : ''));
+      }
+    });
+    return;
+  }
+  auth.signInWithPopup(provider).catch(function (e) {
+    var code = e && e.code;
+    if (code === 'auth/popup-blocked' || code === 'auth/popup-closed-by-user' ||
+        code === 'auth/cancelled-popup-request' ||
+        code === 'auth/operation-not-supported-in-this-environment') {
+      // popup unavailable (blockers, some in-app browsers) — fall back to redirect
+      auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
+    } else {
+      setStatus('err', 'Sign-in failed');
+    }
+  });
+}
+
+// Legacy standalone redirect + Safari handoff, kept only as a fallback.
+function standaloneRedirect(provider) {
+  {
     markHandoff();
     auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
     // iOS opens the OAuth in an overlay sheet instead of navigating away,
@@ -434,19 +471,7 @@ function signIn() {
         setStatus('busy', 'Completing sign-in… (blank window? tap compass, Open in Safari)');
       }
     }, 15000);
-    return;
   }
-  auth.signInWithPopup(provider).catch(function (e) {
-    var code = e && e.code;
-    if (code === 'auth/popup-blocked' || code === 'auth/popup-closed-by-user' ||
-        code === 'auth/cancelled-popup-request' ||
-        code === 'auth/operation-not-supported-in-this-environment') {
-      // popup unavailable (blockers, some in-app browsers) — fall back to redirect
-      auth.signInWithRedirect(provider).catch(function () { setStatus('err', 'Sign-in failed'); });
-    } else {
-      setStatus('err', 'Sign-in failed');
-    }
-  });
 }
 
 function signOut() {

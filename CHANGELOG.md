@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here.
 
+## [6.4] – 2026-11-19
+
+### Fixed
+
+**Google sign-in in the home-screen (installed) app**
+- The installed app now signs in with the same Google popup the browser uses. It used to go straight to a redirect sign-in, which can't finish on GitHub Pages: the Firebase auth domain is a different site from the app, and Safari/Chrome block the cross-site storage the redirect needs. iOS home-screen apps also don't share storage with Safari, so the old Safari handoff never landed.
+- Redirect is kept only as a fallback if the popup can't open. Cancelling the popup no longer bounces you into a redirect.
+- Cache versions bumped (auth.js?v=6.4, sw cache v6.4) so installed copies pick up the fix.
+
 ## [6.1] – 2026-10-02
 
 ### Added
