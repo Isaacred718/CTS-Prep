@@ -13,7 +13,7 @@
 importScripts('topic.js');
 var ID = (self.TOPIC && self.TOPIC.id) || 'study';
 var PREFIX = ID + '-prep-';
-var CACHE = PREFIX + 'v6.4';
+var CACHE = PREFIX + 'v6';
 var NET_TIMEOUT_MS = 4000;
 var ASSETS = [
   './',
@@ -32,7 +32,12 @@ var ASSETS = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './assets/fonts/barlow-500.woff2',
+  './assets/fonts/barlow-600.woff2',
+  './assets/fonts/barlow-700.woff2',
+  './assets/fonts/barlow-condensed-600.woff2',
+  './assets/fonts/barlow-condensed-700.woff2',
 ];
   // Document library files from topic.js, cached so they open offline.
   try {

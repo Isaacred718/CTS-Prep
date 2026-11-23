@@ -216,3 +216,13 @@ All notable changes to this project are documented here.
   saved for offline reading: the AES67 Practical Guide (ALC NetworX),
   Merging's RAVENNA/AES67 Virtual Audio Device Guide, and the Resolution
   Magazine RAVENNA feature.
+
+## 6.4 (2026-11-23)
+- Full visual redesign in the FitLog (Dadbod Fitness) design language:
+  dark forest palette with lime accent, Barlow + Barlow Condensed type
+  (bundled, works offline), Liquid Glass on the header, floating pill
+  navigation, settings sheet and toasts, solid content cards with
+  28px radii, pill buttons with the lime gloss gradient, and 56px
+  touch targets throughout. Same engine and data; light theme kept,
+  re-tinted to match. Accent changed from sky to lime (icon and
+  manifest regenerated).

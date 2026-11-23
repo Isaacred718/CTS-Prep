@@ -15,11 +15,11 @@ var TOPIC = {
 
   name: 'CTS Prep',
   title: 'CTS Prep — AVIXA CTS, CTS-D & CTS-I study app',
-  version: '6.3',
+  version: '6.4',
 
   // Default accent color: sky | violet | emerald | amber | rose | indigo.
   // People can pick their own in Settings; this is what a new visitor sees.
-  accent: 'sky',
+  accent: 'lime',
   // Letters on the generated home-screen / favicon icon (1–4 characters).
   iconText: 'CTS',
 
